@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
   User,
@@ -14,6 +14,8 @@ import {
 
 interface AppContextType {
   // Autentikasi & Akun
+  isAuthReady: boolean;
+  isDataReady: boolean;
   currentUser: User | null;
   users: User[];
   activityLogs: ActivityLog[];
@@ -37,6 +39,7 @@ interface AppContextType {
   // Classrooms
   classrooms: Classroom[];
   addClassroom: (classroom: Omit<Classroom, 'id'>) => Promise<void>;
+  updateClassroom: (id: string, updatedData: Partial<Classroom>) => Promise<void>;
   deleteClassroom: (id: string) => Promise<void>;
 
   // Meetings (Jurnal)
@@ -78,6 +81,9 @@ interface AppContextType {
   adjustments: MonthlyAdjustment[];
   getAdjustmentForTutor: (tutorId: string, month: string) => MonthlyAdjustment;
   saveAdjustment: (adj: MonthlyAdjustment) => Promise<void>;
+
+  // Trigger Refresh Data Manual
+  refreshData: () => Promise<void>;
 }
 
 const defaultRates: RateConfig = {
@@ -86,7 +92,7 @@ const defaultRates: RateConfig = {
     'Kids-B': 30000,
     'SPL-A': 36000,
     'SPL-B': 32000,
-    'Group': 35000,
+    Group: 35000,
     'Test Prep-A': 55000,
     'Test Prep-B': 40000,
     'Social Banjar/Panti': 50000,
@@ -141,6 +147,8 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [users, setUsers] = useState<User[]>(defaultUsers);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
+  const [isDataReady, setIsDataReady] = useState<boolean>(false);
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
 
@@ -153,16 +161,40 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [freeTrials, setFreeTrials] = useState<FreeTrial[]>([]);
   const [adjustments, setAdjustments] = useState<MonthlyAdjustment[]>([]);
 
-  // 1. FETCH DATA AWAL DARI SUPABASE
-  const fetchAllData = async () => {
+  // 1. Cek sesi localStorage saat browser dibuka
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('gumi_current_user');
+      if (savedUser) {
+        try {
+          setCurrentUser(JSON.parse(savedUser));
+        } catch (e) {
+          console.error('Error parsing stored user session:', e);
+        }
+      }
+      setIsAuthReady(true);
+    }
+  }, []);
+
+  // 2. Simpan atau hapus ke localStorage saat status user berubah
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (currentUser) {
+        localStorage.setItem('gumi_current_user', JSON.stringify(currentUser));
+      } else {
+        localStorage.removeItem('gumi_current_user');
+      }
+    }
+  }, [currentUser]);
+
+  // 3. Tarik seluruh data dari Supabase
+  const fetchAllData = useCallback(async () => {
     try {
-      // Ambil Users
       const { data: usersData } = await supabase.from('users').select('*');
       if (usersData && usersData.length > 0) {
         setUsers(usersData);
       }
 
-      // Ambil Rate Config
       const { data: ratesData } = await supabase.from('rate_configs').select('*').eq('id', 'default_rates').single();
       if (ratesData) {
         setRates({
@@ -173,7 +205,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         });
       }
 
-      // Ambil Classrooms
       const { data: classData } = await supabase.from('classrooms').select('*');
       if (classData) {
         setClassrooms(
@@ -189,7 +220,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       }
 
-      // Ambil Meetings
       const { data: meetingData } = await supabase.from('meetings').select('*');
       if (meetingData) {
         setMeetings(
@@ -209,7 +239,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       }
 
-      // Ambil Free Trials
       const { data: trialsData } = await supabase.from('free_trials').select('*');
       if (trialsData) {
         setFreeTrials(
@@ -225,7 +254,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       }
 
-      // Ambil Monthly Adjustments
       const { data: adjData } = await supabase.from('monthly_adjustments').select('*');
       if (adjData) {
         setAdjustments(
@@ -249,7 +277,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       }
 
-      // Ambil Activity Logs
       const { data: logsData } = await supabase.from('activity_logs').select('*').order('created_at', { ascending: false }).limit(20);
       if (logsData) {
         setActivityLogs(
@@ -266,12 +293,35 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     } catch (err) {
       console.error('Gagal mengambil data dari Supabase:', err);
+    } finally {
+      setIsDataReady(true);
     }
-  };
+  }, []);
 
+  // 4. Supabase Realtime Listener
   useEffect(() => {
     fetchAllData();
-  }, []);
+
+    const channel = supabase
+      .channel('gumi-realtime-channel')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'meetings' }, () => {
+        fetchAllData();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'free_trials' }, () => {
+        fetchAllData();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'classrooms' }, () => {
+        fetchAllData();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'monthly_adjustments' }, () => {
+        fetchAllData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchAllData]);
 
   const logActivity = async (action: ActivityLog['action'], details: string) => {
     if (!currentUser) return;
@@ -310,10 +360,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const logout = () => {
-    if (currentUser) {
-      logActivity('LOGOUT', 'Keluar dari sistem aplikasi');
-    }
     setCurrentUser(null);
+    localStorage.removeItem('gumi_current_user');
+    setActiveTab('dashboard');
   };
 
   // MANAJEMEN AKUN
@@ -347,12 +396,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prev.map((u) => (u.id === id ? { ...u, ...updatedData } : u))
     );
 
-    // Jika yang di-update adalah akun admin yang sedang login, update juga currentUser secara realtime
     if (currentUser?.id === id) {
       setCurrentUser((prev) => (prev ? { ...prev, ...updatedData } : prev));
     }
 
-    // Update langsung ke database Supabase
     await supabase.from('users').update(updatedData).eq('id', id);
     logActivity('UPDATE_PAYROLL', `Memperbarui data profil/kredensial akun: ID ${id}`);
   };
@@ -417,6 +464,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ]);
   };
 
+  const updateClassroom = async (id: string, updatedData: Partial<Classroom>) => {
+    setClassrooms((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, ...updatedData } : c))
+    );
+
+    const supabasePayload: any = {};
+    if (updatedData.name !== undefined) supabasePayload.name = updatedData.name;
+    if (updatedData.type !== undefined) supabasePayload.type = updatedData.type;
+    if (updatedData.students !== undefined) supabasePayload.students = updatedData.students;
+    if (updatedData.totalMeetings !== undefined) supabasePayload.total_meetings = updatedData.totalMeetings;
+    if (updatedData.ldrZone !== undefined) supabasePayload.ldr_zone = updatedData.ldrZone;
+    if (updatedData.status !== undefined) supabasePayload.status = updatedData.status;
+
+    await supabase.from('classrooms').update(supabasePayload).eq('id', id);
+    logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id}`);
+  };
+
   const deleteClassroom = async (id: string) => {
     setClassrooms((prev) => prev.filter((c) => c.id !== id));
     await supabase.from('classrooms').delete().eq('id', id);
@@ -463,7 +527,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setMeetings((prev) => [...prev, newMeeting]);
     }
 
-    // Simpan ke Supabase
     await supabase.from('meetings').upsert({
       id: newMeeting.id,
       classroom_id: newMeeting.classroomId,
@@ -729,6 +792,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   return (
     <AppContext.Provider
       value={{
+        isAuthReady,
+        isDataReady,
         currentUser,
         users,
         activityLogs,
@@ -746,6 +811,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         resetRatesToDefault,
         classrooms,
         addClassroom,
+        updateClassroom,
         deleteClassroom,
         meetings,
         addMeeting,
@@ -761,6 +827,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         adjustments,
         getAdjustmentForTutor,
         saveAdjustment,
+        refreshData: fetchAllData,
       }}
     >
       {children}

@@ -22,7 +22,7 @@ const defaultRates = {
         'Kids-B': 30000,
         'SPL-A': 36000,
         'SPL-B': 32000,
-        'Group': 35000,
+        Group: 35000,
         'Test Prep-A': 55000,
         'Test Prep-B': 40000,
         'Social Banjar/Panti': 50000,
@@ -75,6 +75,8 @@ const AppProvider = ({ children })=>{
     _s();
     const [users, setUsers] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(defaultUsers);
     const [currentUser, setCurrentUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isAuthReady, setIsAuthReady] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [isDataReady, setIsDataReady] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [activityLogs, setActivityLogs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('dashboard');
     const currentYearMonth = new Date().toISOString().substring(0, 7);
@@ -84,112 +86,190 @@ const AppProvider = ({ children })=>{
     const [meetings, setMeetings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [freeTrials, setFreeTrials] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [adjustments, setAdjustments] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    // 1. FETCH DATA AWAL DARI SUPABASE
-    const fetchAllData = async ()=>{
-        try {
-            // Ambil Users
-            const { data: usersData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').select('*');
-            if (usersData && usersData.length > 0) {
-                setUsers(usersData);
+    // 1. Cek sesi localStorage saat browser dibuka
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppProvider.useEffect": ()=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                const savedUser = localStorage.getItem('gumi_current_user');
+                if (savedUser) {
+                    try {
+                        setCurrentUser(JSON.parse(savedUser));
+                    } catch (e) {
+                        console.error('Error parsing stored user session:', e);
+                    }
+                }
+                setIsAuthReady(true);
             }
-            // Ambil Rate Config
-            const { data: ratesData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('rate_configs').select('*').eq('id', 'default_rates').single();
-            if (ratesData) {
-                setRates({
-                    baseFees: ratesData.base_fees,
-                    ldrBonus: ratesData.ldr_bonus,
-                    standardBonus: ratesData.standard_bonus,
-                    standardDeductions: ratesData.standard_deductions
-                });
-            }
-            // Ambil Classrooms
-            const { data: classData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('classrooms').select('*');
-            if (classData) {
-                setClassrooms(classData.map((c)=>({
-                        id: c.id,
-                        name: c.name,
-                        type: c.type,
-                        students: c.students,
-                        totalMeetings: c.total_meetings,
-                        ldrZone: c.ldr_zone,
-                        status: c.status
-                    })));
-            }
-            // Ambil Meetings
-            const { data: meetingData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('meetings').select('*');
-            if (meetingData) {
-                setMeetings(meetingData.map((m)=>({
-                        id: m.id,
-                        classroomId: m.classroom_id,
-                        meetingNumber: m.meeting_number,
-                        tutorId: m.tutor_id,
-                        tutorName: m.tutor_name,
-                        date: m.date,
-                        lesson: m.lesson,
-                        notes: m.notes,
-                        isLocked: m.is_locked,
-                        ldrZoneSnapshot: m.ldr_zone_snapshot,
-                        hasVideoClaim: m.has_video_claim
-                    })));
-            }
-            // Ambil Free Trials
-            const { data: trialsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').select('*');
-            if (trialsData) {
-                setFreeTrials(trialsData.map((ft)=>({
-                        id: ft.id,
-                        studentName: ft.student_name,
-                        tutorId: ft.tutor_id,
-                        tutorName: ft.tutor_name,
-                        date: ft.date,
-                        lesson: ft.lesson,
-                        status: ft.status
-                    })));
-            }
-            // Ambil Monthly Adjustments
-            const { data: adjData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('monthly_adjustments').select('*');
-            if (adjData) {
-                setAdjustments(adjData.map((a)=>({
-                        id: a.id,
-                        tutorId: a.tutor_id,
-                        month: a.month,
-                        videoCount: a.video_count || 0,
-                        reportCount: a.report_count || 0,
-                        fnmCount: a.fnm_count || 0,
-                        customBonusNominal: Number(a.custom_bonus_nominal || 0),
-                        customBonusNote: a.custom_bonus_note || '',
-                        applySukaDuka: a.apply_suka_duka ?? true,
-                        lateAttendanceCount: a.late_attendance_count || 0,
-                        violationCount: a.violation_count || 0,
-                        lateVideoCount: a.late_video_count || 0,
-                        suddenLeaveCount: a.sudden_leave_count || 0,
-                        customDeductionNominal: Number(a.custom_deduction_nominal || 0),
-                        customDeductionNote: a.custom_deduction_note || ''
-                    })));
-            }
-            // Ambil Activity Logs
-            const { data: logsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('activity_logs').select('*').order('created_at', {
-                ascending: false
-            }).limit(20);
-            if (logsData) {
-                setActivityLogs(logsData.map((l)=>({
-                        id: l.id,
-                        userId: l.user_id,
-                        userName: l.user_name,
-                        role: l.role,
-                        action: l.action,
-                        details: l.details,
-                        timestamp: l.timestamp
-                    })));
-            }
-        } catch (err) {
-            console.error('Gagal mengambil data dari Supabase:', err);
         }
-    };
+    }["AppProvider.useEffect"], []);
+    // 2. Simpan atau hapus ke localStorage saat status user berubah
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppProvider.useEffect": ()=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                if (currentUser) {
+                    localStorage.setItem('gumi_current_user', JSON.stringify(currentUser));
+                } else {
+                    localStorage.removeItem('gumi_current_user');
+                }
+            }
+        }
+    }["AppProvider.useEffect"], [
+        currentUser
+    ]);
+    // 3. Tarik seluruh data dari Supabase
+    const fetchAllData = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "AppProvider.useCallback[fetchAllData]": async ()=>{
+            try {
+                const { data: usersData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').select('*');
+                if (usersData && usersData.length > 0) {
+                    setUsers(usersData);
+                }
+                const { data: ratesData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('rate_configs').select('*').eq('id', 'default_rates').single();
+                if (ratesData) {
+                    setRates({
+                        baseFees: ratesData.base_fees,
+                        ldrBonus: ratesData.ldr_bonus,
+                        standardBonus: ratesData.standard_bonus,
+                        standardDeductions: ratesData.standard_deductions
+                    });
+                }
+                const { data: classData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('classrooms').select('*');
+                if (classData) {
+                    setClassrooms(classData.map({
+                        "AppProvider.useCallback[fetchAllData]": (c)=>({
+                                id: c.id,
+                                name: c.name,
+                                type: c.type,
+                                students: c.students,
+                                totalMeetings: c.total_meetings,
+                                ldrZone: c.ldr_zone,
+                                status: c.status
+                            })
+                    }["AppProvider.useCallback[fetchAllData]"]));
+                }
+                const { data: meetingData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('meetings').select('*');
+                if (meetingData) {
+                    setMeetings(meetingData.map({
+                        "AppProvider.useCallback[fetchAllData]": (m)=>({
+                                id: m.id,
+                                classroomId: m.classroom_id,
+                                meetingNumber: m.meeting_number,
+                                tutorId: m.tutor_id,
+                                tutorName: m.tutor_name,
+                                date: m.date,
+                                lesson: m.lesson,
+                                notes: m.notes,
+                                isLocked: m.is_locked,
+                                ldrZoneSnapshot: m.ldr_zone_snapshot,
+                                hasVideoClaim: m.has_video_claim
+                            })
+                    }["AppProvider.useCallback[fetchAllData]"]));
+                }
+                const { data: trialsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').select('*');
+                if (trialsData) {
+                    setFreeTrials(trialsData.map({
+                        "AppProvider.useCallback[fetchAllData]": (ft)=>({
+                                id: ft.id,
+                                studentName: ft.student_name,
+                                tutorId: ft.tutor_id,
+                                tutorName: ft.tutor_name,
+                                date: ft.date,
+                                lesson: ft.lesson,
+                                status: ft.status
+                            })
+                    }["AppProvider.useCallback[fetchAllData]"]));
+                }
+                const { data: adjData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('monthly_adjustments').select('*');
+                if (adjData) {
+                    setAdjustments(adjData.map({
+                        "AppProvider.useCallback[fetchAllData]": (a)=>({
+                                id: a.id,
+                                tutorId: a.tutor_id,
+                                month: a.month,
+                                videoCount: a.video_count || 0,
+                                reportCount: a.report_count || 0,
+                                fnmCount: a.fnm_count || 0,
+                                customBonusNominal: Number(a.custom_bonus_nominal || 0),
+                                customBonusNote: a.custom_bonus_note || '',
+                                applySukaDuka: a.apply_suka_duka ?? true,
+                                lateAttendanceCount: a.late_attendance_count || 0,
+                                violationCount: a.violation_count || 0,
+                                lateVideoCount: a.late_video_count || 0,
+                                suddenLeaveCount: a.sudden_leave_count || 0,
+                                customDeductionNominal: Number(a.custom_deduction_nominal || 0),
+                                customDeductionNote: a.custom_deduction_note || ''
+                            })
+                    }["AppProvider.useCallback[fetchAllData]"]));
+                }
+                const { data: logsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('activity_logs').select('*').order('created_at', {
+                    ascending: false
+                }).limit(20);
+                if (logsData) {
+                    setActivityLogs(logsData.map({
+                        "AppProvider.useCallback[fetchAllData]": (l)=>({
+                                id: l.id,
+                                userId: l.user_id,
+                                userName: l.user_name,
+                                role: l.role,
+                                action: l.action,
+                                details: l.details,
+                                timestamp: l.timestamp
+                            })
+                    }["AppProvider.useCallback[fetchAllData]"]));
+                }
+            } catch (err) {
+                console.error('Gagal mengambil data dari Supabase:', err);
+            } finally{
+                setIsDataReady(true);
+            }
+        }
+    }["AppProvider.useCallback[fetchAllData]"], []);
+    // 4. Supabase Realtime Listener
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AppProvider.useEffect": ()=>{
             fetchAllData();
+            const channel = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].channel('gumi-realtime-channel').on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'meetings'
+            }, {
+                "AppProvider.useEffect.channel": ()=>{
+                    fetchAllData();
+                }
+            }["AppProvider.useEffect.channel"]).on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'free_trials'
+            }, {
+                "AppProvider.useEffect.channel": ()=>{
+                    fetchAllData();
+                }
+            }["AppProvider.useEffect.channel"]).on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'classrooms'
+            }, {
+                "AppProvider.useEffect.channel": ()=>{
+                    fetchAllData();
+                }
+            }["AppProvider.useEffect.channel"]).on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'monthly_adjustments'
+            }, {
+                "AppProvider.useEffect.channel": ()=>{
+                    fetchAllData();
+                }
+            }["AppProvider.useEffect.channel"]).subscribe();
+            return ({
+                "AppProvider.useEffect": ()=>{
+                    __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].removeChannel(channel);
+                }
+            })["AppProvider.useEffect"];
         }
-    }["AppProvider.useEffect"], []);
+    }["AppProvider.useEffect"], [
+        fetchAllData
+    ]);
     const logActivity = async (action, details)=>{
         if (!currentUser) return;
         const newLog = {
@@ -227,10 +307,9 @@ const AppProvider = ({ children })=>{
         return false;
     };
     const logout = ()=>{
-        if (currentUser) {
-            logActivity('LOGOUT', 'Keluar dari sistem aplikasi');
-        }
         setCurrentUser(null);
+        localStorage.removeItem('gumi_current_user');
+        setActiveTab('dashboard');
     };
     // MANAJEMEN AKUN
     const addUser = async (userData)=>{
@@ -263,14 +342,12 @@ const AppProvider = ({ children })=>{
                     ...u,
                     ...updatedData
                 } : u));
-        // Jika yang di-update adalah akun admin yang sedang login, update juga currentUser secara realtime
         if (currentUser?.id === id) {
             setCurrentUser((prev)=>prev ? {
                     ...prev,
                     ...updatedData
                 } : prev);
         }
-        // Update langsung ke database Supabase
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').update(updatedData).eq('id', id);
         logActivity('UPDATE_PAYROLL', `Memperbarui data profil/kredensial akun: ID ${id}`);
     };
@@ -332,6 +409,21 @@ const AppProvider = ({ children })=>{
             }
         ]);
     };
+    const updateClassroom = async (id, updatedData)=>{
+        setClassrooms((prev)=>prev.map((c)=>c.id === id ? {
+                    ...c,
+                    ...updatedData
+                } : c));
+        const supabasePayload = {};
+        if (updatedData.name !== undefined) supabasePayload.name = updatedData.name;
+        if (updatedData.type !== undefined) supabasePayload.type = updatedData.type;
+        if (updatedData.students !== undefined) supabasePayload.students = updatedData.students;
+        if (updatedData.totalMeetings !== undefined) supabasePayload.total_meetings = updatedData.totalMeetings;
+        if (updatedData.ldrZone !== undefined) supabasePayload.ldr_zone = updatedData.ldrZone;
+        if (updatedData.status !== undefined) supabasePayload.status = updatedData.status;
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('classrooms').update(supabasePayload).eq('id', id);
+        logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id}`);
+    };
     const deleteClassroom = async (id)=>{
         setClassrooms((prev)=>prev.filter((c)=>c.id !== id));
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('classrooms').delete().eq('id', id);
@@ -369,7 +461,6 @@ const AppProvider = ({ children })=>{
                     newMeeting
                 ]);
         }
-        // Simpan ke Supabase
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('meetings').upsert({
             id: newMeeting.id,
             classroom_id: newMeeting.classroomId,
@@ -583,6 +674,8 @@ const AppProvider = ({ children })=>{
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AppContext.Provider, {
         value: {
+            isAuthReady,
+            isDataReady,
             currentUser,
             users,
             activityLogs,
@@ -600,6 +693,7 @@ const AppProvider = ({ children })=>{
             resetRatesToDefault,
             classrooms,
             addClassroom,
+            updateClassroom,
             deleteClassroom,
             meetings,
             addMeeting,
@@ -614,16 +708,17 @@ const AppProvider = ({ children })=>{
             toggleFreeTrialStatus,
             adjustments,
             getAdjustmentForTutor,
-            saveAdjustment
+            saveAdjustment,
+            refreshData: fetchAllData
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AppContext.tsx",
-        lineNumber: 730,
+        lineNumber: 793,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
-_s(AppProvider, "gWcf2Bsoyzc0aOLCJupdOT9mvn8=");
+_s(AppProvider, "HkQKVwzGfmelKs5MA1BEB2VnwYs=");
 _c = AppProvider;
 const useApp = ()=>{
     _s1();

@@ -10,10 +10,11 @@ import FreeTrialLog from '@/components/FreeTrialLog';
 import PayrollTable from '@/components/PayrollTable';
 import PayslipView from '@/components/PayslipView';
 import UserManager from '@/components/UserManager';
+import BackupManager from '@/components/BackupManager';
 
 export default function HomePage() {
-  const { currentUser, login, logout, activeTab, setActiveTab } = useApp();
-  
+  const { currentUser, isAuthReady, isDataReady, login, logout, activeTab, setActiveTab } = useApp();
+
   // State Login Form
   const [usernameInput, setUsernameInput] = useState('admin');
   const [passwordInput, setPasswordInput] = useState('admin');
@@ -33,10 +34,24 @@ export default function HomePage() {
 
   const handleSelectTab = (tabId: string) => {
     setActiveTab(tabId);
-    setIsMobileMenuOpen(false); // Otomatis tutup drawer di layar HP saat tab dipilih
+    setIsMobileMenuOpen(false);
   };
 
-  // JIKA PENGGUNA BELUM LOGIN
+  // 1. TAHAN RENDER JIKA SESI ATAU DATA AWAL MASIH DIMUAT
+  if (!isAuthReady || (currentUser && !isDataReady)) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm font-medium text-slate-500">
+            {!isAuthReady ? 'Memeriksa sesi...' : 'Memuat data Gumi Schooling...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. JIKA BELUM LOGIN
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
@@ -46,7 +61,7 @@ export default function HomePage() {
               GS
             </div>
             <h2 className="text-2xl font-bold text-slate-800 mt-4">Gumi Schooling</h2>
-            <p className="text-sm text-slate-500">Sistem Jurnal Mengajar & Rekap Payroll</p>
+            <p className="text-sm text-slate-500">Sistem Jurnal Mengajar &amp; Rekap Payroll</p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
@@ -90,15 +105,19 @@ export default function HomePage() {
 
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-500 space-y-1">
             <p className="font-semibold text-slate-700">Akun Pengujian Demo:</p>
-            <p>• <strong>Admin:</strong> username: <code className="text-blue-600">admin</code> | pass: <code className="text-blue-600">admin</code></p>
-            <p>• <strong>Tutor:</strong> username: <code className="text-blue-600">dewi</code> | pass: <code className="text-blue-600">tutor</code></p>
+            <p>
+              <strong>Admin:</strong> username: <code className="text-blue-600">admin</code> | pass: <code className="text-blue-600">admin</code>
+            </p>
+            <p>
+              <strong>Tutor:</strong> username: <code className="text-blue-600">dewi</code> | pass: <code className="text-blue-600">tutor</code>
+            </p>
           </div>
         </div>
       </div>
     );
   }
 
-  // DAFTAR MENU
+  // 3. DAFTAR MENU
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊', adminOnly: false },
     { id: 'rates', label: 'Ketentuan Gaji', icon: '⚙️', adminOnly: true },
@@ -108,6 +127,7 @@ export default function HomePage() {
     { id: 'free-trials', label: 'Free Trials', icon: '🎯', adminOnly: false },
     { id: 'payroll', label: 'Rekap Payroll', icon: '💼', adminOnly: true },
     { id: 'payslip', label: 'Slip Gaji', icon: '📄', adminOnly: false },
+    { id: 'backup', label: 'Cadangan Data', icon: '📦', adminOnly: true },
   ];
 
   return (
@@ -120,14 +140,13 @@ export default function HomePage() {
         />
       )}
 
-      {/* SIDEBAR (Desktop Fixed + Mobile Drawer) */}
+      {/* SIDEBAR */}
       <aside
         className={`fixed md:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 p-5 z-50 transition-transform duration-200 ease-in-out print:hidden ${
           isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
         }`}
       >
         <div className="space-y-6">
-          {/* Logo & Judul */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-lg shadow-sm">
@@ -139,7 +158,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Tombol Tutup Sidebar di HP */}
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="md:hidden p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"
@@ -148,7 +166,6 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Navigasi Menu */}
           <nav className="space-y-1.5 overflow-y-auto max-h-[calc(100vh-230px)] pr-1">
             {menuItems.map((item) => {
               if (item.adminOnly && currentUser.role !== 'admin') return null;
@@ -171,14 +188,15 @@ export default function HomePage() {
           </nav>
         </div>
 
-        {/* Profil Bawah & Tombol Logout */}
         <div className="pt-4 border-t border-slate-200 space-y-3">
           <div className="flex items-center justify-between">
             <div className="overflow-hidden">
               <p className="text-sm font-semibold text-slate-800 truncate">{currentUser.name}</p>
-              <span className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
-                currentUser.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
-              }`}>
+              <span
+                className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
+                  currentUser.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
+                }`}
+              >
                 {currentUser.role}
               </span>
             </div>
@@ -195,7 +213,6 @@ export default function HomePage() {
 
       {/* KONTEN UTAMA */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* HEADER TOPBAR (Dengan Tombol Hamburger di Layar HP) */}
         <header className="h-16 bg-white border-b border-slate-200 px-4 md:px-8 flex items-center justify-between shrink-0 print:hidden">
           <div className="flex items-center gap-3">
             <button
@@ -220,7 +237,6 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* MAIN AREA */}
         <main className="p-4 md:p-8 flex-1 overflow-y-auto print:p-0 print:overflow-visible">
           {activeTab === 'dashboard' && <DashboardView />}
           {activeTab === 'rates' && <RateConfigPanel />}
@@ -230,6 +246,7 @@ export default function HomePage() {
           {activeTab === 'free-trials' && <FreeTrialLog />}
           {activeTab === 'payroll' && <PayrollTable />}
           {activeTab === 'payslip' && <PayslipView />}
+          {activeTab === 'backup' && <BackupManager />}
         </main>
       </div>
     </div>

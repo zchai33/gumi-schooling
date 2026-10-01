@@ -63,7 +63,7 @@ const defaultRates = {
         'Kids-B': 30000,
         'SPL-A': 36000,
         'SPL-B': 32000,
-        'Group': 35000,
+        Group: 35000,
         'Test Prep-A': 55000,
         'Test Prep-B': 40000,
         'Social Banjar/Panti': 50000,
@@ -115,6 +115,8 @@ const AppContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$
 const AppProvider = ({ children })=>{
     const [users, setUsers] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(defaultUsers);
     const [currentUser, setCurrentUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isAuthReady, setIsAuthReady] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [isDataReady, setIsDataReady] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [activityLogs, setActivityLogs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('dashboard');
     const currentYearMonth = new Date().toISOString().substring(0, 7);
@@ -124,15 +126,25 @@ const AppProvider = ({ children })=>{
     const [meetings, setMeetings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [freeTrials, setFreeTrials] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [adjustments, setAdjustments] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    // 1. FETCH DATA AWAL DARI SUPABASE
-    const fetchAllData = async ()=>{
+    // 1. Cek sesi localStorage saat browser dibuka
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+    }, []);
+    // 2. Simpan atau hapus ke localStorage saat status user berubah
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+    }, [
+        currentUser
+    ]);
+    // 3. Tarik seluruh data dari Supabase
+    const fetchAllData = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async ()=>{
         try {
-            // Ambil Users
             const { data: usersData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('users').select('*');
             if (usersData && usersData.length > 0) {
                 setUsers(usersData);
             }
-            // Ambil Rate Config
             const { data: ratesData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('rate_configs').select('*').eq('id', 'default_rates').single();
             if (ratesData) {
                 setRates({
@@ -142,7 +154,6 @@ const AppProvider = ({ children })=>{
                     standardDeductions: ratesData.standard_deductions
                 });
             }
-            // Ambil Classrooms
             const { data: classData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('classrooms').select('*');
             if (classData) {
                 setClassrooms(classData.map((c)=>({
@@ -155,7 +166,6 @@ const AppProvider = ({ children })=>{
                         status: c.status
                     })));
             }
-            // Ambil Meetings
             const { data: meetingData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('meetings').select('*');
             if (meetingData) {
                 setMeetings(meetingData.map((m)=>({
@@ -172,7 +182,6 @@ const AppProvider = ({ children })=>{
                         hasVideoClaim: m.has_video_claim
                     })));
             }
-            // Ambil Free Trials
             const { data: trialsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').select('*');
             if (trialsData) {
                 setFreeTrials(trialsData.map((ft)=>({
@@ -185,7 +194,6 @@ const AppProvider = ({ children })=>{
                         status: ft.status
                     })));
             }
-            // Ambil Monthly Adjustments
             const { data: adjData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('monthly_adjustments').select('*');
             if (adjData) {
                 setAdjustments(adjData.map((a)=>({
@@ -206,7 +214,6 @@ const AppProvider = ({ children })=>{
                         customDeductionNote: a.custom_deduction_note || ''
                     })));
             }
-            // Ambil Activity Logs
             const { data: logsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('activity_logs').select('*').order('created_at', {
                 ascending: false
             }).limit(20);
@@ -223,11 +230,44 @@ const AppProvider = ({ children })=>{
             }
         } catch (err) {
             console.error('Gagal mengambil data dari Supabase:', err);
+        } finally{
+            setIsDataReady(true);
         }
-    };
+    }, []);
+    // 4. Supabase Realtime Listener
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         fetchAllData();
-    }, []);
+        const channel = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].channel('gumi-realtime-channel').on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'meetings'
+        }, ()=>{
+            fetchAllData();
+        }).on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'free_trials'
+        }, ()=>{
+            fetchAllData();
+        }).on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'classrooms'
+        }, ()=>{
+            fetchAllData();
+        }).on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'monthly_adjustments'
+        }, ()=>{
+            fetchAllData();
+        }).subscribe();
+        return ()=>{
+            __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].removeChannel(channel);
+        };
+    }, [
+        fetchAllData
+    ]);
     const logActivity = async (action, details)=>{
         if (!currentUser) return;
         const newLog = {
@@ -265,10 +305,9 @@ const AppProvider = ({ children })=>{
         return false;
     };
     const logout = ()=>{
-        if (currentUser) {
-            logActivity('LOGOUT', 'Keluar dari sistem aplikasi');
-        }
         setCurrentUser(null);
+        localStorage.removeItem('gumi_current_user');
+        setActiveTab('dashboard');
     };
     // MANAJEMEN AKUN
     const addUser = async (userData)=>{
@@ -301,14 +340,12 @@ const AppProvider = ({ children })=>{
                     ...u,
                     ...updatedData
                 } : u));
-        // Jika yang di-update adalah akun admin yang sedang login, update juga currentUser secara realtime
         if (currentUser?.id === id) {
             setCurrentUser((prev)=>prev ? {
                     ...prev,
                     ...updatedData
                 } : prev);
         }
-        // Update langsung ke database Supabase
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('users').update(updatedData).eq('id', id);
         logActivity('UPDATE_PAYROLL', `Memperbarui data profil/kredensial akun: ID ${id}`);
     };
@@ -370,6 +407,21 @@ const AppProvider = ({ children })=>{
             }
         ]);
     };
+    const updateClassroom = async (id, updatedData)=>{
+        setClassrooms((prev)=>prev.map((c)=>c.id === id ? {
+                    ...c,
+                    ...updatedData
+                } : c));
+        const supabasePayload = {};
+        if (updatedData.name !== undefined) supabasePayload.name = updatedData.name;
+        if (updatedData.type !== undefined) supabasePayload.type = updatedData.type;
+        if (updatedData.students !== undefined) supabasePayload.students = updatedData.students;
+        if (updatedData.totalMeetings !== undefined) supabasePayload.total_meetings = updatedData.totalMeetings;
+        if (updatedData.ldrZone !== undefined) supabasePayload.ldr_zone = updatedData.ldrZone;
+        if (updatedData.status !== undefined) supabasePayload.status = updatedData.status;
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('classrooms').update(supabasePayload).eq('id', id);
+        logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id}`);
+    };
     const deleteClassroom = async (id)=>{
         setClassrooms((prev)=>prev.filter((c)=>c.id !== id));
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('classrooms').delete().eq('id', id);
@@ -407,7 +459,6 @@ const AppProvider = ({ children })=>{
                     newMeeting
                 ]);
         }
-        // Simpan ke Supabase
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('meetings').upsert({
             id: newMeeting.id,
             classroom_id: newMeeting.classroomId,
@@ -621,6 +672,8 @@ const AppProvider = ({ children })=>{
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(AppContext.Provider, {
         value: {
+            isAuthReady,
+            isDataReady,
             currentUser,
             users,
             activityLogs,
@@ -638,6 +691,7 @@ const AppProvider = ({ children })=>{
             resetRatesToDefault,
             classrooms,
             addClassroom,
+            updateClassroom,
             deleteClassroom,
             meetings,
             addMeeting,
@@ -652,12 +706,13 @@ const AppProvider = ({ children })=>{
             toggleFreeTrialStatus,
             adjustments,
             getAdjustmentForTutor,
-            saveAdjustment
+            saveAdjustment,
+            refreshData: fetchAllData
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AppContext.tsx",
-        lineNumber: 730,
+        lineNumber: 793,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

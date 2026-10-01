@@ -2,15 +2,15 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { ClassType, LDRZone } from '@/types';
+import { Classroom, ClassType, LDRZone } from '@/types';
 
 export default function ClassroomManager() {
-  const { currentUser, classrooms, addClassroom, deleteClassroom } = useApp();
+  const { currentUser, classrooms, addClassroom, updateClassroom, deleteClassroom } = useApp();
 
   if (currentUser?.role !== 'admin') {
     return (
       <div className="p-6 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-xs font-semibold">
-        ⚠️ Akses Terbatas: Manajemen Kelas & Siswa hanya dapat dikelola oleh Admin.
+        ⚠️ Akses Terbatas: Manajemen Kelas &amp; Siswa hanya dapat dikelola oleh Admin.
       </div>
     );
   }
@@ -26,6 +26,14 @@ export default function ClassroomManager() {
   const [studentsInput, setStudentsInput] = useState('');
   const [totalMeetings, setTotalMeetings] = useState(12);
   const [ldrZone, setLdrZone] = useState<LDRZone>('none');
+
+  // Modal / Form Edit Kelas
+  const [editingClass, setEditingClass] = useState<Classroom | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editType, setEditType] = useState<ClassType>('Kids-A');
+  const [editStudentsInput, setEditStudentsInput] = useState('');
+  const [editTotalMeetings, setEditTotalMeetings] = useState(12);
+  const [editLdrZone, setEditLdrZone] = useState<LDRZone>('none');
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +64,40 @@ export default function ClassroomManager() {
     setShowAddModal(false);
   };
 
+  const handleOpenEdit = (cls: Classroom) => {
+    setEditingClass(cls);
+    setEditName(cls.name);
+    setEditType(cls.type);
+    setEditStudentsInput(cls.students.join(', '));
+    setEditTotalMeetings(cls.totalMeetings);
+    setEditLdrZone(cls.ldrZone);
+  };
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingClass) return;
+
+    const studentsArray = editStudentsInput
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    if (studentsArray.length === 0) {
+      alert('Harap masukkan minimal 1 nama murid!');
+      return;
+    }
+
+    updateClassroom(editingClass.id, {
+      name: editName,
+      type: editType,
+      students: studentsArray,
+      totalMeetings: editTotalMeetings,
+      ldrZone: editLdrZone,
+    });
+
+    setEditingClass(null);
+  };
+
   const classTypeOptions: { value: ClassType; label: string }[] = [
     { value: 'Kids-A', label: 'Kids-A' },
     { value: 'Kids-B', label: 'Kids-B' },
@@ -63,7 +105,7 @@ export default function ClassroomManager() {
     { value: 'SPL-B', label: 'SPL-B' },
     { value: 'Group', label: 'Group' },
     { value: 'Test Prep-A', label: 'Test Prep-A' },
-    { value: 'Test Prep-B', label: 'Test Prep-B)' },
+    { value: 'Test Prep-B', label: 'Test Prep-B' },
     { value: 'Social Banjar/Panti', label: 'Social Banjar/Panti' },
     { value: 'Free Trial', label: 'Free Trial' },
   ];
@@ -82,7 +124,7 @@ export default function ClassroomManager() {
       {/* Header & Aksi */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Manajemen Kelas & Siswa</h2>
+          <h2 className="text-xl font-bold text-slate-800">Manajemen Kelas &amp; Siswa</h2>
           <p className="text-xs text-slate-500 mt-1">
             Daftar kelompok belajar aktif, kuota paket sesi, dan zona jarak LDR.
           </p>
@@ -159,19 +201,27 @@ export default function ClassroomManager() {
                     <h3 className="font-bold text-slate-800 text-base mt-1.5 leading-snug">{cls.name}</h3>
                   </div>
                   {currentUser?.role === 'admin' && (
-                    <button
-                      onClick={() => {
-                        if (confirm(`Hapus kelas "${cls.name}"?`)) deleteClassroom(cls.id);
-                      }}
-                      className="text-slate-300 hover:text-rose-600 p-1 transition-colors text-sm"
-                      title="Hapus Kelas"
-                    >
-                      🗑️
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleOpenEdit(cls)}
+                        className="text-slate-400 hover:text-blue-600 p-1.5 hover:bg-blue-50 rounded-lg transition-colors text-sm"
+                        title="Edit Kelas"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Hapus kelas "${cls.name}"?`)) deleteClassroom(cls.id);
+                        }}
+                        className="text-slate-400 hover:text-rose-600 p-1.5 hover:bg-rose-50 rounded-lg transition-colors text-sm"
+                        title="Hapus Kelas"
+                      >
+                        🗑️
+                      </button>
+                    </div>
                   )}
                 </div>
 
-                {/* Tag Zona LDR */}
                 {cls.ldrZone !== 'none' && (
                   <div className="mt-2.5">
                     <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">
@@ -180,7 +230,6 @@ export default function ClassroomManager() {
                   </div>
                 )}
 
-                {/* Murid-murid di Kelas */}
                 <div className="mt-4 pt-3 border-t border-slate-100">
                   <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
                     Murid ({cls.students.length} anak):
@@ -313,6 +362,112 @@ export default function ClassroomManager() {
                   className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Simpan Kelas
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Edit Kelas (Admin) */}
+      {editingClass && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b pb-3">
+              <h3 className="font-bold text-slate-800 text-lg">Edit Data Kelas</h3>
+              <button
+                onClick={() => setEditingClass(null)}
+                className="text-slate-400 hover:text-slate-600 text-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdate} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Nama Kelompok / Kelas</label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Tipe / Kategori Kelas</label>
+                  <select
+                    value={editType}
+                    onChange={(e) => setEditType(e.target.value as ClassType)}
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    {classTypeOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Total Pertemuan Paket</label>
+                  <select
+                    value={editTotalMeetings}
+                    onChange={(e) => setEditTotalMeetings(Number(e.target.value))}
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    <option value={4}>4 Pertemuan</option>
+                    <option value={6}>6 Pertemuan</option>
+                    <option value={8}>8 Pertemuan</option>
+                    <option value={10}>10 Pertemuan</option>
+                    <option value={12}>12 Pertemuan</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  Daftar Nama Murid (Pisahkan dengan koma)
+                </label>
+                <input
+                  type="text"
+                  value={editStudentsInput}
+                  onChange={(e) => setEditStudentsInput(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Zona Bonus Jarak (LDR)</label>
+                <select
+                  value={editLdrZone}
+                  onChange={(e) => setEditLdrZone(e.target.value as LDRZone)}
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                >
+                  <option value="none">Tidak Ada Jarak Ekstra (None)</option>
+                  <option value="ldr_10">LDR &gt; 10 KM (+Rp 10.000/sesi)</option>
+                  <option value="ldr_15">LDR &gt; 15 KM (+Rp 15.000/sesi)</option>
+                  <option value="ldr_20">LDR &gt; 20 KM (+Rp 20.000/sesi)</option>
+                  <option value="panti_klungkung">Panti Klungkung (+Rp 50.000/sesi)</option>
+                </select>
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-2 border-t">
+                <button
+                  type="button"
+                  onClick={() => setEditingClass(null)}
+                  className="px-4 py-2 border rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                >
+                  Perbarui Kelas
                 </button>
               </div>
             </form>

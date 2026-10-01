@@ -2,341 +2,256 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import { DashboardView } from '@/components/DashboardView';
+import RateConfigPanel from '@/components/RateConfigPanel';
+import ClassroomManager from '@/components/ClassroomManager';
+import MeetingJournal from '@/components/MeetingJournal';
+import FreeTrialLog from '@/components/FreeTrialLog';
+import PayrollTable from '@/components/PayrollTable';
+import PayslipView from '@/components/PayslipView';
+import UserManager from '@/components/UserManager';
+import BackupManager from '@/components/BackupManager';
 
-export default function PayslipView() {
-  const { currentUser, users, classrooms, meetings, freeTrials, rates, selectedMonth, getAdjustmentForTutor } = useApp();
+export default function HomePage() {
+  const { currentUser, isAuthReady, isDataReady, login, logout, activeTab, setActiveTab } = useApp();
 
-  const tutors = users.filter((u) => u.role === 'tutor');
-  const [selectedTutorId, setSelectedTutorId] = useState<string>(
-    currentUser?.role === 'tutor' ? currentUser.id : tutors[0]?.id || ''
-  );
+  // State Login Form
+  const [usernameInput, setUsernameInput] = useState('admin');
+  const [passwordInput, setPasswordInput] = useState('admin');
+  const [loginError, setLoginError] = useState('');
 
-  const activeTutor = users.find((u) => u.id === selectedTutorId) || tutors[0];
+  // State Mobile Menu Drawer
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  if (!activeTutor) {
-    return <div className="p-6 text-slate-400">Tidak ada tutor yang ditemukan.</div>;
-  }
-
-  // 1. Data Pertemuan Kelas Bulan Ini
-  const tutorMeetings = meetings.filter(
-    (m) => m.tutorId === activeTutor.id && !m.isLocked && m.date.startsWith(selectedMonth)
-  );
-
-  // Mengelompokkan sesi per tipe kelas
-  const classroomBreakdown: Record<string, { type: string; count: number; feePerMeeting: number; total: number }> = {};
-
-  tutorMeetings.forEach((m) => {
-    const cls = classrooms.find((c) => c.id === m.classroomId);
-    if (cls) {
-      const fee = rates.baseFees[cls.type] || 0;
-      if (!classroomBreakdown[cls.type]) {
-        classroomBreakdown[cls.type] = {
-          type: cls.type,
-          count: 0,
-          feePerMeeting: fee,
-          total: 0,
-        };
-      }
-      classroomBreakdown[cls.type].count += 1;
-      classroomBreakdown[cls.type].total += fee;
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    const success = login(usernameInput, passwordInput);
+    if (!success) {
+      setLoginError('Username atau password salah! Coba admin / admin atau dewi / tutor');
     }
-  });
-
-  // 2. Bonus LDR
-  const ldrBreakdown: Record<string, { count: number; bonusRate: number; total: number }> = {};
-  tutorMeetings.forEach((m) => {
-    if (m.ldrZoneSnapshot !== 'none') {
-      const bonus = rates.ldrBonus[m.ldrZoneSnapshot] || 0;
-      if (!ldrBreakdown[m.ldrZoneSnapshot]) {
-        ldrBreakdown[m.ldrZoneSnapshot] = {
-          count: 0,
-          bonusRate: bonus,
-          total: 0,
-        };
-      }
-      ldrBreakdown[m.ldrZoneSnapshot].count += 1;
-      ldrBreakdown[m.ldrZoneSnapshot].total += bonus;
-    }
-  });
-
-  // 3. Free Trial
-  const tutorTrials = freeTrials.filter(
-    (ft) => ft.tutorId === activeTutor.id && ft.status === 'completed' && ft.date.startsWith(selectedMonth)
-  );
-  const trialRate = rates.baseFees['Free Trial'] || 25000;
-  const trialTotal = tutorTrials.length * trialRate;
-
-  // 4. Penyesuaian Bonus & Potongan Admin
-  const adj = getAdjustmentForTutor(activeTutor.id, selectedMonth);
-
-  const videoTotal = adj.videoCount * rates.standardBonus.videoPerItem;
-  const reportTotal = adj.reportCount * rates.standardBonus.reportPerStudent;
-  const fnmTotal = adj.fnmCount * rates.standardBonus.fnmPerClosing;
-
-  const totalTeachingAndBonus =
-    Object.values(classroomBreakdown).reduce((acc, c) => acc + c.total, 0) +
-    Object.values(ldrBreakdown).reduce((acc, l) => acc + l.total, 0) +
-    trialTotal +
-    videoTotal +
-    reportTotal +
-    fnmTotal +
-    adj.customBonusNominal;
-
-  const sukaDukaNominal = adj.applySukaDuka ? rates.standardDeductions.sukaDuka : 0;
-  const lateAttendanceNominal = adj.lateAttendanceCount * rates.standardDeductions.lateAttendance;
-  const violationNominal = adj.violationCount * rates.standardDeductions.violationOJL_GC;
-  const lateVideoNominal = adj.lateVideoCount * rates.standardDeductions.lateVideo;
-  const suddenLeaveNominal = adj.suddenLeaveCount * rates.standardDeductions.suddenLeave;
-
-  const totalDeductions =
-    sukaDukaNominal +
-    lateAttendanceNominal +
-    violationNominal +
-    lateVideoNominal +
-    suddenLeaveNominal +
-    adj.customDeductionNominal;
-
-  const takeHomePay = Math.max(0, totalTeachingAndBonus - totalDeductions);
-
-  const handlePrint = () => {
-    window.print();
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Header Kontrol (Hanya muncul di layar, otomatis disembunyikan saat cetak) */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm print:hidden">
-        <div>
-          <h2 className="text-xl font-bold text-slate-800">Slip Gaji Tutor</h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Rincian resmi jam mengajar, bonus kegiatan, dan potongan periode {selectedMonth}.
+  const handleSelectTab = (tabId: string) => {
+    setActiveTab(tabId);
+    setIsMobileMenuOpen(false);
+  };
+
+  // 1. TAHAN RENDER JIKA SESI ATAU DATA AWAL MASIH DIMUAT
+  if (!isAuthReady || (currentUser && !isDataReady)) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm font-medium text-slate-500">
+            {!isAuthReady ? 'Memeriksa sesi...' : 'Memuat data Gumi Schooling...'}
           </p>
         </div>
+      </div>
+    );
+  }
 
-        <div className="flex items-center gap-3">
-          {currentUser?.role === 'admin' && (
-            <select
-              value={selectedTutorId}
-              onChange={(e) => setSelectedTutorId(e.target.value)}
-              className="px-3 py-2 text-xs border rounded-xl bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+  // 2. JIKA BELUM LOGIN
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-200 p-6 md:p-8 space-y-6">
+          <div className="text-center">
+            <div className="h-16 w-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold text-2xl mx-auto shadow-lg shadow-blue-200">
+              GS
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800 mt-4">Gumi Schooling</h2>
+            <p className="text-sm text-slate-500">Sistem Jurnal Mengajar &amp; Rekap Payroll</p>
+          </div>
+
+          <form onSubmit={handleLoginSubmit} className="space-y-4">
+            {loginError && (
+              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-600 text-xs rounded-xl font-medium">
+                {loginError}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Username</label>
+              <input
+                type="text"
+                value={usernameInput}
+                onChange={(e) => setUsernameInput(e.target.value)}
+                placeholder="Masukkan username"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Password</label>
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="Masukkan password"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-blue-200"
             >
-              {tutors.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-          )}
+              Masuk ke Aplikasi
+            </button>
+          </form>
 
-          <button
-            onClick={handlePrint}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2"
-          >
-            <span>🖨️</span> Cetak / Simpan PDF
-          </button>
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-500 space-y-1">
+            <p className="font-semibold text-slate-700">Akun Pengujian Demo:</p>
+            <p>
+              <strong>Admin:</strong> username: <code className="text-blue-600">admin</code> | pass: <code className="text-blue-600">admin</code>
+            </p>
+            <p>
+              <strong>Tutor:</strong> username: <code className="text-blue-600">dewi</code> | pass: <code className="text-blue-600">tutor</code>
+            </p>
+          </div>
         </div>
       </div>
+    );
+  }
 
-      {/* DOKUMEN SLIP GAJI FISIK */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm max-w-3xl mx-auto space-y-6 print:border-none print:shadow-none print:p-0">
-        {/* Kepala Surat */}
-        <div className="flex justify-between items-start border-b border-slate-200 pb-5">
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 bg-blue-600 text-white rounded-lg flex items-center justify-center font-extrabold text-sm">
+  // 3. DAFTAR MENU
+  const menuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: '📊', adminOnly: false },
+    { id: 'rates', label: 'Ketentuan Gaji', icon: '⚙️', adminOnly: true },
+    { id: 'users', label: 'Kelola Akun', icon: '👥', adminOnly: true },
+    { id: 'classrooms', label: 'Kelas / Siswa', icon: '🏫', adminOnly: true },
+    { id: 'meetings', label: 'Isi Jurnal', icon: '📖', adminOnly: false },
+    { id: 'free-trials', label: 'Free Trials', icon: '🎯', adminOnly: false },
+    { id: 'payroll', label: 'Rekap Payroll', icon: '💼', adminOnly: true },
+    { id: 'payslip', label: 'Slip Gaji', icon: '📄', adminOnly: false },
+    { id: 'backup', label: 'Cadangan Data', icon: '📦', adminOnly: true },
+  ];
+
+  return (
+    <div className="flex min-h-screen bg-slate-50 font-sans">
+      {/* BACKDROP MOBILE DRAWER */}
+      {isMobileMenuOpen && (
+        <div
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden transition-opacity"
+        />
+      )}
+
+      {/* SIDEBAR (Responsive Mobile & Desktop) */}
+      <aside
+        className={`fixed md:sticky top-0 left-0 h-[100dvh] w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 p-5 z-50 transition-transform duration-200 ease-in-out print:hidden ${
+          isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        {/* BAGIAN ATAS: LOGO & NAV MENU */}
+        <div className="flex flex-col flex-1 min-h-0 space-y-5">
+          <div className="flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-lg shadow-sm">
                 GS
               </div>
-              <h1 className="text-xl font-black text-slate-800 tracking-tight">GUMI SCHOOLING</h1>
+              <div>
+                <h2 className="font-bold text-slate-800 leading-tight">Gumi Schooling</h2>
+                <p className="text-[11px] text-slate-400">Journal &amp; Payroll</p>
+              </div>
             </div>
-            <p className="text-xs text-slate-500 mt-1">Tutor Salary & Activity Statement</p>
+
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="md:hidden p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"
+              aria-label="Tutup Menu"
+            >
+              ✕
+            </button>
           </div>
-          <div className="text-right text-xs">
-            <span className="font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full">
-              Periode: {selectedMonth}
+
+          {/* Navigasi scrollable terisolasi */}
+          <nav className="flex-1 overflow-y-auto space-y-1 pr-1 overscroll-contain">
+            {menuItems.map((item) => {
+              if (item.adminOnly && currentUser.role !== 'admin') return null;
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleSelectTab(item.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-200'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="text-base">{item.icon}</span>
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* BAGIAN BAWAH: PROFIL & TOMBOL LOGOUT (Selalu terkunci di bawah viewport) */}
+        <div className="pt-3 border-t border-slate-200 shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="overflow-hidden">
+              <p className="text-xs md:text-sm font-semibold text-slate-800 truncate">{currentUser.name}</p>
+              <span
+                className={`inline-block text-[9px] md:text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
+                  currentUser.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
+                }`}
+              >
+                {currentUser.role}
+              </span>
+            </div>
+            <button
+              onClick={logout}
+              title="Keluar dari sistem"
+              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors flex items-center gap-1"
+            >
+              <span className="text-base">🚪</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* KONTEN UTAMA */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="h-16 bg-white border-b border-slate-200 px-4 md:px-8 flex items-center justify-between shrink-0 print:hidden">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
+              title="Buka Menu"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <h1 className="font-bold text-slate-800 text-base md:text-lg">
+              {menuItems.find((m) => m.id === activeTab)?.label || 'Dashboard'}
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-2 md:gap-3 text-xs">
+            <span className="hidden sm:inline text-slate-400">Status Akses:</span>
+            <span className="font-semibold text-slate-700 bg-slate-100 px-2.5 md:px-3 py-1 rounded-full text-[11px] md:text-xs">
+              Mode {currentUser.role === 'admin' ? '🛡️ Admin' : '✏️ Tutor'}
             </span>
           </div>
-        </div>
+        </header>
 
-        {/* Info Tutor */}
-        <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
-          <div>
-            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Nama Tutor:</span>
-            <strong className="text-slate-800 text-sm">{activeTutor.name}</strong>
-          </div>
-          <div>
-            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Role / Posisi:</span>
-            <span className="text-slate-700 font-semibold">Tutor Pengajar</span>
-          </div>
-        </div>
-
-        {/* Tabel Rincian Lengkap */}
-        <div className="space-y-4">
-          <h3 className="font-bold text-slate-800 text-xs uppercase tracking-wider">
-            Rincian Pendapatan (Earnings & Bonuses)
-          </h3>
-
-          <div className="border border-slate-200 rounded-2xl overflow-hidden">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px]">
-                  <th className="py-2.5 px-3">Details (Kategori)</th>
-                  <th className="py-2.5 px-3 text-center">Durations</th>
-                  <th className="py-2.5 px-3 text-right">Balance (Tarif)</th>
-                  <th className="py-2.5 px-3 text-center">Qty</th>
-                  <th className="py-2.5 px-3 text-right">Amount (Rp)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
-                {/* 1. Sesi Kelas */}
-                {Object.keys(classroomBreakdown).length === 0 && tutorTrials.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="py-4 text-center text-slate-400">
-                      Tidak ada aktivitas mengajar pada periode ini.
-                    </td>
-                  </tr>
-                ) : (
-                  Object.entries(classroomBreakdown).map(([type, data]) => (
-                    <tr key={type}>
-                      <td className="py-2 px-3 font-semibold text-slate-800">Kelas: {type}</td>
-                      <td className="py-2 px-3 text-center text-slate-500">60 - 90 Menit</td>
-                      <td className="py-2 px-3 text-right">Rp {data.feePerMeeting.toLocaleString('id-ID')}</td>
-                      <td className="py-2 px-3 text-center font-bold">{data.count} sesi</td>
-                      <td className="py-2 px-3 text-right font-semibold">Rp {data.total.toLocaleString('id-ID')}</td>
-                    </tr>
-                  ))
-                )}
-
-                {/* 2. Free Trial */}
-                {tutorTrials.length > 0 && (
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-slate-800">Free Trial Class</td>
-                    <td className="py-2 px-3 text-center text-slate-500">60 Menit</td>
-                    <td className="py-2 px-3 text-right">Rp {trialRate.toLocaleString('id-ID')}</td>
-                    <td className="py-2 px-3 text-center font-bold">{tutorTrials.length} siswa</td>
-                    <td className="py-2 px-3 text-right font-semibold">Rp {trialTotal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-
-                {/* 3. Bonus LDR */}
-                {Object.entries(ldrBreakdown).map(([zone, data]) => (
-                  <tr key={zone}>
-                    <td className="py-2 px-3 text-purple-700">Bonus Transport LDR ({zone.replace('_', ' >').toUpperCase()} KM)</td>
-                    <td className="py-2 px-3 text-center text-slate-400">-</td>
-                    <td className="py-2 px-3 text-right">Rp {data.bonusRate.toLocaleString('id-ID')}</td>
-                    <td className="py-2 px-3 text-center font-bold">{data.count} sesi</td>
-                    <td className="py-2 px-3 text-right font-semibold text-purple-700">Rp {data.total.toLocaleString('id-ID')}</td>
-                  </tr>
-                ))}
-
-                {/* 4. Bonus Video & Report */}
-                {adj.videoCount > 0 && (
-                  <tr>
-                    <td className="py-2 px-3 text-emerald-700">Bonus Konten Video Siswa</td>
-                    <td className="py-2 px-3 text-center text-slate-400">-</td>
-                    <td className="py-2 px-3 text-right">Rp {rates.standardBonus.videoPerItem.toLocaleString('id-ID')}</td>
-                    <td className="py-2 px-3 text-center font-bold">{adj.videoCount} video</td>
-                    <td className="py-2 px-3 text-right font-semibold text-emerald-700">Rp {videoTotal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-
-                {adj.reportCount > 0 && (
-                  <tr>
-                    <td className="py-2 px-3 text-emerald-700">Bonus Laporan Progres Siswa</td>
-                    <td className="py-2 px-3 text-center text-slate-400">-</td>
-                    <td className="py-2 px-3 text-right">Rp {rates.standardBonus.reportPerStudent.toLocaleString('id-ID')}</td>
-                    <td className="py-2 px-3 text-center font-bold">{adj.reportCount} murid</td>
-                    <td className="py-2 px-3 text-right font-semibold text-emerald-700">Rp {reportTotal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-
-                {adj.fnmCount > 0 && (
-                  <tr>
-                    <td className="py-2 px-3 text-emerald-700">Fee New Member (Closing FNM)</td>
-                    <td className="py-2 px-3 text-center text-slate-400">-</td>
-                    <td className="py-2 px-3 text-right">Rp {rates.standardBonus.fnmPerClosing.toLocaleString('id-ID')}</td>
-                    <td className="py-2 px-3 text-center font-bold">{adj.fnmCount} closing</td>
-                    <td className="py-2 px-3 text-right font-semibold text-emerald-700">Rp {fnmTotal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-
-                {adj.customBonusNominal > 0 && (
-                  <tr>
-                    <td className="py-2 px-3 text-emerald-700">Bonus Lainnya: {adj.customBonusNote || 'Apresiasi'}</td>
-                    <td className="py-2 px-3 text-center text-slate-400">-</td>
-                    <td className="py-2 px-3 text-right">Rp {adj.customBonusNominal.toLocaleString('id-ID')}</td>
-                    <td className="py-2 px-3 text-center font-bold">1</td>
-                    <td className="py-2 px-3 text-right font-semibold text-emerald-700">Rp {adj.customBonusNominal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Tabel Potongan (Deductions) */}
-        <div className="space-y-3">
-          <h3 className="font-bold text-rose-800 text-xs uppercase tracking-wider">
-            Potongan & Denda (Deductions)
-          </h3>
-
-          <div className="border border-rose-200 bg-rose-50/20 rounded-2xl overflow-hidden">
-            <table className="w-full text-left border-collapse text-xs">
-              <tbody className="divide-y divide-rose-100 text-rose-700">
-                {adj.applySukaDuka && (
-                  <tr>
-                    <td className="py-2 px-3">Iuran Wajib Suka Duka Bulanan</td>
-                    <td className="py-2 px-3 text-right font-semibold">-Rp {sukaDukaNominal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-                {lateAttendanceNominal > 0 && (
-                  <tr>
-                    <td className="py-2 px-3">Denda Keterlambatan Hadir ({adj.lateAttendanceCount}x)</td>
-                    <td className="py-2 px-3 text-right font-semibold">-Rp {lateAttendanceNominal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-                {violationNominal > 0 && (
-                  <tr>
-                    <td className="py-2 px-3">Denda Pelanggaran OJL & GC ({adj.violationCount}x)</td>
-                    <td className="py-2 px-3 text-right font-semibold">-Rp {violationNominal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-                {lateVideoNominal > 0 && (
-                  <tr>
-                    <td className="py-2 px-3">Denda Keterlambatan Video ({adj.lateVideoCount}x)</td>
-                    <td className="py-2 px-3 text-right font-semibold">-Rp {lateVideoNominal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-                {suddenLeaveNominal > 0 && (
-                  <tr>
-                    <td className="py-2 px-3">Denda Cuti Mendadak ({adj.suddenLeaveCount}x)</td>
-                    <td className="py-2 px-3 text-right font-semibold">-Rp {suddenLeaveNominal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-                {adj.customDeductionNominal > 0 && (
-                  <tr>
-                    <td className="py-2 px-3">Denda Lainnya: {adj.customDeductionNote || 'Pelanggaran'}</td>
-                    <td className="py-2 px-3 text-right font-semibold">-Rp {adj.customDeductionNominal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Ringkasan Total Akhir (Take-Home Pay) */}
-        <div className="bg-slate-900 text-white rounded-2xl p-5 flex items-center justify-between">
-          <div>
-            <span className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold block">
-              Total Gaji Diterima (Take-Home Pay)
-            </span>
-            <span className="text-xs text-slate-400">
-              (Total Pendapatan - Total Pemotongan)
-            </span>
-          </div>
-          <div className="text-2xl font-black text-emerald-400">
-            Rp {takeHomePay.toLocaleString('id-ID')}
-          </div>
-        </div>
+        <main className="p-4 md:p-8 flex-1 overflow-y-auto print:p-0 print:overflow-visible">
+          {activeTab === 'dashboard' && <DashboardView />}
+          {activeTab === 'rates' && <RateConfigPanel />}
+          {activeTab === 'users' && <UserManager />}
+          {activeTab === 'classrooms' && <ClassroomManager />}
+          {activeTab === 'meetings' && <MeetingJournal />}
+          {activeTab === 'free-trials' && <FreeTrialLog />}
+          {activeTab === 'payroll' && <PayrollTable />}
+          {activeTab === 'payslip' && <PayslipView />}
+          {activeTab === 'backup' && <BackupManager />}
+        </main>
       </div>
     </div>
   );
