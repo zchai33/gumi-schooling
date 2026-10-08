@@ -16,6 +16,27 @@ var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.sign
 'use client';
 ;
 ;
+// ==========================================
+// HELPER KEAMANAN: HASHING PASSWORD (SHA-256)
+// ==========================================
+const HASH_PREFIX = '$sha256$';
+async function hashPassword(plainText, salt = 'gumi_salt_2026') {
+    const enc = new TextEncoder();
+    const data = enc.encode(`${salt}:${plainText}`);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hex = hashArray.map((b)=>b.toString(16).padStart(2, '0')).join('');
+    return `${HASH_PREFIX}${hex}`;
+}
+async function verifyPassword(plainInput, storedPassword) {
+    if (!storedPassword) return false;
+    if (!storedPassword.startsWith(HASH_PREFIX)) {
+        // Akun lama (plain text legacy)
+        return plainInput === storedPassword;
+    }
+    const inputHash = await hashPassword(plainInput);
+    return inputHash === storedPassword;
+}
 const defaultRates = {
     baseFees: {
         'Kids-A': 35000,
@@ -81,6 +102,25 @@ const AppProvider = ({ children })=>{
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('dashboard');
     const currentYearMonth = new Date().toISOString().substring(0, 7);
     const [selectedMonth, setSelectedMonth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(currentYearMonth);
+    // Status Kunci Jurnal (Audit SOP)
+    const [isJournalLocked, setIsJournalLocked] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppProvider.useState": ()=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                return localStorage.getItem('gumi_journal_submission_locked') === 'true';
+            }
+            //TURBOPACK unreachable
+            ;
+        }
+    }["AppProvider.useState"]);
+    const toggleJournalLock = ()=>{
+        setIsJournalLocked((prev)=>{
+            const next = !prev;
+            if ("TURBOPACK compile-time truthy", 1) {
+                localStorage.setItem('gumi_journal_submission_locked', String(next));
+            }
+            return next;
+        });
+    };
     const [rates, setRates] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(defaultRates);
     const [classrooms, setClassrooms] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [meetings, setMeetings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
@@ -297,25 +337,37 @@ const AppProvider = ({ children })=>{
             }
         ]);
     };
-    const login = (username, password)=>{
-        const foundUser = users.find((u)=>u.username === username && u.password === password);
-        if (foundUser) {
-            setCurrentUser(foundUser);
-            logActivity('LOGIN', `Berhasil masuk ke dalam sistem sebagai ${foundUser.role}`);
-            return true;
+    // LOGIN DENGAN VERIFIKASI HASH & AUTO-MIGRASI
+    const login = async (username, plainPass)=>{
+        const foundUser = users.find((u)=>u.username.toLowerCase() === username.trim().toLowerCase());
+        if (!foundUser) return false;
+        const isValid = await verifyPassword(plainPass, foundUser.password || '');
+        if (!isValid) return false;
+        // Migrasi transparan: jika password masih teks polos, hash dan simpan kembali ke database
+        if (foundUser.password && !foundUser.password.startsWith(HASH_PREFIX)) {
+            const hashed = await hashPassword(plainPass);
+            foundUser.password = hashed;
+            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').update({
+                password: hashed
+            }).eq('id', foundUser.id);
         }
-        return false;
+        setCurrentUser(foundUser);
+        logActivity('LOGIN', `Berhasil masuk ke dalam sistem sebagai ${foundUser.role}`);
+        return true;
     };
     const logout = ()=>{
         setCurrentUser(null);
         localStorage.removeItem('gumi_current_user');
         setActiveTab('dashboard');
     };
-    // MANAJEMEN AKUN
+    // MANAJEMEN AKUN (Password di-hash otomatis sebelum simpan)
     const addUser = async (userData)=>{
+        const rawPass = userData.password || 'gumi123';
+        const securedPassword = rawPass.startsWith(HASH_PREFIX) ? rawPass : await hashPassword(rawPass);
         const newUser = {
             ...userData,
             id: `usr-${Date.now()}`,
+            password: securedPassword,
             status: 'active'
         };
         setUsers((prev)=>[
@@ -338,17 +390,23 @@ const AppProvider = ({ children })=>{
         logActivity('UPDATE_PAYROLL', `Menambahkan akun baru: ${newUser.name} (${newUser.role})`);
     };
     const updateUser = async (id, updatedData)=>{
+        const payload = {
+            ...updatedData
+        };
+        if (payload.password && !payload.password.startsWith(HASH_PREFIX)) {
+            payload.password = await hashPassword(payload.password);
+        }
         setUsers((prev)=>prev.map((u)=>u.id === id ? {
                     ...u,
-                    ...updatedData
+                    ...payload
                 } : u));
         if (currentUser?.id === id) {
             setCurrentUser((prev)=>prev ? {
                     ...prev,
-                    ...updatedData
+                    ...payload
                 } : prev);
         }
-        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').update(updatedData).eq('id', id);
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').update(payload).eq('id', id);
         logActivity('UPDATE_PAYROLL', `Memperbarui data profil/kredensial akun: ID ${id}`);
     };
     const deleteUser = async (id)=>{
@@ -688,6 +746,8 @@ const AppProvider = ({ children })=>{
             setActiveTab,
             selectedMonth,
             setSelectedMonth,
+            isJournalLocked,
+            toggleJournalLock,
             rates,
             updateRates,
             resetRatesToDefault,
@@ -714,11 +774,11 @@ const AppProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AppContext.tsx",
-        lineNumber: 793,
+        lineNumber: 859,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
-_s(AppProvider, "HkQKVwzGfmelKs5MA1BEB2VnwYs=");
+_s(AppProvider, "LnSN6yfz2RUOyHXlL8KYrvS4zxQ=");
 _c = AppProvider;
 const useApp = ()=>{
     _s1();

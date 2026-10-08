@@ -126,7 +126,7 @@ export default function FreeTrialLog() {
 
           <button
             onClick={handleOpenAddModal}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2"
+            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2"
           >
             <span>🎯</span> + Catat Free Trial
           </button>

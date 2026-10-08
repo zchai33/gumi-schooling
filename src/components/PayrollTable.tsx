@@ -140,7 +140,7 @@ export default function PayrollTable() {
       </div>
 
       {/* Banner Ringkasan Total Pengeluaran */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-6 shadow-md shadow-blue-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="bg-gradient-to-r from-bg-gradient-to-r from-amber-500 to-amber-600 shadow-md shadow-amber-200/50 text-white rounded-2xl p-6 shadow-md shadow-blue-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <span className="text-xs uppercase tracking-wider font-semibold text-blue-100">
             Total Estimasi Anggaran Penggajian ({selectedMonth})

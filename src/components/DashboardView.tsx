@@ -98,7 +98,7 @@ export const DashboardView: React.FC = () => {
       {/* Header Sambutan */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+          <span className="text-xs font-bold uppercase tracking-wider text-amber-500 bg-indigo-50 px-3 py-1 rounded-full">
             Selamat Datang
           </span>
           <h1 className="text-2xl font-bold text-slate-800 mt-2">
@@ -113,7 +113,7 @@ export const DashboardView: React.FC = () => {
           {currentUser.role === 'admin' ? (
             <button
               onClick={() => setActiveTab('payroll')}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm shadow-indigo-200"
+              className="bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm shadow-indigo-200"
             >
               Lihat Rekap Payroll
             </button>
@@ -140,7 +140,7 @@ export const DashboardView: React.FC = () => {
 
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pertemuan Selesai</span>
-              <div className="text-3xl font-extrabold text-indigo-600 mt-2">{totalCompletedMeetings}</div>
+              <div className="text-3xl font-extrabold text-amber-500 mt-2">{totalCompletedMeetings}</div>
               <p className="text-xs text-slate-500 mt-1">Sesi terisi di periode {selectedMonth}</p>
             </div>
 
@@ -320,7 +320,7 @@ export const DashboardView: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pertemuan Diisi</span>
-              <div className="text-3xl font-extrabold text-indigo-600 mt-2">{tutorMeetings.length}</div>
+              <div className="text-3xl font-extrabold text-amber-500 mt-2">{tutorMeetings.length}</div>
               <p className="text-xs text-slate-500 mt-1">Sesi terisi di periode {selectedMonth}</p>
             </div>
 

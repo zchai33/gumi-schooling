@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useApp } from '@/context/AppContext';
 import { DashboardView } from '@/components/DashboardView';
 import RateConfigPanel from '@/components/RateConfigPanel';
@@ -23,10 +24,10 @@ export default function HomePage() {
   // State Mobile Menu Drawer
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
-    const success = login(usernameInput, passwordInput);
+    const success = await login(usernameInput, passwordInput);
     if (!success) {
       setLoginError('Username atau password salah! Coba admin / admin atau dewi / tutor');
     }
@@ -40,9 +41,9 @@ export default function HomePage() {
   // 1. TAHAN RENDER JIKA SESI ATAU DATA AWAL MASIH DIMUAT
   if (!isAuthReady || (currentUser && !isDataReady)) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-amber-50/40 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-sm font-medium text-slate-500">
             {!isAuthReady ? 'Memeriksa sesi...' : 'Memuat data Gumi Schooling...'}
           </p>
@@ -51,17 +52,27 @@ export default function HomePage() {
     );
   }
 
-  // 2. JIKA BELUM LOGIN
+  // 2. JIKA BELUM LOGIN (HALAMAN LOGIN DENGAN LOGO RESMI & TEMA GUMI)
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-200 p-6 md:p-8 space-y-6">
-          <div className="text-center">
-            <div className="h-16 w-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold text-2xl mx-auto shadow-lg shadow-blue-200">
-              GS
+          <div className="text-center space-y-2">
+            <div className="flex justify-center mb-2">
+              <img
+                src="/logo_GSonly.png"
+                alt="Gumi Schooling Logo"
+                className="h-20 w-auto object-contain drop-shadow-sm"
+                onError={(e) => {
+                  // Fallback jika file logo.png belum ditaruh di public
+                  (e.target as HTMLElement).style.display = 'none';
+                }}
+              />
             </div>
-            <h2 className="text-2xl font-bold text-slate-800 mt-4">Gumi Schooling</h2>
-            <p className="text-sm text-slate-500">Sistem Jurnal Mengajar &amp; Rekap Payroll</p>
+            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Gumi Schooling</h2>
+            <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest">
+              Education Centre • Journal &amp; Payroll
+            </p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
@@ -78,7 +89,7 @@ export default function HomePage() {
                 value={usernameInput}
                 onChange={(e) => setUsernameInput(e.target.value)}
                 placeholder="Masukkan username"
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
                 required
               />
             </div>
@@ -90,26 +101,26 @@ export default function HomePage() {
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
                 placeholder="Masukkan password"
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-blue-200"
+              className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-amber-200 active:scale-[0.99]"
             >
               Masuk ke Aplikasi
             </button>
           </form>
 
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-500 space-y-1">
-            <p className="font-semibold text-slate-700">Akun Pengujian Demo:</p>
+          <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 text-xs text-slate-600 space-y-1">
+            <p className="font-bold text-amber-800">Akun Pengujian Demo:</p>
             <p>
-              <strong>Admin:</strong> username: <code className="text-blue-600">admin</code> | pass: <code className="text-blue-600">admin</code>
+              <strong>Admin:</strong> username: <code className="text-amber-700 font-bold">admin</code> | pass: <code className="text-amber-700 font-bold">admin</code>
             </p>
             <p>
-              <strong>Tutor:</strong> username: <code className="text-blue-600">dewi</code> | pass: <code className="text-blue-600">tutor</code>
+              <strong>Tutor:</strong> username: <code className="text-amber-700 font-bold">dewi</code> | pass: <code className="text-amber-700 font-bold">tutor</code>
             </p>
           </div>
         </div>
@@ -140,33 +151,41 @@ export default function HomePage() {
         />
       )}
 
-      {/* SIDEBAR */}
+      {/* SIDEBAR (Responsive Mobile & Desktop) */}
       <aside
-        className={`fixed md:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 p-5 z-50 transition-transform duration-200 ease-in-out print:hidden ${
+        className={`fixed md:sticky top-0 left-0 h-[100dvh] w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 p-5 z-50 transition-transform duration-200 ease-in-out print:hidden ${
           isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
         }`}
       >
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
+        {/* BAGIAN ATAS: LOGO & NAV MENU */}
+        <div className="flex flex-col flex-1 min-h-0 space-y-5">
+          <div className="flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-lg shadow-sm">
-                GS
-              </div>
+              <img
+                src="/logo_GSonly.png"
+                alt="Logo Gumi"
+                className="h-9 w-auto object-contain"
+                onError={(e) => {
+                  (e.target as HTMLElement).style.display = 'none';
+                }}
+              />
               <div>
                 <h2 className="font-bold text-slate-800 leading-tight">Gumi Schooling</h2>
-                <p className="text-[11px] text-slate-400">Journal &amp; Payroll</p>
+                <p className="text-[10px] font-semibold text-amber-600">Education Centre</p>
               </div>
             </div>
 
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="md:hidden p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"
+              aria-label="Tutup Menu"
             >
               ✕
             </button>
           </div>
 
-          <nav className="space-y-1.5 overflow-y-auto max-h-[calc(100vh-230px)] pr-1">
+          {/* Navigasi scrollable terisolasi */}
+          <nav className="flex-1 overflow-y-auto space-y-1 pr-1 overscroll-contain">
             {menuItems.map((item) => {
               if (item.adminOnly && currentUser.role !== 'admin') return null;
               const isActive = activeTab === item.id;
@@ -174,13 +193,13 @@ export default function HomePage() {
                 <button
                   key={item.id}
                   onClick={() => handleSelectTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-200'
-                      : 'text-slate-600 hover:bg-slate-100'
+                      ? 'bg-amber-500 text-white shadow-sm shadow-amber-200'
+                      : 'text-slate-600 hover:bg-amber-50 hover:text-amber-800'
                   }`}
                 >
-                  <span>{item.icon}</span>
+                  <span className="text-base">{item.icon}</span>
                   <span>{item.label}</span>
                 </button>
               );
@@ -188,13 +207,14 @@ export default function HomePage() {
           </nav>
         </div>
 
-        <div className="pt-4 border-t border-slate-200 space-y-3">
+        {/* BAGIAN BAWAH: PROFIL & TOMBOL LOGOUT */}
+        <div className="pt-3 border-t border-slate-200 shrink-0">
           <div className="flex items-center justify-between">
             <div className="overflow-hidden">
-              <p className="text-sm font-semibold text-slate-800 truncate">{currentUser.name}</p>
+              <p className="text-xs md:text-sm font-semibold text-slate-800 truncate">{currentUser.name}</p>
               <span
-                className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
-                  currentUser.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
+                className={`inline-block text-[9px] md:text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
+                  currentUser.role === 'admin' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-700'
                 }`}
               >
                 {currentUser.role}
@@ -203,9 +223,9 @@ export default function HomePage() {
             <button
               onClick={logout}
               title="Keluar dari sistem"
-              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors flex items-center gap-1"
             >
-              🚪
+              <span className="text-base">🚪</span>
             </button>
           </div>
         </div>
@@ -231,7 +251,7 @@ export default function HomePage() {
 
           <div className="flex items-center gap-2 md:gap-3 text-xs">
             <span className="hidden sm:inline text-slate-400">Status Akses:</span>
-            <span className="font-semibold text-slate-700 bg-slate-100 px-2.5 md:px-3 py-1 rounded-full text-[11px] md:text-xs">
+            <span className="font-semibold text-slate-700 bg-amber-50 border border-amber-200 px-2.5 md:px-3 py-1 rounded-full text-[11px] md:text-xs">
               Mode {currentUser.role === 'admin' ? '🛡️ Admin' : '✏️ Tutor'}
             </span>
           </div>

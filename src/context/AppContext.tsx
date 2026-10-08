@@ -12,6 +12,30 @@ import {
   MonthlyAdjustment,
 } from '@/types';
 
+// ==========================================
+// HELPER KEAMANAN: HASHING PASSWORD (SHA-256)
+// ==========================================
+const HASH_PREFIX = '$sha256$';
+
+async function hashPassword(plainText: string, salt: string = 'gumi_salt_2026'): Promise<string> {
+  const enc = new TextEncoder();
+  const data = enc.encode(`${salt}:${plainText}`);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  return `${HASH_PREFIX}${hex}`;
+}
+
+async function verifyPassword(plainInput: string, storedPassword: string): Promise<boolean> {
+  if (!storedPassword) return false;
+  if (!storedPassword.startsWith(HASH_PREFIX)) {
+    // Akun lama (plain text legacy)
+    return plainInput === storedPassword;
+  }
+  const inputHash = await hashPassword(plainInput);
+  return inputHash === storedPassword;
+}
+
 interface AppContextType {
   // Autentikasi & Akun
   isAuthReady: boolean;
@@ -19,7 +43,7 @@ interface AppContextType {
   currentUser: User | null;
   users: User[];
   activityLogs: ActivityLog[];
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   addUser: (userData: Omit<User, 'id'>) => Promise<void>;
   updateUser: (id: string, updatedData: Partial<User>) => Promise<void>;
@@ -30,6 +54,10 @@ interface AppContextType {
   setActiveTab: (tab: string) => void;
   selectedMonth: string;
   setSelectedMonth: (month: string) => void;
+
+  // Audit Pengisian Jurnal (Lockdown SOP)
+  isJournalLocked: boolean;
+  toggleJournalLock: () => void;
 
   // Rate Config (Ketentuan Gaji)
   rates: RateConfig;
@@ -154,6 +182,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const currentYearMonth = new Date().toISOString().substring(0, 7);
   const [selectedMonth, setSelectedMonth] = useState<string>(currentYearMonth);
+
+  // Status Kunci Jurnal (Audit SOP)
+  const [isJournalLocked, setIsJournalLocked] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('gumi_journal_submission_locked') === 'true';
+    }
+    return false;
+  });
+
+  const toggleJournalLock = () => {
+    setIsJournalLocked((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('gumi_journal_submission_locked', String(next));
+      }
+      return next;
+    });
+  };
 
   const [rates, setRates] = useState<RateConfig>(defaultRates);
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
@@ -349,14 +395,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ]);
   };
 
-  const login = (username: string, password: string): boolean => {
-    const foundUser = users.find((u) => u.username === username && u.password === password);
-    if (foundUser) {
-      setCurrentUser(foundUser);
-      logActivity('LOGIN', `Berhasil masuk ke dalam sistem sebagai ${foundUser.role}`);
-      return true;
+  // LOGIN DENGAN VERIFIKASI HASH & AUTO-MIGRASI
+  const login = async (username: string, plainPass: string): Promise<boolean> => {
+    const foundUser = users.find((u) => u.username.toLowerCase() === username.trim().toLowerCase());
+    if (!foundUser) return false;
+
+    const isValid = await verifyPassword(plainPass, foundUser.password || '');
+    if (!isValid) return false;
+
+    // Migrasi transparan: jika password masih teks polos, hash dan simpan kembali ke database
+    if (foundUser.password && !foundUser.password.startsWith(HASH_PREFIX)) {
+      const hashed = await hashPassword(plainPass);
+      foundUser.password = hashed;
+      await supabase.from('users').update({ password: hashed }).eq('id', foundUser.id);
     }
-    return false;
+
+    setCurrentUser(foundUser);
+    logActivity('LOGIN', `Berhasil masuk ke dalam sistem sebagai ${foundUser.role}`);
+    return true;
   };
 
   const logout = () => {
@@ -365,11 +421,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setActiveTab('dashboard');
   };
 
-  // MANAJEMEN AKUN
+  // MANAJEMEN AKUN (Password di-hash otomatis sebelum simpan)
   const addUser = async (userData: Omit<User, 'id'>) => {
+    const rawPass = userData.password || 'gumi123';
+    const securedPassword = rawPass.startsWith(HASH_PREFIX) ? rawPass : await hashPassword(rawPass);
+
     const newUser: User = {
       ...userData,
       id: `usr-${Date.now()}`,
+      password: securedPassword,
       status: 'active',
     };
     setUsers((prev) => [...prev, newUser]);
@@ -392,15 +452,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateUser = async (id: string, updatedData: Partial<User>) => {
+    const payload: Partial<User> = { ...updatedData };
+
+    if (payload.password && !payload.password.startsWith(HASH_PREFIX)) {
+      payload.password = await hashPassword(payload.password);
+    }
+
     setUsers((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, ...updatedData } : u))
+      prev.map((u) => (u.id === id ? { ...u, ...payload } : u))
     );
 
     if (currentUser?.id === id) {
-      setCurrentUser((prev) => (prev ? { ...prev, ...updatedData } : prev));
+      setCurrentUser((prev) => (prev ? { ...prev, ...payload } : prev));
     }
 
-    await supabase.from('users').update(updatedData).eq('id', id);
+    await supabase.from('users').update(payload).eq('id', id);
     logActivity('UPDATE_PAYROLL', `Memperbarui data profil/kredensial akun: ID ${id}`);
   };
 
@@ -806,6 +872,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setActiveTab,
         selectedMonth,
         setSelectedMonth,
+        isJournalLocked,
+        toggleJournalLock,
         rates,
         updateRates,
         resetRatesToDefault,

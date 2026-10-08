@@ -106,7 +106,7 @@ export default function RateConfigPanel() {
           </button>
           <button
             type="submit"
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all"
+            className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all"
           >
             💾 Simpan Perubahan
           </button>

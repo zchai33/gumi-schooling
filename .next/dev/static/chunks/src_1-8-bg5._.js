@@ -41,10 +41,10 @@ function HomePage() {
     const [loginError, setLoginError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     // State Mobile Menu Drawer
     const [isMobileMenuOpen, setIsMobileMenuOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const handleLoginSubmit = (e)=>{
+    const handleLoginSubmit = async (e)=>{
         e.preventDefault();
         setLoginError('');
-        const success = login(usernameInput, passwordInput);
+        const success = await login(usernameInput, passwordInput);
         if (!success) {
             setLoginError('Username atau password salah! Coba admin / admin atau dewi / tutor');
         }
@@ -56,15 +56,15 @@ function HomePage() {
     // 1. TAHAN RENDER JIKA SESI ATAU DATA AWAL MASIH DIMUAT
     if (!isAuthReady || currentUser && !isDataReady) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "min-h-screen bg-slate-50 flex items-center justify-center",
+            className: "min-h-screen bg-amber-50/40 flex items-center justify-center",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "flex flex-col items-center gap-3",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
+                        className: "w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"
                     }, void 0, false, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 45,
+                        lineNumber: 46,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -72,22 +72,22 @@ function HomePage() {
                         children: !isAuthReady ? 'Memeriksa sesi...' : 'Memuat data Gumi Schooling...'
                     }, void 0, false, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 46,
+                        lineNumber: 47,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 44,
+                lineNumber: 45,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/page.tsx",
-            lineNumber: 43,
+            lineNumber: 44,
             columnNumber: 7
         }, this);
     }
-    // 2. JIKA BELUM LOGIN
+    // 2. JIKA BELUM LOGIN (HALAMAN LOGIN DENGAN LOGO RESMI & TEMA GUMI)
     if (!currentUser) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "min-h-screen bg-slate-100 flex items-center justify-center p-4",
@@ -95,36 +95,48 @@ function HomePage() {
                 className: "max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-200 p-6 md:p-8 space-y-6",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "text-center",
+                        className: "text-center space-y-2",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "h-16 w-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold text-2xl mx-auto shadow-lg shadow-blue-200",
-                                children: "GS"
+                                className: "flex justify-center mb-2",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                    src: "/logo_GSonly.png",
+                                    alt: "Gumi Schooling Logo",
+                                    className: "h-20 w-auto object-contain drop-shadow-sm",
+                                    onError: (e)=>{
+                                        // Fallback jika file logo.png belum ditaruh di public
+                                        e.target.style.display = 'none';
+                                    }
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 62,
+                                    columnNumber: 15
+                                }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 60,
+                                lineNumber: 61,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                className: "text-2xl font-bold text-slate-800 mt-4",
+                                className: "text-2xl font-black text-slate-800 tracking-tight",
                                 children: "Gumi Schooling"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 63,
+                                lineNumber: 72,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "text-sm text-slate-500",
-                                children: "Sistem Jurnal Mengajar & Rekap Payroll"
+                                className: "text-xs font-semibold text-amber-600 uppercase tracking-widest",
+                                children: "Education Centre • Journal & Payroll"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 64,
+                                lineNumber: 73,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 59,
+                        lineNumber: 60,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -136,7 +148,7 @@ function HomePage() {
                                 children: loginError
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 69,
+                                lineNumber: 80,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -146,7 +158,7 @@ function HomePage() {
                                         children: "Username"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 75,
+                                        lineNumber: 86,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -154,17 +166,17 @@ function HomePage() {
                                         value: usernameInput,
                                         onChange: (e)=>setUsernameInput(e.target.value),
                                         placeholder: "Masukkan username",
-                                        className: "w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm",
+                                        className: "w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm",
                                         required: true
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 76,
+                                        lineNumber: 87,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 74,
+                                lineNumber: 85,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -174,7 +186,7 @@ function HomePage() {
                                         children: "Password"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 87,
+                                        lineNumber: 98,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -182,43 +194,43 @@ function HomePage() {
                                         value: passwordInput,
                                         onChange: (e)=>setPasswordInput(e.target.value),
                                         placeholder: "Masukkan password",
-                                        className: "w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm",
+                                        className: "w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm",
                                         required: true
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 88,
+                                        lineNumber: 99,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 86,
+                                lineNumber: 97,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "submit",
-                                className: "w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-blue-200",
+                                className: "w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-amber-200 active:scale-[0.99]",
                                 children: "Masuk ke Aplikasi"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 98,
+                                lineNumber: 109,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 67,
+                        lineNumber: 78,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-500 space-y-1",
+                        className: "bg-amber-50/60 p-4 rounded-2xl border border-amber-200 text-xs text-slate-600 space-y-1",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "font-semibold text-slate-700",
+                                className: "font-bold text-amber-800",
                                 children: "Akun Pengujian Demo:"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 107,
+                                lineNumber: 118,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -227,31 +239,31 @@ function HomePage() {
                                         children: "Admin:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 109,
+                                        lineNumber: 120,
                                         columnNumber: 15
                                     }, this),
                                     " username: ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
-                                        className: "text-blue-600",
+                                        className: "text-amber-700 font-bold",
                                         children: "admin"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 109,
+                                        lineNumber: 120,
                                         columnNumber: 49
                                     }, this),
                                     " | pass: ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
-                                        className: "text-blue-600",
+                                        className: "text-amber-700 font-bold",
                                         children: "admin"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 109,
-                                        columnNumber: 102
+                                        lineNumber: 120,
+                                        columnNumber: 113
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 108,
+                                lineNumber: 119,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -260,48 +272,48 @@ function HomePage() {
                                         children: "Tutor:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 112,
+                                        lineNumber: 123,
                                         columnNumber: 15
                                     }, this),
                                     " username: ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
-                                        className: "text-blue-600",
+                                        className: "text-amber-700 font-bold",
                                         children: "dewi"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 112,
+                                        lineNumber: 123,
                                         columnNumber: 49
                                     }, this),
                                     " | pass: ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
-                                        className: "text-blue-600",
+                                        className: "text-amber-700 font-bold",
                                         children: "tutor"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 112,
-                                        columnNumber: 101
+                                        lineNumber: 123,
+                                        columnNumber: 112
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 111,
+                                lineNumber: 122,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 106,
+                        lineNumber: 117,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 58,
+                lineNumber: 59,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/page.tsx",
-            lineNumber: 57,
+            lineNumber: 58,
             columnNumber: 7
         }, this);
     }
@@ -370,27 +382,31 @@ function HomePage() {
                 className: "fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden transition-opacity"
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 137,
+                lineNumber: 148,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
-                className: `fixed md:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 p-5 z-50 transition-transform duration-200 ease-in-out print:hidden ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}`,
+                className: `fixed md:sticky top-0 left-0 h-[100dvh] w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 p-5 z-50 transition-transform duration-200 ease-in-out print:hidden ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}`,
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "space-y-6",
+                        className: "flex flex-col flex-1 min-h-0 space-y-5",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex items-center justify-between",
+                                className: "flex items-center justify-between shrink-0",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "flex items-center gap-3",
                                         children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "h-10 w-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-lg shadow-sm",
-                                                children: "GS"
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                                src: "/logo_GSonly.png",
+                                                alt: "Logo Gumi",
+                                                className: "h-9 w-auto object-contain",
+                                                onError: (e)=>{
+                                                    e.target.style.display = 'none';
+                                                }
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 152,
+                                                lineNumber: 164,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -400,87 +416,89 @@ function HomePage() {
                                                         children: "Gumi Schooling"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/page.tsx",
-                                                        lineNumber: 156,
+                                                        lineNumber: 173,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                        className: "text-[11px] text-slate-400",
-                                                        children: "Journal & Payroll"
+                                                        className: "text-[10px] font-semibold text-amber-600",
+                                                        children: "Education Centre"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/page.tsx",
-                                                        lineNumber: 157,
+                                                        lineNumber: 174,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 155,
+                                                lineNumber: 172,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 151,
+                                        lineNumber: 163,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         onClick: ()=>setIsMobileMenuOpen(false),
                                         className: "md:hidden p-1.5 text-slate-400 hover:text-slate-600 rounded-lg",
+                                        "aria-label": "Tutup Menu",
                                         children: "✕"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 161,
+                                        lineNumber: 178,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 150,
+                                lineNumber: 162,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
-                                className: "space-y-1.5 overflow-y-auto max-h-[calc(100vh-230px)] pr-1",
+                                className: "flex-1 overflow-y-auto space-y-1 pr-1 overscroll-contain",
                                 children: menuItems.map((item)=>{
                                     if (item.adminOnly && currentUser.role !== 'admin') return null;
                                     const isActive = activeTab === item.id;
                                     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         onClick: ()=>handleSelectTab(item.id),
-                                        className: `w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? 'bg-blue-600 text-white shadow-sm shadow-blue-200' : 'text-slate-600 hover:bg-slate-100'}`,
+                                        className: `w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all ${isActive ? 'bg-amber-500 text-white shadow-sm shadow-amber-200' : 'text-slate-600 hover:bg-amber-50 hover:text-amber-800'}`,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "text-base",
                                                 children: item.icon
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 183,
+                                                lineNumber: 202,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: item.label
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 184,
+                                                lineNumber: 203,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, item.id, true, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 174,
+                                        lineNumber: 193,
                                         columnNumber: 17
                                     }, this);
                                 })
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 169,
+                                lineNumber: 188,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 149,
+                        lineNumber: 161,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "pt-4 border-t border-slate-200 space-y-3",
+                        className: "pt-3 border-t border-slate-200 shrink-0",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex items-center justify-between",
                             children: [
@@ -488,52 +506,59 @@ function HomePage() {
                                     className: "overflow-hidden",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "text-sm font-semibold text-slate-800 truncate",
+                                            className: "text-xs md:text-sm font-semibold text-slate-800 truncate",
                                             children: currentUser.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 194,
+                                            lineNumber: 214,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: `inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded ${currentUser.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`,
+                                            className: `inline-block text-[9px] md:text-[10px] font-bold uppercase px-2 py-0.5 rounded ${currentUser.role === 'admin' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-700'}`,
                                             children: currentUser.role
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 195,
+                                            lineNumber: 215,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 193,
+                                    lineNumber: 213,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     onClick: logout,
                                     title: "Keluar dari sistem",
-                                    className: "p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors",
-                                    children: "🚪"
+                                    className: "p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors flex items-center gap-1",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "text-base",
+                                        children: "🚪"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/page.tsx",
+                                        lineNumber: 228,
+                                        columnNumber: 15
+                                    }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 203,
+                                    lineNumber: 223,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 192,
+                            lineNumber: 212,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 191,
+                        lineNumber: 211,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 144,
+                lineNumber: 155,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -561,17 +586,17 @@ function HomePage() {
                                                 d: "M4 6h16M4 12h16M4 18h16"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/page.tsx",
-                                                lineNumber: 224,
+                                                lineNumber: 244,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 223,
+                                            lineNumber: 243,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 218,
+                                        lineNumber: 238,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -579,13 +604,13 @@ function HomePage() {
                                         children: menuItems.find((m)=>m.id === activeTab)?.label || 'Dashboard'
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 227,
+                                        lineNumber: 247,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 217,
+                                lineNumber: 237,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -596,30 +621,30 @@ function HomePage() {
                                         children: "Status Akses:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 233,
+                                        lineNumber: 253,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: "font-semibold text-slate-700 bg-slate-100 px-2.5 md:px-3 py-1 rounded-full text-[11px] md:text-xs",
+                                        className: "font-semibold text-slate-700 bg-amber-50 border border-amber-200 px-2.5 md:px-3 py-1 rounded-full text-[11px] md:text-xs",
                                         children: [
                                             "Mode ",
                                             currentUser.role === 'admin' ? '🛡️ Admin' : '✏️ Tutor'
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 234,
+                                        lineNumber: 254,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 232,
+                                lineNumber: 252,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 216,
+                        lineNumber: 236,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -627,65 +652,65 @@ function HomePage() {
                         children: [
                             activeTab === 'dashboard' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$DashboardView$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DashboardView"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 241,
+                                lineNumber: 261,
                                 columnNumber: 41
                             }, this),
                             activeTab === 'rates' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$RateConfigPanel$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 242,
+                                lineNumber: 262,
                                 columnNumber: 37
                             }, this),
                             activeTab === 'users' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$UserManager$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 243,
+                                lineNumber: 263,
                                 columnNumber: 37
                             }, this),
                             activeTab === 'classrooms' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ClassroomManager$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 244,
+                                lineNumber: 264,
                                 columnNumber: 42
                             }, this),
                             activeTab === 'meetings' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$MeetingJournal$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 245,
+                                lineNumber: 265,
                                 columnNumber: 40
                             }, this),
                             activeTab === 'free-trials' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$FreeTrialLog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 246,
+                                lineNumber: 266,
                                 columnNumber: 43
                             }, this),
                             activeTab === 'payroll' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$PayrollTable$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 247,
+                                lineNumber: 267,
                                 columnNumber: 39
                             }, this),
                             activeTab === 'payslip' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$PayslipView$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 248,
+                                lineNumber: 268,
                                 columnNumber: 39
                             }, this),
                             activeTab === 'backup' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$BackupManager$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 249,
+                                lineNumber: 269,
                                 columnNumber: 38
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 240,
+                        lineNumber: 260,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 215,
+                lineNumber: 235,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/page.tsx",
-        lineNumber: 134,
+        lineNumber: 145,
         columnNumber: 5
     }, this);
 }
@@ -1422,7 +1447,7 @@ function ClassroomManager() {
                     }, this),
                     currentUser?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: ()=>setShowAddModal(true),
-                        className: "px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto",
+                        className: "px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 children: "+"
@@ -1488,7 +1513,7 @@ function ClassroomManager() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>setSelectedTypeFilter('all'),
-                                className: `px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${selectedTypeFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`,
+                                className: `px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${selectedTypeFilter === 'all' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`,
                                 children: "Semua"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
@@ -1497,7 +1522,7 @@ function ClassroomManager() {
                             }, this),
                             classTypeOptions.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     onClick: ()=>setSelectedTypeFilter(t.value),
-                                    className: `px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${selectedTypeFilter === t.value ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`,
+                                    className: `px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${selectedTypeFilter === t.value ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`,
                                     children: t.label
                                 }, t.value, false, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
@@ -2477,7 +2502,7 @@ const DashboardView = ()=>{
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full",
+                                className: "text-xs font-bold uppercase tracking-wider text-amber-500 bg-indigo-50 px-3 py-1 rounded-full",
                                 children: "Selamat Datang"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DashboardView.tsx",
@@ -2525,7 +2550,7 @@ const DashboardView = ()=>{
                         className: "flex items-center gap-3",
                         children: currentUser.role === 'admin' ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                             onClick: ()=>setActiveTab('payroll'),
-                            className: "bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm shadow-indigo-200",
+                            className: "bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm shadow-indigo-200",
                             children: "Lihat Rekap Payroll"
                         }, void 0, false, {
                             fileName: "[project]/src/components/DashboardView.tsx",
@@ -2601,7 +2626,7 @@ const DashboardView = ()=>{
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "text-3xl font-extrabold text-indigo-600 mt-2",
+                                        className: "text-3xl font-extrabold text-amber-500 mt-2",
                                         children: totalCompletedMeetings
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DashboardView.tsx",
@@ -3098,7 +3123,7 @@ const DashboardView = ()=>{
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "text-3xl font-extrabold text-indigo-600 mt-2",
+                                        className: "text-3xl font-extrabold text-amber-500 mt-2",
                                         children: tutorMeetings.length
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DashboardView.tsx",
@@ -3553,7 +3578,7 @@ function FreeTrialLog() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: handleOpenAddModal,
-                                className: "px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2",
+                                className: "px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "🎯"
@@ -4305,6 +4330,24 @@ var _s = __turbopack_context__.k.signature();
 function MeetingJournal() {
     _s();
     const { currentUser, users, classrooms, meetings, addMeeting, updateMeeting, clearMeetingSlot, toggleLockMeeting, lockEmptySlot, selectedMonth, setSelectedMonth } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
+    const isAdmin = currentUser?.role === 'admin';
+    // State Saklar Kunci Pengisian Jurnal (Audit Mode)
+    const [isJournalLocked, setIsJournalLocked] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "MeetingJournal.useState": ()=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                return localStorage.getItem('gumi_journal_submission_locked') === 'true';
+            }
+            //TURBOPACK unreachable
+            ;
+        }
+    }["MeetingJournal.useState"]);
+    const handleToggleJournalLock = ()=>{
+        const nextState = !isJournalLocked;
+        setIsJournalLocked(nextState);
+        if ("TURBOPACK compile-time truthy", 1) {
+            localStorage.setItem('gumi_journal_submission_locked', String(nextState));
+        }
+    };
     // 1. Tab Kategori Program
     const tabTypes = [
         {
@@ -4367,11 +4410,15 @@ function MeetingJournal() {
         return matchType && matchSearch;
     });
     const handleOpenFillModal = (classId, meetingNumber)=>{
+        if (!isAdmin && isJournalLocked) {
+            alert('Pengisian jurnal sedang dinonaktifkan untuk proses audit oleh Admin.');
+            return;
+        }
         setActiveSlot({
             classId,
             meetingNumber
         });
-        setInputDate(`${selectedMonth}-01`); // Set default ke awal bulan yang sedang difilter
+        setInputDate(`${selectedMonth}-01`);
         setInputLesson('');
         setInputNotes('');
         setClaimVideo(false);
@@ -4379,6 +4426,10 @@ function MeetingJournal() {
     const handleSubmitMeeting = (e)=>{
         e.preventDefault();
         if (!activeSlot) return;
+        if (!isAdmin && isJournalLocked) {
+            alert('Pengisian jurnal sedang dinonaktifkan untuk proses audit oleh Admin.');
+            return;
+        }
         if (!inputLesson.trim()) {
             alert('Harap masukkan materi pelajaran (lesson)!');
             return;
@@ -4434,7 +4485,7 @@ function MeetingJournal() {
                                 children: "Lembar Jurnal Mengajar"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 132,
+                                lineNumber: 158,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4445,54 +4496,129 @@ function MeetingJournal() {
                                         children: selectedMonth
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 134,
+                                        lineNumber: 160,
                                         columnNumber: 79
                                     }, this),
                                     " secara default."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 133,
+                                lineNumber: 159,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 131,
+                        lineNumber: 157,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 self-start md:self-auto",
+                        className: "flex flex-wrap items-center gap-3",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "text-xs font-semibold text-slate-600 pl-1",
-                                children: "Periode Jurnal:"
-                            }, void 0, false, {
+                            isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: handleToggleJournalLock,
+                                className: `px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2 border ${isJournalLocked ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'}`,
+                                title: "Kunci atau buka izin pengisian jurnal untuk seluruh tutor",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        children: isJournalLocked ? '🔒' : '🔓'
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/MeetingJournal.tsx",
+                                        lineNumber: 176,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        children: isJournalLocked ? 'Akses Tutor: TERKUNCI (Audit)' : 'Akses Tutor: TERBUKA'
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/MeetingJournal.tsx",
+                                        lineNumber: 177,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 140,
-                                columnNumber: 11
+                                lineNumber: 167,
+                                columnNumber: 13
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                type: "month",
-                                value: selectedMonth,
-                                onChange: (e)=>setSelectedMonth(e.target.value),
-                                className: "px-3 py-1.5 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
-                            }, void 0, false, {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "text-xs font-semibold text-slate-600 pl-1",
+                                        children: "Periode:"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/MeetingJournal.tsx",
+                                        lineNumber: 183,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "month",
+                                        value: selectedMonth,
+                                        onChange: (e)=>setSelectedMonth(e.target.value),
+                                        className: "px-3 py-1.5 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/components/MeetingJournal.tsx",
+                                        lineNumber: 184,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 141,
+                                lineNumber: 182,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 139,
+                        lineNumber: 164,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 130,
+                lineNumber: 156,
                 columnNumber: 7
+            }, this),
+            !isAdmin && isJournalLocked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3 text-amber-900 animate-in fade-in",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "text-2xl",
+                        children: "🔒"
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/MeetingJournal.tsx",
+                        lineNumber: 197,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                className: "font-bold text-xs",
+                                children: "Akses Pengisian Jurnal Sedang Ditutup (Audit Mode)"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/MeetingJournal.tsx",
+                                lineNumber: 199,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: "text-[11px] text-amber-800/80 mt-0.5",
+                                children: "Admin sedang melakukan peninjauan & audit sesi bulanan. Anda tetap dapat melihat catatan dan mencari data murid, namun tombol pengisian sesi baru sementara dinonaktifkan."
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/MeetingJournal.tsx",
+                                lineNumber: 200,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/MeetingJournal.tsx",
+                        lineNumber: 198,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/components/MeetingJournal.tsx",
+                lineNumber: 196,
+                columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3",
@@ -4505,22 +4631,22 @@ function MeetingJournal() {
                                 children: "Program Sheet:"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 154,
+                                lineNumber: 211,
                                 columnNumber: 11
                             }, this),
                             tabTypes.map((tab)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     onClick: ()=>setActiveTabType(tab.id),
-                                    className: `px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${activeTabType === tab.id ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`,
+                                    className: `px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${activeTabType === tab.id ? 'bg-amber-500 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`,
                                     children: tab.label
                                 }, tab.id, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 156,
+                                    lineNumber: 213,
                                     columnNumber: 13
                                 }, this))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 153,
+                        lineNumber: 210,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4531,10 +4657,10 @@ function MeetingJournal() {
                                 placeholder: "Ketik nama murid untuk mencari (misal: Ayu Widya)...",
                                 value: searchStudent,
                                 onChange: (e)=>setSearchStudent(e.target.value),
-                                className: "w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className: "w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 172,
+                                lineNumber: 229,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4542,7 +4668,7 @@ function MeetingJournal() {
                                 children: "🔍"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 179,
+                                lineNumber: 236,
                                 columnNumber: 11
                             }, this),
                             searchStudent && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4551,19 +4677,19 @@ function MeetingJournal() {
                                 children: "✕"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 181,
+                                lineNumber: 238,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 171,
+                        lineNumber: 228,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 151,
+                lineNumber: 208,
                 columnNumber: 7
             }, this),
             filteredClassrooms.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4575,13 +4701,12 @@ function MeetingJournal() {
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 193,
+                lineNumber: 250,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "space-y-6",
                 children: filteredClassrooms.map((cls)=>{
-                    // Saring sesi yang tercatat khusus pada bulan yang sedang dipilih
-                    const classMeetings = meetings.filter((m)=>m.classroomId === cls.id && m.date.startsWith(selectedMonth));
+                    const classMeetings = meetings.filter((m)=>m.classroomId === cls.id && m.date?.startsWith(selectedMonth));
                     const highestMeetingNum = classMeetings.length > 0 ? Math.max(...classMeetings.map((m)=>m.meetingNumber)) : 0;
                     const totalCols = Math.max(cls.totalMeetings || 4, highestMeetingNum, 4);
                     const colIndexes = Array.from({
@@ -4596,11 +4721,11 @@ function MeetingJournal() {
                                     className: "flex items-start md:items-center gap-3.5",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: "px-3 py-1.5 bg-fuchsia-600 text-white font-black text-xs uppercase rounded-lg tracking-wider shrink-0 shadow-sm",
+                                            className: "px-3 py-1.5 bg-amber-500 text-white font-black text-xs uppercase rounded-lg tracking-wider shrink-0 shadow-sm",
                                             children: "CLASS"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 218,
+                                            lineNumber: 274,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4613,7 +4738,7 @@ function MeetingJournal() {
                                                             children: "Murid:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 224,
+                                                            lineNumber: 280,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -4621,13 +4746,13 @@ function MeetingJournal() {
                                                             children: cls.students.join(', ')
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 227,
+                                                            lineNumber: 283,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 223,
+                                                    lineNumber: 279,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4638,32 +4763,32 @@ function MeetingJournal() {
                                                             children: cls.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 234,
+                                                            lineNumber: 290,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "•"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 237,
+                                                            lineNumber: 293,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                            className: "font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md",
+                                                            className: "font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200",
                                                             children: [
                                                                 "Program: ",
                                                                 cls.type
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 238,
+                                                            lineNumber: 294,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "•"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 241,
+                                                            lineNumber: 297,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4674,7 +4799,7 @@ function MeetingJournal() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 242,
+                                                            lineNumber: 298,
                                                             columnNumber: 25
                                                         }, this),
                                                         cls.ldrZone !== 'none' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -4683,11 +4808,11 @@ function MeetingJournal() {
                                                                     children: "•"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                    lineNumber: 247,
+                                                                    lineNumber: 303,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                    className: "font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200",
+                                                                    className: "font-semibold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-md border border-purple-200",
                                                                     children: [
                                                                         "📍 ",
                                                                         cls.ldrZone.replace('_', ' >').toUpperCase(),
@@ -4695,36 +4820,36 @@ function MeetingJournal() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                    lineNumber: 248,
+                                                                    lineNumber: 304,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 246,
+                                                            lineNumber: 302,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 233,
+                                                    lineNumber: 289,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 221,
+                                            lineNumber: 277,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 217,
+                                    lineNumber: 273,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 216,
+                                lineNumber: 272,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4737,36 +4862,36 @@ function MeetingJournal() {
                                                 className: "border-b border-slate-200",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                        className: "w-40 py-2.5 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300",
+                                                        className: "w-40 py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300",
                                                         children: "Meet This Month"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 264,
+                                                        lineNumber: 320,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2.5 px-3 text-center font-bold bg-rose-100 text-slate-800 border-r border-slate-200 min-w-[145px]",
+                                                            className: "py-2.5 px-3 text-center font-bold bg-rose-50 text-slate-800 border-r border-slate-200 min-w-[145px]",
                                                             children: num
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 268,
+                                                            lineNumber: 324,
                                                             columnNumber: 27
                                                         }, this))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 263,
+                                                lineNumber: 319,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 className: "border-b border-slate-200",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                        className: "py-2.5 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300",
+                                                        className: "py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300",
                                                         children: "Class meetings"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 279,
+                                                        lineNumber: 335,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4774,24 +4899,24 @@ function MeetingJournal() {
                                                             children: num
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 283,
+                                                            lineNumber: 339,
                                                             columnNumber: 27
                                                         }, this))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 278,
+                                                lineNumber: 334,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 className: "border-b border-slate-200",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                        className: "py-2.5 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300",
+                                                        className: "py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300",
                                                         children: "Date"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 294,
+                                                        lineNumber: 350,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>{
@@ -4803,37 +4928,37 @@ function MeetingJournal() {
                                                                 children: mtg.date
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 305,
+                                                                lineNumber: 361,
                                                                 columnNumber: 33
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "text-slate-300",
                                                                 children: "-"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 309,
+                                                                lineNumber: 365,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 300,
+                                                            lineNumber: 356,
                                                             columnNumber: 29
                                                         }, this);
                                                     })
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 293,
+                                                lineNumber: 349,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 className: "border-b border-slate-200",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                        className: "py-2.5 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300",
+                                                        className: "py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300",
                                                         children: "Tutor"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 318,
+                                                        lineNumber: 374,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>{
@@ -4845,29 +4970,29 @@ function MeetingJournal() {
                                                                 children: "-"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 328,
+                                                                lineNumber: 384,
                                                                 columnNumber: 54
                                                             }, this)
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 324,
+                                                            lineNumber: 380,
                                                             columnNumber: 29
                                                         }, this);
                                                     })
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 317,
+                                                lineNumber: 373,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                        className: "py-3 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300",
+                                                        className: "py-3 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300",
                                                         children: "Lesson"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 336,
+                                                        lineNumber: 392,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>{
@@ -4882,18 +5007,18 @@ function MeetingJournal() {
                                                                         children: mtg.lesson
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 349,
+                                                                        lineNumber: 405,
                                                                         columnNumber: 35
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "flex items-center gap-1 flex-wrap pt-0.5",
                                                                         children: [
                                                                             mtg.hasVideoClaim && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                                className: "inline-flex items-center gap-1 text-[9px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded",
+                                                                                className: "inline-flex items-center gap-1 text-[9px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded",
                                                                                 children: "🎬 Video"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 353,
+                                                                                lineNumber: 409,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             mtg.isLocked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4901,25 +5026,25 @@ function MeetingJournal() {
                                                                                 children: "🔒 Terkunci / Hangus"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 359,
+                                                                                lineNumber: 415,
                                                                                 columnNumber: 39
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 351,
+                                                                        lineNumber: 407,
                                                                         columnNumber: 35
                                                                     }, this),
-                                                                    currentUser?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                    isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "pt-1.5 flex items-center gap-2 border-t border-slate-100",
                                                                         children: [
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                                 onClick: ()=>handleOpenEditModal(mtg),
-                                                                                className: "text-[10px] text-blue-600 hover:text-blue-800 font-semibold hover:underline",
+                                                                                className: "text-[10px] text-amber-600 hover:text-amber-800 font-semibold hover:underline",
                                                                                 children: "✏️ Edit"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 368,
+                                                                                lineNumber: 424,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4927,7 +5052,7 @@ function MeetingJournal() {
                                                                                 children: "•"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 374,
+                                                                                lineNumber: 430,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4936,7 +5061,7 @@ function MeetingJournal() {
                                                                                 children: "🗑️ Kosongkan"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 375,
+                                                                                lineNumber: 431,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4944,7 +5069,7 @@ function MeetingJournal() {
                                                                                 children: "•"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 381,
+                                                                                lineNumber: 437,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4953,24 +5078,31 @@ function MeetingJournal() {
                                                                                 children: mtg.isLocked ? 'Buka' : 'Kunci'
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 382,
+                                                                                lineNumber: 438,
                                                                                 columnNumber: 39
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 367,
+                                                                        lineNumber: 423,
                                                                         columnNumber: 37
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 348,
+                                                                lineNumber: 404,
                                                                 columnNumber: 33
                                                             }, this) : /* KOLOM KOSONG DI BULAN INI */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "space-y-1.5",
                                                                 children: [
-                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    !isAdmin && isJournalLocked ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                        className: "w-full py-1 text-[10px] text-slate-400 bg-slate-50 border border-slate-200 rounded text-center font-medium",
+                                                                        children: "🔒 Terkunci (Audit)"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                                        lineNumber: 451,
+                                                                        columnNumber: 37
+                                                                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                         onClick: ()=>handleOpenFillModal(cls.id, num),
                                                                         className: "w-full py-1 text-[11px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-dashed border-emerald-300 rounded font-semibold transition-all",
                                                                         children: [
@@ -4979,10 +5111,10 @@ function MeetingJournal() {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 394,
-                                                                        columnNumber: 35
+                                                                        lineNumber: 455,
+                                                                        columnNumber: 37
                                                                     }, this),
-                                                                    currentUser?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                         onClick: ()=>lockEmptySlot(cls.id, num),
                                                                         className: "w-full py-0.5 text-[10px] text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded transition-all flex items-center justify-center gap-1",
                                                                         title: "Kunci sesi ini agar hangus",
@@ -4991,60 +5123,60 @@ function MeetingJournal() {
                                                                                 children: "🔒"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 407,
+                                                                                lineNumber: 469,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             " Kunci Slot"
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 402,
+                                                                        lineNumber: 464,
                                                                         columnNumber: 37
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 393,
+                                                                lineNumber: 449,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 343,
+                                                            lineNumber: 399,
                                                             columnNumber: 29
                                                         }, this);
                                                     })
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 335,
+                                                lineNumber: 391,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 261,
+                                        lineNumber: 317,
                                         columnNumber: 21
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 260,
+                                    lineNumber: 316,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 259,
+                                lineNumber: 315,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, cls.id, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 211,
+                        lineNumber: 267,
                         columnNumber: 15
                     }, this);
                 })
             }, void 0, false, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 197,
+                lineNumber: 254,
                 columnNumber: 9
             }, this),
             activeSlot && selectedClassForModal && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5062,7 +5194,7 @@ function MeetingJournal() {
                                             children: "Input Jurnal Mengajar"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 431,
+                                            lineNumber: 493,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -5070,7 +5202,7 @@ function MeetingJournal() {
                                             children: selectedClassForModal.students.join(', ')
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 434,
+                                            lineNumber: 496,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5084,13 +5216,13 @@ function MeetingJournal() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 437,
+                                            lineNumber: 499,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 430,
+                                    lineNumber: 492,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5099,13 +5231,13 @@ function MeetingJournal() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 441,
+                                    lineNumber: 503,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 429,
+                            lineNumber: 491,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -5122,7 +5254,7 @@ function MeetingJournal() {
                                                     children: "Pertemuan Ke"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 452,
+                                                    lineNumber: 514,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5132,13 +5264,13 @@ function MeetingJournal() {
                                                     className: "w-full px-3 py-2 text-xs border rounded-xl bg-slate-100 text-slate-700 font-bold cursor-not-allowed"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 453,
+                                                    lineNumber: 515,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 451,
+                                            lineNumber: 513,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5148,30 +5280,30 @@ function MeetingJournal() {
                                                     children: "Tanggal Mengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 462,
+                                                    lineNumber: 524,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                     type: "date",
                                                     value: inputDate,
                                                     onChange: (e)=>setInputDate(e.target.value),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium",
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 463,
+                                                    lineNumber: 525,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 461,
+                                            lineNumber: 523,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 450,
+                                    lineNumber: 512,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5181,7 +5313,7 @@ function MeetingJournal() {
                                             children: "Nama Tutor"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 474,
+                                            lineNumber: 536,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5191,13 +5323,13 @@ function MeetingJournal() {
                                             className: "w-full px-3 py-2 text-xs border rounded-xl bg-slate-100 text-slate-700 font-semibold cursor-not-allowed"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 475,
+                                            lineNumber: 537,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 473,
+                                    lineNumber: 535,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5207,7 +5339,7 @@ function MeetingJournal() {
                                             children: "Materi Pelajaran / Topik Bahasan (Lesson)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 484,
+                                            lineNumber: 546,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -5215,53 +5347,53 @@ function MeetingJournal() {
                                             placeholder: "Misal: Alfabet W and H, Phonics Review",
                                             value: inputLesson,
                                             onChange: (e)=>setInputLesson(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 487,
+                                            lineNumber: 549,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 483,
+                                    lineNumber: 545,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "p-3 bg-blue-50/70 border border-blue-200 rounded-2xl flex items-center justify-between",
+                                    className: "p-3 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "flex items-center gap-1.5 font-bold text-xs text-blue-900",
+                                                    className: "flex items-center gap-1.5 font-bold text-xs text-amber-900",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "🎬"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 501,
+                                                            lineNumber: 563,
                                                             columnNumber: 21
                                                         }, this),
                                                         " Klaim Fee Video Siswa"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 500,
+                                                    lineNumber: 562,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                    className: "text-[10px] text-blue-700/80 mt-0.5",
+                                                    className: "text-[10px] text-amber-700/80 mt-0.5",
                                                     children: "Centang jika sesi ini mengunggah konten video murid (+Rp 10.000)."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 503,
+                                                    lineNumber: 565,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 499,
+                                            lineNumber: 561,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -5270,21 +5402,21 @@ function MeetingJournal() {
                                                 type: "checkbox",
                                                 checked: claimVideo,
                                                 onChange: (e)=>setClaimVideo(e.target.checked),
-                                                className: "w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                                className: "w-4 h-4 text-amber-500 rounded border-gray-300 focus:ring-amber-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 508,
+                                                lineNumber: 570,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 507,
+                                            lineNumber: 569,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 498,
+                                    lineNumber: 560,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5297,7 +5429,7 @@ function MeetingJournal() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 518,
+                                            lineNumber: 580,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5306,30 +5438,30 @@ function MeetingJournal() {
                                             children: "Simpan ke Jurnal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 525,
+                                            lineNumber: 587,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 517,
+                                    lineNumber: 579,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 449,
+                            lineNumber: 511,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                    lineNumber: 428,
+                    lineNumber: 490,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 427,
+                lineNumber: 489,
                 columnNumber: 9
             }, this),
             editingMeeting && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5347,7 +5479,7 @@ function MeetingJournal() {
                                             children: "Koreksi / Edit Jurnal (Mode Admin)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 543,
+                                            lineNumber: 605,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -5358,13 +5490,13 @@ function MeetingJournal() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 546,
+                                            lineNumber: 608,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 542,
+                                    lineNumber: 604,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5373,13 +5505,13 @@ function MeetingJournal() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 550,
+                                    lineNumber: 612,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 541,
+                            lineNumber: 603,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -5396,24 +5528,24 @@ function MeetingJournal() {
                                                     children: "Tanggal Mengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 561,
+                                                    lineNumber: 623,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                     type: "date",
                                                     value: editDate,
                                                     onChange: (e)=>setEditDate(e.target.value),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium",
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 562,
+                                                    lineNumber: 624,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 560,
+                                            lineNumber: 622,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5423,36 +5555,36 @@ function MeetingJournal() {
                                                     children: "Ganti Tutor Pengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 572,
+                                                    lineNumber: 634,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                     value: editTutorId,
                                                     onChange: (e)=>setEditTutorId(e.target.value),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white",
                                                     children: users.filter((u)=>u.role === 'tutor').map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                             value: t.id,
                                                             children: t.name
                                                         }, t.id, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 581,
+                                                            lineNumber: 643,
                                                             columnNumber: 25
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 573,
+                                                    lineNumber: 635,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 571,
+                                            lineNumber: 633,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 559,
+                                    lineNumber: 621,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5462,24 +5594,24 @@ function MeetingJournal() {
                                             children: "Materi Pelajaran / Topik Bahasan (Lesson)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 590,
+                                            lineNumber: 652,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
                                             rows: 3,
                                             value: editLesson,
                                             onChange: (e)=>setEditLesson(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 593,
+                                            lineNumber: 655,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 589,
+                                    lineNumber: 651,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5489,59 +5621,59 @@ function MeetingJournal() {
                                             children: "Catatan Tambahan"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 603,
+                                            lineNumber: 665,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                             type: "text",
                                             value: editNotes,
                                             onChange: (e)=>setEditNotes(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 604,
+                                            lineNumber: 666,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 602,
+                                    lineNumber: 664,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "p-3 bg-blue-50/70 border border-blue-200 rounded-2xl flex items-center justify-between",
+                                    className: "p-3 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "flex items-center gap-1.5 font-bold text-xs text-blue-900",
+                                                    className: "flex items-center gap-1.5 font-bold text-xs text-amber-900",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "🎬"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 616,
+                                                            lineNumber: 678,
                                                             columnNumber: 21
                                                         }, this),
                                                         " Klaim Fee Video Siswa"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 615,
+                                                    lineNumber: 677,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                    className: "text-[10px] text-blue-700/80 mt-0.5",
+                                                    className: "text-[10px] text-amber-700/80 mt-0.5",
                                                     children: "Status bonus video dokumentasi murid (+Rp 10.000)."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 618,
+                                                    lineNumber: 680,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 614,
+                                            lineNumber: 676,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -5550,21 +5682,21 @@ function MeetingJournal() {
                                                 type: "checkbox",
                                                 checked: editClaimVideo,
                                                 onChange: (e)=>setEditClaimVideo(e.target.checked),
-                                                className: "w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                                className: "w-4 h-4 text-amber-500 rounded border-gray-300 focus:ring-amber-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 623,
+                                                lineNumber: 685,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 622,
+                                            lineNumber: 684,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 613,
+                                    lineNumber: 675,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5577,49 +5709,49 @@ function MeetingJournal() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 633,
+                                            lineNumber: 695,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                             type: "submit",
-                                            className: "px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm",
+                                            className: "px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm",
                                             children: "Simpan Perubahan"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 640,
+                                            lineNumber: 702,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 632,
+                                    lineNumber: 694,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 558,
+                            lineNumber: 620,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                    lineNumber: 540,
+                    lineNumber: 602,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 539,
+                lineNumber: 601,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/MeetingJournal.tsx",
-        lineNumber: 128,
+        lineNumber: 154,
         columnNumber: 5
     }, this);
 }
-_s(MeetingJournal, "EDkJllrCFvKLip93qbK2k4cs3oU=", false, function() {
+_s(MeetingJournal, "32ge1rjuqcyaM9rUnUX6MXP4CpY=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"]
     ];
@@ -5789,7 +5921,7 @@ function PayrollTable() {
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-6 shadow-md shadow-blue-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4",
+                className: "bg-gradient-to-r from-bg-gradient-to-r from-amber-500 to-amber-600 shadow-md shadow-amber-200/50 text-white rounded-2xl p-6 shadow-md shadow-blue-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         children: [
@@ -6755,58 +6887,91 @@ var _s = __turbopack_context__.k.signature();
 function PayslipView() {
     _s();
     const { currentUser, users, classrooms, meetings, freeTrials, rates, selectedMonth, getAdjustmentForTutor } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
-    const tutors = users.filter((u)=>u.role === 'tutor');
-    // Default: Jika Admin, tampilkan opsi 'all' (Ringkasan Seluruh Tutor). Jika Tutor, kunci ke akun pribadinya.
-    const [selectedTutorId, setSelectedTutorId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(currentUser?.role === 'tutor' ? currentUser.id : 'all');
-    // Helper untuk menghitung total pendapatan & take home pay per tutor
+    const isAdmin = currentUser?.role === 'admin';
+    const tutors = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "PayslipView.useMemo[tutors]": ()=>users.filter({
+                "PayslipView.useMemo[tutors]": (u)=>u.role === 'tutor'
+            }["PayslipView.useMemo[tutors]"])
+    }["PayslipView.useMemo[tutors]"], [
+        users
+    ]);
+    // Default: Jika Admin maka 'all', jika Tutor selalu terkunci ke ID pribadinya
+    const [selectedTutorId, setSelectedTutorId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(isAdmin ? 'all' : currentUser?.id || '');
+    // Helper fungsi hitung gaji per tutor (murni hitungan matematis tanpa efek samping)
     const calculateTutorPayroll = (tutorId)=>{
-        const tMeetings = meetings.filter((m)=>m.tutorId === tutorId && !m.isLocked && m.date?.startsWith(selectedMonth));
+        const tMeetings = meetings.filter((m)=>m.tutorId === tutorId && !m.isLocked && m.date && m.date.startsWith(selectedMonth));
         let baseEarnings = 0;
         let ldrEarnings = 0;
         tMeetings.forEach((m)=>{
             const cls = classrooms.find((c)=>c.id === m.classroomId);
             baseEarnings += cls ? rates.baseFees[cls.type] || 0 : 0;
-            if (m.ldrZoneSnapshot !== 'none') {
+            if (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') {
                 ldrEarnings += rates.ldrBonus[m.ldrZoneSnapshot] || 0;
             }
         });
-        const tTrials = freeTrials.filter((ft)=>ft.tutorId === tutorId && ft.status === 'completed' && ft.date?.startsWith(selectedMonth));
+        const tTrials = freeTrials.filter((ft)=>ft.tutorId === tutorId && ft.status === 'completed' && ft.date && ft.date.startsWith(selectedMonth));
         const trialTotal = tTrials.length * (rates.baseFees['Free Trial'] || 25000);
-        const adj = getAdjustmentForTutor(tutorId, selectedMonth);
-        const videoTotal = adj.videoCount * rates.standardBonus.videoPerItem;
-        const reportTotal = adj.reportCount * rates.standardBonus.reportPerStudent;
-        const fnmTotal = adj.fnmCount * rates.standardBonus.fnmPerClosing;
-        const totalIncome = baseEarnings + ldrEarnings + trialTotal + videoTotal + reportTotal + fnmTotal + adj.customBonusNominal;
-        const sukaDukaNominal = adj.applySukaDuka ? rates.standardDeductions.sukaDuka : 0;
-        const lateAttendanceNominal = adj.lateAttendanceCount * rates.standardDeductions.lateAttendance;
-        const violationNominal = adj.violationCount * rates.standardDeductions.violationOJL_GC;
-        const lateVideoNominal = adj.lateVideoCount * rates.standardDeductions.lateVideo;
-        const suddenLeaveNominal = adj.suddenLeaveCount * rates.standardDeductions.suddenLeave;
-        const totalDeductions = sukaDukaNominal + lateAttendanceNominal + violationNominal + lateVideoNominal + suddenLeaveNominal + adj.customDeductionNominal;
+        const adj = getAdjustmentForTutor ? getAdjustmentForTutor(tutorId, selectedMonth) : null;
+        const videoTotal = (adj?.videoCount || 0) * rates.standardBonus.videoPerItem;
+        const reportTotal = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
+        const fnmTotal = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
+        const customBonus = Number(adj?.customBonusNominal || 0);
+        const totalIncome = baseEarnings + ldrEarnings + trialTotal + videoTotal + reportTotal + fnmTotal + customBonus;
+        const sukaDukaNominal = adj?.applySukaDuka ? rates.standardDeductions.sukaDuka : 0;
+        const lateAttendanceNominal = (adj?.lateAttendanceCount || 0) * rates.standardDeductions.lateAttendance;
+        const violationNominal = (adj?.violationCount || 0) * rates.standardDeductions.violationOJL_GC;
+        const lateVideoNominal = (adj?.lateVideoCount || 0) * rates.standardDeductions.lateVideo;
+        const suddenLeaveNominal = (adj?.suddenLeaveCount || 0) * rates.standardDeductions.suddenLeave;
+        const customDeduction = Number(adj?.customDeductionNominal || 0);
+        const totalDeductions = sukaDukaNominal + lateAttendanceNominal + violationNominal + lateVideoNominal + suddenLeaveNominal + customDeduction;
         const takeHomePay = Math.max(0, totalIncome - totalDeductions);
         return {
             sessionCount: tMeetings.length,
             takeHomePay
         };
     };
-    // Data ringkasan untuk seluruh tutor
-    const summaryList = tutors.map((t)=>{
-        const calc = calculateTutorPayroll(t.id);
-        return {
-            id: t.id,
-            name: t.name,
-            sessionCount: calc.sessionCount,
-            takeHomePay: calc.takeHomePay
-        };
-    });
-    const grandTotalPayroll = summaryList.reduce((acc, curr)=>acc + curr.takeHomePay, 0);
+    // HANYA hitung ringkasan semua tutor jika Admin sedang memilih 'all'
+    const summaryList = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "PayslipView.useMemo[summaryList]": ()=>{
+            if (!isAdmin || selectedTutorId !== 'all') return [];
+            return tutors.map({
+                "PayslipView.useMemo[summaryList]": (t)=>{
+                    const calc = calculateTutorPayroll(t.id);
+                    return {
+                        id: t.id,
+                        name: t.name,
+                        sessionCount: calc.sessionCount,
+                        takeHomePay: calc.takeHomePay
+                    };
+                }
+            }["PayslipView.useMemo[summaryList]"]);
+        }
+    }["PayslipView.useMemo[summaryList]"], [
+        isAdmin,
+        selectedTutorId,
+        tutors,
+        meetings,
+        classrooms,
+        freeTrials,
+        rates,
+        selectedMonth
+    ]);
+    const grandTotalPayroll = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "PayslipView.useMemo[grandTotalPayroll]": ()=>{
+            return summaryList.reduce({
+                "PayslipView.useMemo[grandTotalPayroll]": (acc, curr)=>acc + curr.takeHomePay
+            }["PayslipView.useMemo[grandTotalPayroll]"], 0);
+        }
+    }["PayslipView.useMemo[grandTotalPayroll]"], [
+        summaryList
+    ]);
     const handlePrint = ()=>{
         window.print();
     };
     // ==========================================
-    // JIKA MEMILIH "SEMUA TUTOR" (VIEW RINGKASAN)
+    // VIEW 1: ADMIN - RINGKASAN SEMUA TUTOR
     // ==========================================
-    if (selectedTutorId === 'all' && currentUser?.role === 'admin') {
+    if (isAdmin && selectedTutorId === 'all') {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "space-y-6",
             children: [
@@ -6820,7 +6985,7 @@ function PayslipView() {
                                     children: "Rekap Slip Gaji Tutor"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 99,
+                                    lineNumber: 107,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6832,13 +6997,13 @@ function PayslipView() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 100,
+                                    lineNumber: 108,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 98,
+                            lineNumber: 106,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6854,7 +7019,7 @@ function PayslipView() {
                                             children: "👥 Semua Tutor (Tabel Ringkasan)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 111,
+                                            lineNumber: 119,
                                             columnNumber: 15
                                         }, this),
                                         tutors.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6865,43 +7030,43 @@ function PayslipView() {
                                                 ]
                                             }, t.id, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 113,
+                                                lineNumber: 121,
                                                 columnNumber: 17
                                             }, this))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 106,
+                                    lineNumber: 114,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     onClick: handlePrint,
-                                    className: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2",
+                                    className: "px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             children: "🖨️"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 123,
+                                            lineNumber: 131,
                                             columnNumber: 15
                                         }, this),
                                         " Cetak / Simpan PDF"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 119,
+                                    lineNumber: 127,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 105,
+                            lineNumber: 113,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/PayslipView.tsx",
-                    lineNumber: 97,
+                    lineNumber: 105,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6915,12 +7080,13 @@ function PayslipView() {
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "flex items-center gap-2",
                                             children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "h-8 w-8 bg-blue-600 text-white rounded-lg flex items-center justify-center font-extrabold text-sm",
-                                                    children: "GS"
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                                    src: "/logo_GSonly.png",
+                                                    alt: "Gumi Schooling",
+                                                    className: "h-10 w-auto object-contain"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 133,
+                                                    lineNumber: 141,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -6928,13 +7094,13 @@ function PayslipView() {
                                                     children: "GUMI SCHOOLING"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 136,
+                                                    lineNumber: 146,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 132,
+                                            lineNumber: 140,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6942,13 +7108,13 @@ function PayslipView() {
                                             children: "Ringkasan Pengeluaran Gaji Tutor"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 138,
+                                            lineNumber: 148,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 131,
+                                    lineNumber: 139,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6961,18 +7127,18 @@ function PayslipView() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 141,
+                                        lineNumber: 151,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 140,
+                                    lineNumber: 150,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 130,
+                            lineNumber: 138,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6989,7 +7155,7 @@ function PayslipView() {
                                                     children: "No"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 151,
+                                                    lineNumber: 161,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -6997,7 +7163,7 @@ function PayslipView() {
                                                     children: "Nama Tutor"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 152,
+                                                    lineNumber: 162,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -7005,18 +7171,18 @@ function PayslipView() {
                                                     children: "Total Gaji"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 153,
+                                                    lineNumber: 163,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 150,
+                                            lineNumber: 160,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 149,
+                                        lineNumber: 159,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -7028,12 +7194,12 @@ function PayslipView() {
                                                 children: "Tidak ada data tutor terdaftar."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 159,
+                                                lineNumber: 169,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 158,
+                                            lineNumber: 168,
                                             columnNumber: 19
                                         }, this) : summaryList.map((item, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 className: "hover:bg-slate-50/70 transition-colors cursor-pointer",
@@ -7045,7 +7211,7 @@ function PayslipView() {
                                                         children: index + 1
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 171,
+                                                        lineNumber: 181,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7053,17 +7219,17 @@ function PayslipView() {
                                                         children: [
                                                             item.name,
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                className: "ml-2 text-[10px] text-blue-600 font-normal print:hidden",
+                                                                className: "ml-2 text-[10px] text-amber-600 font-normal print:hidden",
                                                                 children: "(Lihat Detail ↗)"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 174,
+                                                                lineNumber: 184,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 172,
+                                                        lineNumber: 182,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7074,18 +7240,18 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 178,
+                                                        lineNumber: 188,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, item.id, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 165,
+                                                lineNumber: 175,
                                                 columnNumber: 21
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 156,
+                                        lineNumber: 166,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tfoot", {
@@ -7098,7 +7264,7 @@ function PayslipView() {
                                                     children: "Keseluruhan Gaji Tutor"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 187,
+                                                    lineNumber: 197,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7109,29 +7275,29 @@ function PayslipView() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 190,
+                                                    lineNumber: 200,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 186,
+                                            lineNumber: 196,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 185,
+                                        lineNumber: 195,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 148,
+                                lineNumber: 158,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 147,
+                            lineNumber: 157,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7139,38 +7305,40 @@ function PayslipView() {
                             children: "* Klik nama tutor untuk membuka rincian slip gaji satuan."
                         }, void 0, false, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 198,
+                            lineNumber: 208,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/PayslipView.tsx",
-                    lineNumber: 129,
+                    lineNumber: 137,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/PayslipView.tsx",
-            lineNumber: 95,
+            lineNumber: 103,
             columnNumber: 7
         }, this);
     }
     // ==========================================
-    // JIKA MEMILIH TUTOR TERTENTU (SLIP DETAIL)
+    // VIEW 2: SLIP GAJI DETAIL (TUTOR / ADMIN)
     // ==========================================
-    const activeTutor = users.find((u)=>u.id === selectedTutorId) || tutors[0];
+    // Jika Tutor login, paksa ke akun pribadinya
+    const targetId = isAdmin ? selectedTutorId : currentUser?.id;
+    const activeTutor = users.find((u)=>u.id === targetId) || tutors[0];
     if (!activeTutor) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "p-6 text-slate-400",
-            children: "Tidak ada tutor yang ditemukan."
+            children: "Data tutor tidak ditemukan."
         }, void 0, false, {
             fileName: "[project]/src/components/PayslipView.tsx",
-            lineNumber: 212,
+            lineNumber: 224,
             columnNumber: 12
         }, this);
     }
     // 1. Data Pertemuan Kelas Bulan Ini
-    const tutorMeetings = meetings.filter((m)=>m.tutorId === activeTutor.id && !m.isLocked && m.date?.startsWith(selectedMonth));
+    const tutorMeetings = meetings.filter((m)=>m.tutorId === activeTutor.id && !m.isLocked && m.date && m.date.startsWith(selectedMonth));
     const classroomBreakdown = {};
     tutorMeetings.forEach((m)=>{
         const cls = classrooms.find((c)=>c.id === m.classroomId);
@@ -7191,7 +7359,7 @@ function PayslipView() {
     // 2. Bonus LDR
     const ldrBreakdown = {};
     tutorMeetings.forEach((m)=>{
-        if (m.ldrZoneSnapshot !== 'none') {
+        if (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') {
             const bonus = rates.ldrBonus[m.ldrZoneSnapshot] || 0;
             if (!ldrBreakdown[m.ldrZoneSnapshot]) {
                 ldrBreakdown[m.ldrZoneSnapshot] = {
@@ -7205,21 +7373,23 @@ function PayslipView() {
         }
     });
     // 3. Free Trial
-    const tutorTrials = freeTrials.filter((ft)=>ft.tutorId === activeTutor.id && ft.status === 'completed' && ft.date?.startsWith(selectedMonth));
+    const tutorTrials = freeTrials.filter((ft)=>ft.tutorId === activeTutor.id && ft.status === 'completed' && ft.date && ft.date.startsWith(selectedMonth));
     const trialRate = rates.baseFees['Free Trial'] || 25000;
     const trialTotal = tutorTrials.length * trialRate;
-    // 4. Penyesuaian Bonus & Potongan Admin
-    const adj = getAdjustmentForTutor(activeTutor.id, selectedMonth);
-    const videoTotal = adj.videoCount * rates.standardBonus.videoPerItem;
-    const reportTotal = adj.reportCount * rates.standardBonus.reportPerStudent;
-    const fnmTotal = adj.fnmCount * rates.standardBonus.fnmPerClosing;
-    const totalTeachingAndBonus = Object.values(classroomBreakdown).reduce((acc, c)=>acc + c.total, 0) + Object.values(ldrBreakdown).reduce((acc, l)=>acc + l.total, 0) + trialTotal + videoTotal + reportTotal + fnmTotal + adj.customBonusNominal;
-    const sukaDukaNominal = adj.applySukaDuka ? rates.standardDeductions.sukaDuka : 0;
-    const lateAttendanceNominal = adj.lateAttendanceCount * rates.standardDeductions.lateAttendance;
-    const violationNominal = adj.violationCount * rates.standardDeductions.violationOJL_GC;
-    const lateVideoNominal = adj.lateVideoCount * rates.standardDeductions.lateVideo;
-    const suddenLeaveNominal = adj.suddenLeaveCount * rates.standardDeductions.suddenLeave;
-    const totalDeductions = sukaDukaNominal + lateAttendanceNominal + violationNominal + lateVideoNominal + suddenLeaveNominal + adj.customDeductionNominal;
+    // 4. Penyesuaian Bonus & Potongan
+    const adj = getAdjustmentForTutor ? getAdjustmentForTutor(activeTutor.id, selectedMonth) : null;
+    const videoTotal = (adj?.videoCount || 0) * rates.standardBonus.videoPerItem;
+    const reportTotal = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
+    const fnmTotal = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
+    const customBonusNominal = Number(adj?.customBonusNominal || 0);
+    const totalTeachingAndBonus = Object.values(classroomBreakdown).reduce((acc, c)=>acc + c.total, 0) + Object.values(ldrBreakdown).reduce((acc, l)=>acc + l.total, 0) + trialTotal + videoTotal + reportTotal + fnmTotal + customBonusNominal;
+    const sukaDukaNominal = adj?.applySukaDuka ? rates.standardDeductions.sukaDuka : 0;
+    const lateAttendanceNominal = (adj?.lateAttendanceCount || 0) * rates.standardDeductions.lateAttendance;
+    const violationNominal = (adj?.violationCount || 0) * rates.standardDeductions.violationOJL_GC;
+    const lateVideoNominal = (adj?.lateVideoCount || 0) * rates.standardDeductions.lateVideo;
+    const suddenLeaveNominal = (adj?.suddenLeaveCount || 0) * rates.standardDeductions.suddenLeave;
+    const customDeductionNominal = Number(adj?.customDeductionNominal || 0);
+    const totalDeductions = sukaDukaNominal + lateAttendanceNominal + violationNominal + lateVideoNominal + suddenLeaveNominal + customDeductionNominal;
     const takeHomePay = Math.max(0, totalTeachingAndBonus - totalDeductions);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "space-y-6",
@@ -7234,7 +7404,7 @@ function PayslipView() {
                                 children: "Slip Gaji Tutor"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 299,
+                                lineNumber: 313,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7246,19 +7416,19 @@ function PayslipView() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 300,
+                                lineNumber: 314,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 298,
+                        lineNumber: 312,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex items-center gap-3",
                         children: [
-                            currentUser?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                            isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                 value: selectedTutorId,
                                 onChange: (e)=>setSelectedTutorId(e.target.value),
                                 className: "px-3 py-2 text-xs border rounded-xl bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500",
@@ -7268,7 +7438,7 @@ function PayslipView() {
                                         children: "👥 Semua Tutor (Tabel Ringkasan)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 312,
+                                        lineNumber: 326,
                                         columnNumber: 15
                                     }, this),
                                     tutors.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -7279,13 +7449,13 @@ function PayslipView() {
                                             ]
                                         }, t.id, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 314,
+                                            lineNumber: 328,
                                             columnNumber: 17
                                         }, this))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 307,
+                                lineNumber: 321,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -7296,26 +7466,26 @@ function PayslipView() {
                                         children: "🖨️"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 325,
+                                        lineNumber: 339,
                                         columnNumber: 13
                                     }, this),
                                     " Cetak / Simpan PDF"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 321,
+                                lineNumber: 335,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 305,
+                        lineNumber: 319,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/PayslipView.tsx",
-                lineNumber: 297,
+                lineNumber: 311,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7334,7 +7504,7 @@ function PayslipView() {
                                                 children: "GS"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 335,
+                                                lineNumber: 349,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -7342,13 +7512,13 @@ function PayslipView() {
                                                 children: "GUMI SCHOOLING"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 338,
+                                                lineNumber: 352,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 334,
+                                        lineNumber: 348,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7356,13 +7526,13 @@ function PayslipView() {
                                         children: "Tutor Salary & Activity Statement"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 340,
+                                        lineNumber: 354,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 333,
+                                lineNumber: 347,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7375,18 +7545,18 @@ function PayslipView() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 343,
+                                    lineNumber: 357,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 342,
+                                lineNumber: 356,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 332,
+                        lineNumber: 346,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7399,7 +7569,7 @@ function PayslipView() {
                                         children: "Nama Tutor:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 352,
+                                        lineNumber: 366,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
@@ -7407,13 +7577,13 @@ function PayslipView() {
                                         children: activeTutor.name
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 353,
+                                        lineNumber: 367,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 351,
+                                lineNumber: 365,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7423,7 +7593,7 @@ function PayslipView() {
                                         children: "Role / Posisi:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 356,
+                                        lineNumber: 370,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7431,19 +7601,19 @@ function PayslipView() {
                                         children: "Tutor Pengajar"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 357,
+                                        lineNumber: 371,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 355,
+                                lineNumber: 369,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 350,
+                        lineNumber: 364,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7454,7 +7624,7 @@ function PayslipView() {
                                 children: "Rincian Pendapatan (Earnings & Bonuses)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 363,
+                                lineNumber: 377,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7471,7 +7641,7 @@ function PayslipView() {
                                                         children: "Details (Kategori)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 371,
+                                                        lineNumber: 385,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -7479,7 +7649,7 @@ function PayslipView() {
                                                         children: "Durations"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 372,
+                                                        lineNumber: 386,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -7487,7 +7657,7 @@ function PayslipView() {
                                                         children: "Balance (Tarif)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 373,
+                                                        lineNumber: 387,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -7495,7 +7665,7 @@ function PayslipView() {
                                                         children: "Qty"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 374,
+                                                        lineNumber: 388,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -7503,18 +7673,18 @@ function PayslipView() {
                                                         children: "Amount (Rp)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 375,
+                                                        lineNumber: 389,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 370,
+                                                lineNumber: 384,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 369,
+                                            lineNumber: 383,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -7527,12 +7697,12 @@ function PayslipView() {
                                                         children: "Tidak ada aktivitas mengajar pada periode ini."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 381,
+                                                        lineNumber: 395,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 380,
+                                                    lineNumber: 394,
                                                     columnNumber: 19
                                                 }, this) : Object.entries(classroomBreakdown).map(([type, data])=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                         children: [
@@ -7544,7 +7714,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 388,
+                                                                lineNumber: 402,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7552,7 +7722,7 @@ function PayslipView() {
                                                                 children: "60 - 90 Menit"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 389,
+                                                                lineNumber: 403,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7563,7 +7733,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 390,
+                                                                lineNumber: 404,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7574,7 +7744,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 391,
+                                                                lineNumber: 405,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7585,13 +7755,13 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 392,
+                                                                lineNumber: 406,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, type, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 387,
+                                                        lineNumber: 401,
                                                         columnNumber: 21
                                                     }, this)),
                                                 tutorTrials.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -7601,7 +7771,7 @@ function PayslipView() {
                                                             children: "Free Trial Class"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 399,
+                                                            lineNumber: 413,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7609,7 +7779,7 @@ function PayslipView() {
                                                             children: "60 Menit"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 400,
+                                                            lineNumber: 414,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7620,7 +7790,7 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 401,
+                                                            lineNumber: 415,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7631,7 +7801,7 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 402,
+                                                            lineNumber: 416,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7642,13 +7812,13 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 403,
+                                                            lineNumber: 417,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 398,
+                                                    lineNumber: 412,
                                                     columnNumber: 19
                                                 }, this),
                                                 Object.entries(ldrBreakdown).map(([zone, data])=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -7662,7 +7832,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 409,
+                                                                lineNumber: 423,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7670,7 +7840,7 @@ function PayslipView() {
                                                                 children: "-"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 410,
+                                                                lineNumber: 424,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7681,7 +7851,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 411,
+                                                                lineNumber: 425,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7692,7 +7862,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 412,
+                                                                lineNumber: 426,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7703,23 +7873,23 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 413,
+                                                                lineNumber: 427,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, zone, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 408,
+                                                        lineNumber: 422,
                                                         columnNumber: 19
                                                     }, this)),
-                                                adj.videoCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                (adj?.videoCount || 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-emerald-700",
                                                             children: "Bonus Konten Video Siswa"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 419,
+                                                            lineNumber: 433,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7727,7 +7897,7 @@ function PayslipView() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 420,
+                                                            lineNumber: 434,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7738,18 +7908,18 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 421,
+                                                            lineNumber: 435,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-center font-bold",
                                                             children: [
-                                                                adj.videoCount,
+                                                                adj?.videoCount,
                                                                 " video"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 422,
+                                                            lineNumber: 436,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7760,23 +7930,23 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 423,
+                                                            lineNumber: 437,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 418,
+                                                    lineNumber: 432,
                                                     columnNumber: 19
                                                 }, this),
-                                                adj.reportCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                (adj?.reportCount || 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-emerald-700",
                                                             children: "Bonus Laporan Progres Siswa"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 429,
+                                                            lineNumber: 443,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7784,7 +7954,7 @@ function PayslipView() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 430,
+                                                            lineNumber: 444,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7795,18 +7965,18 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 431,
+                                                            lineNumber: 445,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-center font-bold",
                                                             children: [
-                                                                adj.reportCount,
+                                                                adj?.reportCount,
                                                                 " murid"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 432,
+                                                            lineNumber: 446,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7817,23 +7987,23 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 433,
+                                                            lineNumber: 447,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 428,
+                                                    lineNumber: 442,
                                                     columnNumber: 19
                                                 }, this),
-                                                adj.fnmCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                (adj?.fnmCount || 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-emerald-700",
                                                             children: "Fee New Member (Closing FNM)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 439,
+                                                            lineNumber: 453,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7841,7 +8011,7 @@ function PayslipView() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 440,
+                                                            lineNumber: 454,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7852,18 +8022,18 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 441,
+                                                            lineNumber: 455,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-center font-bold",
                                                             children: [
-                                                                adj.fnmCount,
+                                                                adj?.fnmCount,
                                                                 " closing"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 442,
+                                                            lineNumber: 456,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7874,26 +8044,26 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 443,
+                                                            lineNumber: 457,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 438,
+                                                    lineNumber: 452,
                                                     columnNumber: 19
                                                 }, this),
-                                                adj.customBonusNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                customBonusNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-emerald-700",
                                                             children: [
                                                                 "Bonus Lainnya: ",
-                                                                adj.customBonusNote || 'Apresiasi'
+                                                                adj?.customBonusNote || 'Apresiasi'
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 449,
+                                                            lineNumber: 463,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7901,18 +8071,18 @@ function PayslipView() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 450,
+                                                            lineNumber: 464,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-right",
                                                             children: [
                                                                 "Rp ",
-                                                                adj.customBonusNominal.toLocaleString('id-ID')
+                                                                customBonusNominal.toLocaleString('id-ID')
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 451,
+                                                            lineNumber: 465,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7920,47 +8090,47 @@ function PayslipView() {
                                                             children: "1"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 452,
+                                                            lineNumber: 466,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-right font-semibold text-emerald-700",
                                                             children: [
                                                                 "Rp ",
-                                                                adj.customBonusNominal.toLocaleString('id-ID')
+                                                                customBonusNominal.toLocaleString('id-ID')
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 453,
+                                                            lineNumber: 467,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 448,
+                                                    lineNumber: 462,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 378,
+                                            lineNumber: 392,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 368,
+                                    lineNumber: 382,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 367,
+                                lineNumber: 381,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 362,
+                        lineNumber: 376,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7971,7 +8141,7 @@ function PayslipView() {
                                 children: "Potongan & Denda (Deductions)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 463,
+                                lineNumber: 477,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7981,14 +8151,14 @@ function PayslipView() {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
                                         className: "divide-y divide-rose-100 text-rose-700",
                                         children: [
-                                            adj.applySukaDuka && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                            adj?.applySukaDuka && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                         className: "py-2 px-3",
                                                         children: "Iuran Wajib Suka Duka Bulanan"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 472,
+                                                        lineNumber: 486,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -7999,13 +8169,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 473,
+                                                        lineNumber: 487,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 471,
+                                                lineNumber: 485,
                                                 columnNumber: 19
                                             }, this),
                                             lateAttendanceNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -8014,12 +8184,12 @@ function PayslipView() {
                                                         className: "py-2 px-3",
                                                         children: [
                                                             "Denda Keterlambatan Hadir (",
-                                                            adj.lateAttendanceCount,
+                                                            adj?.lateAttendanceCount,
                                                             "x)"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 478,
+                                                        lineNumber: 492,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8030,13 +8200,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 479,
+                                                        lineNumber: 493,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 477,
+                                                lineNumber: 491,
                                                 columnNumber: 19
                                             }, this),
                                             violationNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -8045,12 +8215,12 @@ function PayslipView() {
                                                         className: "py-2 px-3",
                                                         children: [
                                                             "Denda Pelanggaran OJL & GC (",
-                                                            adj.violationCount,
+                                                            adj?.violationCount,
                                                             "x)"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 484,
+                                                        lineNumber: 498,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8061,13 +8231,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 485,
+                                                        lineNumber: 499,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 483,
+                                                lineNumber: 497,
                                                 columnNumber: 19
                                             }, this),
                                             lateVideoNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -8076,12 +8246,12 @@ function PayslipView() {
                                                         className: "py-2 px-3",
                                                         children: [
                                                             "Denda Keterlambatan Video (",
-                                                            adj.lateVideoCount,
+                                                            adj?.lateVideoCount,
                                                             "x)"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 490,
+                                                        lineNumber: 504,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8092,13 +8262,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 491,
+                                                        lineNumber: 505,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 489,
+                                                lineNumber: 503,
                                                 columnNumber: 19
                                             }, this),
                                             suddenLeaveNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -8107,12 +8277,12 @@ function PayslipView() {
                                                         className: "py-2 px-3",
                                                         children: [
                                                             "Denda Cuti Mendadak (",
-                                                            adj.suddenLeaveCount,
+                                                            adj?.suddenLeaveCount,
                                                             "x)"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 496,
+                                                        lineNumber: 510,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8123,65 +8293,65 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 497,
+                                                        lineNumber: 511,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 495,
+                                                lineNumber: 509,
                                                 columnNumber: 19
                                             }, this),
-                                            adj.customDeductionNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                            customDeductionNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                         className: "py-2 px-3",
                                                         children: [
                                                             "Denda Lainnya: ",
-                                                            adj.customDeductionNote || 'Pelanggaran'
+                                                            adj?.customDeductionNote || 'Pelanggaran'
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 502,
+                                                        lineNumber: 516,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                         className: "py-2 px-3 text-right font-semibold",
                                                         children: [
                                                             "-Rp ",
-                                                            adj.customDeductionNominal.toLocaleString('id-ID')
+                                                            customDeductionNominal.toLocaleString('id-ID')
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 503,
+                                                        lineNumber: 517,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 501,
+                                                lineNumber: 515,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 469,
+                                        lineNumber: 483,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 468,
+                                    lineNumber: 482,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 467,
+                                lineNumber: 481,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 462,
+                        lineNumber: 476,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8194,7 +8364,7 @@ function PayslipView() {
                                         children: "Total Gaji Diterima (Take-Home Pay)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 514,
+                                        lineNumber: 528,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8202,13 +8372,13 @@ function PayslipView() {
                                         children: "(Total Pendapatan - Total Pemotongan)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 517,
+                                        lineNumber: 531,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 513,
+                                lineNumber: 527,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8219,29 +8389,29 @@ function PayslipView() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 521,
+                                lineNumber: 535,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 512,
+                        lineNumber: 526,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/PayslipView.tsx",
-                lineNumber: 331,
+                lineNumber: 345,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/PayslipView.tsx",
-        lineNumber: 295,
+        lineNumber: 309,
         columnNumber: 5
     }, this);
 }
-_s(PayslipView, "TNFwx7L481+z6VVadk/ZWMO7Kj0=", false, function() {
+_s(PayslipView, "4pHwwMzTVH9WPU21bgD8kL+kxJI=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"]
     ];
@@ -8391,7 +8561,7 @@ function RateConfigPanel() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "submit",
-                                className: "px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all",
+                                className: "px-5 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all",
                                 children: "💾 Simpan Perubahan"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
@@ -9268,7 +9438,7 @@ function UserManager() {
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: handleOpenAddModal,
-                        className: "px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto",
+                        className: "px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 children: "👤"
@@ -9628,7 +9798,7 @@ function UserManager() {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                             onClick: ()=>handleOpenEditModal(u),
-                                                            className: "px-2.5 py-1 text-xs font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-all",
+                                                            className: "px-2.5 py-1 text-xs font-semibold bg-blue-50 text-amber-700 hover:bg-amber-50 rounded-lg transition-all",
                                                             title: "Edit Profil & Password",
                                                             children: "✏️ Edit / Password"
                                                         }, void 0, false, {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Classroom, Meeting, User } from '@/types';
 
@@ -18,6 +18,24 @@ export default function MeetingJournal() {
     selectedMonth,
     setSelectedMonth,
   } = useApp();
+
+  const isAdmin = currentUser?.role === 'admin';
+
+  // State Saklar Kunci Pengisian Jurnal (Audit Mode)
+  const [isJournalLocked, setIsJournalLocked] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('gumi_journal_submission_locked') === 'true';
+    }
+    return false;
+  });
+
+  const handleToggleJournalLock = () => {
+    const nextState = !isJournalLocked;
+    setIsJournalLocked(nextState);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('gumi_journal_submission_locked', String(nextState));
+    }
+  };
 
   // 1. Tab Kategori Program
   const tabTypes: { id: string; label: string }[] = [
@@ -62,8 +80,12 @@ export default function MeetingJournal() {
   });
 
   const handleOpenFillModal = (classId: string, meetingNumber: number) => {
+    if (!isAdmin && isJournalLocked) {
+      alert('Pengisian jurnal sedang dinonaktifkan untuk proses audit oleh Admin.');
+      return;
+    }
     setActiveSlot({ classId, meetingNumber });
-    setInputDate(`${selectedMonth}-01`); // Set default ke awal bulan yang sedang difilter
+    setInputDate(`${selectedMonth}-01`);
     setInputLesson('');
     setInputNotes('');
     setClaimVideo(false);
@@ -72,6 +94,10 @@ export default function MeetingJournal() {
   const handleSubmitMeeting = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeSlot) return;
+    if (!isAdmin && isJournalLocked) {
+      alert('Pengisian jurnal sedang dinonaktifkan untuk proses audit oleh Admin.');
+      return;
+    }
     if (!inputLesson.trim()) {
       alert('Harap masukkan materi pelajaran (lesson)!');
       return;
@@ -135,17 +161,48 @@ export default function MeetingJournal() {
           </p>
         </div>
 
-        {/* Pemilih Periode Bulan Jurnal */}
-        <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 self-start md:self-auto">
-          <span className="text-xs font-semibold text-slate-600 pl-1">Periode Jurnal:</span>
-          <input
-            type="month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-3 py-1.5 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <div className="flex flex-wrap items-center gap-3">
+          {/* SAKLAR AUDIT KHUSUS ADMIN */}
+          {isAdmin && (
+            <button
+              onClick={handleToggleJournalLock}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2 border ${
+                isJournalLocked
+                  ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+              }`}
+              title="Kunci atau buka izin pengisian jurnal untuk seluruh tutor"
+            >
+              <span>{isJournalLocked ? '🔒' : '🔓'}</span>
+              <span>{isJournalLocked ? 'Akses Tutor: TERKUNCI (Audit)' : 'Akses Tutor: TERBUKA'}</span>
+            </button>
+          )}
+
+          {/* Pemilih Periode Bulan Jurnal */}
+          <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+            <span className="text-xs font-semibold text-slate-600 pl-1">Periode:</span>
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="px-3 py-1.5 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
         </div>
       </div>
+
+      {/* BANNER NOTIFIKASI JIKA SEDANG AUDIT (SISI TUTOR) */}
+      {!isAdmin && isJournalLocked && (
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3 text-amber-900 animate-in fade-in">
+          <span className="text-2xl">🔒</span>
+          <div>
+            <h4 className="font-bold text-xs">Akses Pengisian Jurnal Sedang Ditutup (Audit Mode)</h4>
+            <p className="text-[11px] text-amber-800/80 mt-0.5">
+              Admin sedang melakukan peninjauan & audit sesi bulanan. Anda tetap dapat melihat catatan dan mencari data murid, namun tombol pengisian sesi baru sementara dinonaktifkan.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Kontrol Tab Program & Search Murid */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
@@ -158,7 +215,7 @@ export default function MeetingJournal() {
               onClick={() => setActiveTabType(tab.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                 activeTabType === tab.id
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? 'bg-amber-500 text-white shadow-sm'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -174,7 +231,7 @@ export default function MeetingJournal() {
             placeholder="Ketik nama murid untuk mencari (misal: Ayu Widya)..."
             value={searchStudent}
             onChange={(e) => setSearchStudent(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
           <span className="absolute left-3 top-3 text-xs text-slate-400">🔍</span>
           {searchStudent && (
@@ -196,9 +253,8 @@ export default function MeetingJournal() {
       ) : (
         <div className="space-y-6">
           {filteredClassrooms.map((cls: Classroom) => {
-            // Saring sesi yang tercatat khusus pada bulan yang sedang dipilih
             const classMeetings: Meeting[] = meetings.filter(
-              (m: Meeting) => m.classroomId === cls.id && m.date.startsWith(selectedMonth)
+              (m: Meeting) => m.classroomId === cls.id && m.date?.startsWith(selectedMonth)
             );
             const highestMeetingNum =
               classMeetings.length > 0
@@ -215,7 +271,7 @@ export default function MeetingJournal() {
                 {/* HEADER KOTAK KELAS & NAMA MURID */}
                 <div className="p-4 bg-slate-50/80 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-start md:items-center gap-3.5">
-                    <span className="px-3 py-1.5 bg-fuchsia-600 text-white font-black text-xs uppercase rounded-lg tracking-wider shrink-0 shadow-sm">
+                    <span className="px-3 py-1.5 bg-amber-500 text-white font-black text-xs uppercase rounded-lg tracking-wider shrink-0 shadow-sm">
                       CLASS
                     </span>
                     <div>
@@ -235,7 +291,7 @@ export default function MeetingJournal() {
                           {cls.name}
                         </span>
                         <span>•</span>
-                        <span className="font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">
+                        <span className="font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
                           Program: {cls.type}
                         </span>
                         <span>•</span>
@@ -245,7 +301,7 @@ export default function MeetingJournal() {
                         {cls.ldrZone !== 'none' && (
                           <>
                             <span>•</span>
-                            <span className="font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200">
+                            <span className="font-semibold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-md border border-purple-200">
                               📍 {cls.ldrZone.replace('_', ' >').toUpperCase()} KM
                             </span>
                           </>
@@ -261,13 +317,13 @@ export default function MeetingJournal() {
                     <tbody>
                       {/* Baris 1: Meet This Month */}
                       <tr className="border-b border-slate-200">
-                        <td className="w-40 py-2.5 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300">
+                        <td className="w-40 py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
                           Meet This Month
                         </td>
                         {colIndexes.map((num: number) => (
                           <td
                             key={num}
-                            className="py-2.5 px-3 text-center font-bold bg-rose-100 text-slate-800 border-r border-slate-200 min-w-[145px]"
+                            className="py-2.5 px-3 text-center font-bold bg-rose-50 text-slate-800 border-r border-slate-200 min-w-[145px]"
                           >
                             {num}
                           </td>
@@ -276,7 +332,7 @@ export default function MeetingJournal() {
 
                       {/* Baris 2: Class meetings */}
                       <tr className="border-b border-slate-200">
-                        <td className="py-2.5 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300">
+                        <td className="py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
                           Class meetings
                         </td>
                         {colIndexes.map((num: number) => (
@@ -291,7 +347,7 @@ export default function MeetingJournal() {
 
                       {/* Baris 3: Date */}
                       <tr className="border-b border-slate-200">
-                        <td className="py-2.5 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300">
+                        <td className="py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
                           Date
                         </td>
                         {colIndexes.map((num: number) => {
@@ -315,7 +371,7 @@ export default function MeetingJournal() {
 
                       {/* Baris 4: Tutor */}
                       <tr className="border-b border-slate-200">
-                        <td className="py-2.5 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300">
+                        <td className="py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
                           Tutor
                         </td>
                         {colIndexes.map((num: number) => {
@@ -333,7 +389,7 @@ export default function MeetingJournal() {
 
                       {/* Baris 5: Lesson, Status, Edit & Reset */}
                       <tr>
-                        <td className="py-3 px-4 font-bold bg-amber-200 text-slate-800 border-r border-slate-300">
+                        <td className="py-3 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
                           Lesson
                         </td>
                         {colIndexes.map((num: number) => {
@@ -350,7 +406,7 @@ export default function MeetingJournal() {
 
                                   <div className="flex items-center gap-1 flex-wrap pt-0.5">
                                     {mtg.hasVideoClaim && (
-                                      <span className="inline-flex items-center gap-1 text-[9px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">
+                                      <span className="inline-flex items-center gap-1 text-[9px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">
                                         🎬 Video
                                       </span>
                                     )}
@@ -363,11 +419,11 @@ export default function MeetingJournal() {
                                   </div>
 
                                   {/* KONTROL ADMIN UNTUK MEMPERBAIKI KESALAHAN TUTOR */}
-                                  {currentUser?.role === 'admin' && (
+                                  {isAdmin && (
                                     <div className="pt-1.5 flex items-center gap-2 border-t border-slate-100">
                                       <button
                                         onClick={() => handleOpenEditModal(mtg)}
-                                        className="text-[10px] text-blue-600 hover:text-blue-800 font-semibold hover:underline"
+                                        className="text-[10px] text-amber-600 hover:text-amber-800 font-semibold hover:underline"
                                       >
                                         ✏️ Edit
                                       </button>
@@ -391,14 +447,20 @@ export default function MeetingJournal() {
                               ) : (
                                 /* KOLOM KOSONG DI BULAN INI */
                                 <div className="space-y-1.5">
-                                  <button
-                                    onClick={() => handleOpenFillModal(cls.id, num)}
-                                    className="w-full py-1 text-[11px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-dashed border-emerald-300 rounded font-semibold transition-all"
-                                  >
-                                    + Isi Sesi #{num}
-                                  </button>
+                                  {!isAdmin && isJournalLocked ? (
+                                    <div className="w-full py-1 text-[10px] text-slate-400 bg-slate-50 border border-slate-200 rounded text-center font-medium">
+                                      🔒 Terkunci (Audit)
+                                    </div>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleOpenFillModal(cls.id, num)}
+                                      className="w-full py-1 text-[11px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-dashed border-emerald-300 rounded font-semibold transition-all"
+                                    >
+                                      + Isi Sesi #{num}
+                                    </button>
+                                  )}
 
-                                  {currentUser?.role === 'admin' && (
+                                  {isAdmin && (
                                     <button
                                       onClick={() => lockEmptySlot(cls.id, num)}
                                       className="w-full py-0.5 text-[10px] text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded transition-all flex items-center justify-center gap-1"
@@ -464,7 +526,7 @@ export default function MeetingJournal() {
                     type="date"
                     value={inputDate}
                     onChange={(e) => setInputDate(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                     required
                   />
                 </div>
@@ -489,18 +551,18 @@ export default function MeetingJournal() {
                   placeholder="Misal: Alfabet W and H, Phonics Review"
                   value={inputLesson}
                   onChange={(e) => setInputLesson(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   required
                 />
               </div>
 
               {/* CHECKBOX KLAIM FEE VIDEO */}
-              <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-2xl flex items-center justify-between">
+              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between">
                 <div>
-                  <div className="flex items-center gap-1.5 font-bold text-xs text-blue-900">
+                  <div className="flex items-center gap-1.5 font-bold text-xs text-amber-900">
                     <span>🎬</span> Klaim Fee Video Siswa
                   </div>
-                  <p className="text-[10px] text-blue-700/80 mt-0.5">
+                  <p className="text-[10px] text-amber-700/80 mt-0.5">
                     Centang jika sesi ini mengunggah konten video murid (+Rp 10.000).
                   </p>
                 </div>
@@ -509,7 +571,7 @@ export default function MeetingJournal() {
                     type="checkbox"
                     checked={claimVideo}
                     onChange={(e) => setClaimVideo(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    className="w-4 h-4 text-amber-500 rounded border-gray-300 focus:ring-amber-500"
                   />
                 </label>
               </div>
@@ -534,7 +596,7 @@ export default function MeetingJournal() {
         </div>
       )}
 
-      {/* MODAL 2: EDIT SESI (KHUSUS ADMIN MEMPERBAIKI HUMAN ERROR) */}
+      {/* MODAL 2: EDIT SESI (KHUSUS ADMIN) */}
       {editingMeeting && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
@@ -563,7 +625,7 @@ export default function MeetingJournal() {
                     type="date"
                     value={editDate}
                     onChange={(e) => setEditDate(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                     required
                   />
                 </div>
@@ -573,7 +635,7 @@ export default function MeetingJournal() {
                   <select
                     value={editTutorId}
                     onChange={(e) => setEditTutorId(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   >
                     {users
                       .filter((u: User) => u.role === 'tutor')
@@ -594,7 +656,7 @@ export default function MeetingJournal() {
                   rows={3}
                   value={editLesson}
                   onChange={(e) => setEditLesson(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   required
                 />
               </div>
@@ -605,17 +667,17 @@ export default function MeetingJournal() {
                   type="text"
                   value={editNotes}
                   onChange={(e) => setEditNotes(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
               {/* CHECKBOX KLAIM FEE VIDEO */}
-              <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-2xl flex items-center justify-between">
+              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between">
                 <div>
-                  <div className="flex items-center gap-1.5 font-bold text-xs text-blue-900">
+                  <div className="flex items-center gap-1.5 font-bold text-xs text-amber-900">
                     <span>🎬</span> Klaim Fee Video Siswa
                   </div>
-                  <p className="text-[10px] text-blue-700/80 mt-0.5">
+                  <p className="text-[10px] text-amber-700/80 mt-0.5">
                     Status bonus video dokumentasi murid (+Rp 10.000).
                   </p>
                 </div>
@@ -624,7 +686,7 @@ export default function MeetingJournal() {
                     type="checkbox"
                     checked={editClaimVideo}
                     onChange={(e) => setEditClaimVideo(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    className="w-4 h-4 text-amber-500 rounded border-gray-300 focus:ring-amber-500"
                   />
                 </label>
               </div>
@@ -639,7 +701,7 @@ export default function MeetingJournal() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Simpan Perubahan
                 </button>

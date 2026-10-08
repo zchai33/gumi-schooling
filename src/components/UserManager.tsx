@@ -178,7 +178,7 @@ export default function UserManager() {
 
         <button
           onClick={handleOpenAddModal}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto"
+          className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto"
         >
           <span>👤</span> + Tambah Akun Baru
         </button>
@@ -310,7 +310,7 @@ export default function UserManager() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleOpenEditModal(u)}
-                          className="px-2.5 py-1 text-xs font-semibold bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
+                          className="px-2.5 py-1 text-xs font-semibold bg-blue-50 text-amber-700 hover:bg-amber-50 rounded-lg transition-all"
                           title="Edit Profil & Password"
                         >
                           ✏️ Edit / Password

@@ -126,7 +126,7 @@ export default function PayslipView() {
 
             <button
               onClick={handlePrint}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2"
+              className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2"
             >
               <span>🖨️</span> Cetak / Simpan PDF
             </button>
@@ -138,9 +138,11 @@ export default function PayslipView() {
           <div className="flex justify-between items-start border-b border-slate-200 pb-5">
             <div>
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 bg-blue-600 text-white rounded-lg flex items-center justify-center font-extrabold text-sm">
-                  GS
-                </div>
+                <img
+                  src="/logo_GSonly.png"
+                  alt="Gumi Schooling"
+                  className="h-10 w-auto object-contain"
+                />
                 <h1 className="text-xl font-black text-slate-800 tracking-tight">GUMI SCHOOLING</h1>
               </div>
               <p className="text-xs text-slate-500 mt-1">Ringkasan Pengeluaran Gaji Tutor</p>
@@ -179,7 +181,7 @@ export default function PayslipView() {
                       <td className="py-3.5 px-4 text-center font-medium text-slate-400">{index + 1}</td>
                       <td className="py-3.5 px-4 font-bold text-slate-800">
                         {item.name}
-                        <span className="ml-2 text-[10px] text-blue-600 font-normal print:hidden">
+                        <span className="ml-2 text-[10px] text-amber-600 font-normal print:hidden">
                           (Lihat Detail ↗)
                         </span>
                       </td>

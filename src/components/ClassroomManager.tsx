@@ -132,7 +132,7 @@ export default function ClassroomManager() {
         {currentUser?.role === 'admin' && (
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto"
+            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto"
           >
             <span>+</span> Tambah Kelas Baru
           </button>
@@ -158,7 +158,7 @@ export default function ClassroomManager() {
             onClick={() => setSelectedTypeFilter('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               selectedTypeFilter === 'all'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-amber-500 text-white'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
@@ -170,7 +170,7 @@ export default function ClassroomManager() {
               onClick={() => setSelectedTypeFilter(t.value)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                 selectedTypeFilter === t.value
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-amber-500 text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
