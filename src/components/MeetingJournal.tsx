@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Classroom, Meeting, User } from '@/types';
 
@@ -54,14 +54,17 @@ export default function MeetingJournal() {
   // 2. Search Nama Murid / Kelas
   const [searchStudent, setSearchStudent] = useState<string>('');
 
-  // 3. State Modal Pengisian Sesi Kosong
+  // 3. Filter Tutor (Khusus Admin untuk Audit Cek Fakta)
+  const [selectedTutorId, setSelectedTutorId] = useState<string>('');
+
+  // 4. State Modal Pengisian Sesi Kosong
   const [activeSlot, setActiveSlot] = useState<{ classId: string; meetingNumber: number } | null>(null);
   const [inputDate, setInputDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [inputLesson, setInputLesson] = useState<string>('');
   const [inputNotes, setInputNotes] = useState<string>('');
   const [claimVideo, setClaimVideo] = useState<boolean>(false);
 
-  // 4. State Modal Edit Sesi untuk Admin (Human Error Correction)
+  // 5. State Modal Edit Sesi untuk Admin (Human Error Correction)
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
   const [editDate, setEditDate] = useState<string>('');
   const [editLesson, setEditLesson] = useState<string>('');
@@ -69,15 +72,54 @@ export default function MeetingJournal() {
   const [editTutorId, setEditTutorId] = useState<string>('');
   const [editClaimVideo, setEditClaimVideo] = useState<boolean>(false);
 
-  // Filter Kelas berdasarkan Tab & Search
-  const filteredClassrooms: Classroom[] = classrooms.filter((cls: Classroom) => {
-    const matchType = activeTabType === 'all' || cls.type === activeTabType;
-    const matchSearch =
-      searchStudent.trim() === '' ||
-      cls.name.toLowerCase().includes(searchStudent.toLowerCase()) ||
-      cls.students.some((st: string) => st.toLowerCase().includes(searchStudent.toLowerCase()));
-    return matchType && matchSearch;
-  });
+  // Daftar tutor untuk pilihan filter dropdown
+  const tutorList = useMemo(() => {
+    return users.filter((u: User) => u.role === 'tutor');
+  }, [users]);
+
+  // Filter Kelas berdasarkan Tab Program, Pencarian Murid, dan Filter Tutor Terpilih
+  const filteredClassrooms: Classroom[] = useMemo(() => {
+    return classrooms.filter((cls: Classroom) => {
+      const matchType = activeTabType === 'all' || cls.type === activeTabType;
+      const matchSearch =
+        searchStudent.trim() === '' ||
+        cls.name.toLowerCase().includes(searchStudent.toLowerCase()) ||
+        cls.students.some((st: string) => st.toLowerCase().includes(searchStudent.toLowerCase()));
+
+      // Cek apakah ada sesi di bulan aktif yang diajar oleh tutor terpilih
+      let matchTutor = true;
+      if (isAdmin && selectedTutorId) {
+        matchTutor = meetings.some(
+          (m: Meeting) =>
+            m.classroomId === cls.id &&
+            m.date?.startsWith(selectedMonth) &&
+            m.tutorId === selectedTutorId
+        );
+      }
+
+      return matchType && matchSearch && matchTutor;
+    });
+  }, [classrooms, activeTabType, searchStudent, selectedTutorId, isAdmin, meetings, selectedMonth]);
+
+  // Perhitungan Akumulasi Sesi Riil Tutor Terpilih (Audit Counter)
+  const auditTutorSessionStats = useMemo(() => {
+    if (!isAdmin || !selectedTutorId) return null;
+
+    const targetTutorMeetings = meetings.filter(
+      (m: Meeting) =>
+        m.date?.startsWith(selectedMonth) &&
+        m.tutorId === selectedTutorId &&
+        filteredClassrooms.some((cls) => cls.id === m.classroomId)
+    );
+
+    const tutorObj = users.find((u: User) => u.id === selectedTutorId);
+
+    return {
+      tutorName: tutorObj ? tutorObj.name : 'Tutor',
+      totalSessions: targetTutorMeetings.length,
+      totalClasses: filteredClassrooms.length,
+    };
+  }, [isAdmin, selectedTutorId, meetings, selectedMonth, filteredClassrooms, users]);
 
   const handleOpenFillModal = (classId: string, meetingNumber: number) => {
     if (!isAdmin && isJournalLocked) {
@@ -204,7 +246,7 @@ export default function MeetingJournal() {
         </div>
       )}
 
-      {/* Kontrol Tab Program & Search Murid */}
+      {/* Kontrol Tab Program & Search Murid & Filter Tutor */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
         {/* Tab Program */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
@@ -224,31 +266,70 @@ export default function MeetingJournal() {
           ))}
         </div>
 
-        {/* Input Cari Murid */}
-        <div className="relative max-w-md pt-1">
-          <input
-            type="text"
-            placeholder="Ketik nama murid untuk mencari (misal: Ayu Widya)..."
-            value={searchStudent}
-            onChange={(e) => setSearchStudent(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
-          />
-          <span className="absolute left-3 top-3 text-xs text-slate-400">🔍</span>
-          {searchStudent && (
-            <button
-              onClick={() => setSearchStudent('')}
-              className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600"
-            >
-              ✕
-            </button>
+        {/* Baris Pencarian: Input Nama Murid + Filter Dropdown Tutor (Admin) + Badge Counter */}
+        <div className="flex flex-col md:flex-row items-center gap-3 pt-1">
+          {/* Input Cari Murid */}
+          <div className="relative flex-1 w-full">
+            <input
+              type="text"
+              placeholder="Ketik nama murid untuk mencari (misal: Ayu Widya)..."
+              value={searchStudent}
+              onChange={(e) => setSearchStudent(e.target.value)}
+              className="w-full pl-9 pr-8 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+            />
+            <span className="absolute left-3 top-2.5 text-xs text-slate-400">🔍</span>
+            {searchStudent && (
+              <button
+                onClick={() => setSearchStudent('')}
+                className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Filter Dropdown Tutor (Hanya Ditampilkan untuk Admin) */}
+          {isAdmin && (
+            <div className="w-full md:w-64 shrink-0">
+              <select
+                value={selectedTutorId}
+                onChange={(e) => setSelectedTutorId(e.target.value)}
+                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl bg-white font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer shadow-sm"
+              >
+                <option value="">👤 Semua Tutor Pengajar</option>
+                {tutorList.map((tutor) => (
+                  <option key={tutor.id} value={tutor.id}>
+                    {tutor.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
+
+          {/* Badge Indikator Hasil Pencarian & Cek Fakta */}
+          <div className="flex items-center gap-2 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shrink-0 self-stretch md:self-auto justify-center">
+            {auditTutorSessionStats ? (
+              <span className="text-amber-700 flex items-center gap-1.5">
+                <span>🎯</span>
+                <span>
+                  {auditTutorSessionStats.totalSessions} Sesi Terisi ({auditTutorSessionStats.totalClasses} Kelas)
+                </span>
+              </span>
+            ) : (
+              <span className="text-slate-600">
+                {filteredClassrooms.length} Kelas Ditampilkan
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Grid Tabel Matriks Jurnal */}
       {filteredClassrooms.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400 text-sm">
-          Tidak ditemukan murid atau kelas yang cocok dengan pencarian &quot;{searchStudent}&quot;.
+          {selectedTutorId
+            ? `Tidak ada sesi mengajar untuk tutor ini di bulan ${selectedMonth}.`
+            : `Tidak ditemukan murid atau kelas yang cocok dengan pencarian "${searchStudent}".`}
         </div>
       ) : (
         <div className="space-y-6">
@@ -376,10 +457,16 @@ export default function MeetingJournal() {
                         </td>
                         {colIndexes.map((num: number) => {
                           const mtg = classMeetings.find((m: Meeting) => m.meetingNumber === num);
+                          const isHighlighted = selectedTutorId && mtg?.tutorId === selectedTutorId;
+
                           return (
                             <td
                               key={num}
-                              className="py-2 px-3 text-center border-r border-slate-200 font-semibold text-slate-800"
+                              className={`py-2 px-3 text-center border-r border-slate-200 font-semibold ${
+                                isHighlighted
+                                  ? 'bg-amber-100/60 text-amber-900 font-bold'
+                                  : 'text-slate-800'
+                              }`}
                             >
                               {mtg ? mtg.tutorName : <span className="text-slate-300">-</span>}
                             </td>
