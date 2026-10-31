@@ -29,7 +29,6 @@ async function hashPassword(plainText: string, salt: string = 'gumi_salt_2026'):
 async function verifyPassword(plainInput: string, storedPassword: string): Promise<boolean> {
   if (!storedPassword) return false;
   if (!storedPassword.startsWith(HASH_PREFIX)) {
-    // Akun lama (plain text legacy)
     return plainInput === storedPassword;
   }
   const inputHash = await hashPassword(plainInput);
@@ -79,6 +78,8 @@ interface AppContextType {
     date: string;
     notes?: string;
     hasVideoClaim?: boolean;
+    ldrZone?: string;
+    ldrZoneSnapshot?: string;
   }) => Promise<void>;
   updateMeeting: (
     meetingId: string,
@@ -87,6 +88,8 @@ interface AppContextType {
       lesson: string;
       notes?: string;
       hasVideoClaim?: boolean;
+      ldrZone?: string;
+      ldrZoneSnapshot?: string;
       tutorId?: string;
       tutorName?: string;
     }
@@ -260,7 +263,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             type: c.type,
             students: c.students,
             totalMeetings: c.total_meetings,
-            ldrZone: c.ldr_zone,
+            ldrZone: c.ldr_zone || 'none',
             status: c.status,
           }))
         );
@@ -279,7 +282,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             lesson: m.lesson,
             notes: m.notes,
             isLocked: m.is_locked,
-            ldrZoneSnapshot: m.ldr_zone_snapshot,
+            ldrZoneSnapshot: m.ldr_zone_snapshot || 'none',
             hasVideoClaim: m.has_video_claim,
           }))
         );
@@ -403,7 +406,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const isValid = await verifyPassword(plainPass, foundUser.password || '');
     if (!isValid) return false;
 
-    // Migrasi transparan: jika password masih teks polos, hash dan simpan kembali ke database
     if (foundUser.password && !foundUser.password.startsWith(HASH_PREFIX)) {
       const hashed = await hashPassword(plainPass);
       foundUser.password = hashed;
@@ -421,7 +423,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setActiveTab('dashboard');
   };
 
-  // MANAJEMEN AKUN (Password di-hash otomatis sebelum simpan)
+  // MANAJEMEN AKUN
   const addUser = async (userData: Omit<User, 'id'>) => {
     const rawPass = userData.password || 'gumi123';
     const securedPassword = rawPass.startsWith(HASH_PREFIX) ? rawPass : await hashPassword(rawPass);
@@ -449,6 +451,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ]);
 
     logActivity('UPDATE_PAYROLL', `Menambahkan akun baru: ${newUser.name} (${newUser.role})`);
+    await fetchAllData();
   };
 
   const updateUser = async (id: string, updatedData: Partial<User>) => {
@@ -468,6 +471,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     await supabase.from('users').update(payload).eq('id', id);
     logActivity('UPDATE_PAYROLL', `Memperbarui data profil/kredensial akun: ID ${id}`);
+    await fetchAllData();
   };
 
   const deleteUser = async (id: string): Promise<boolean> => {
@@ -479,6 +483,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setUsers((prev) => prev.filter((u) => u.id !== id));
     await supabase.from('users').delete().eq('id', id);
     logActivity('UPDATE_PAYROLL', `Menghapus akun pengguna: ${target?.name || id}`);
+    await fetchAllData();
     return true;
   };
 
@@ -494,6 +499,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       updated_at: new Date().toISOString(),
     });
     logActivity('UPDATE_RATES', 'Admin memperbarui konfigurasi ketentuan gaji');
+    await fetchAllData();
   };
 
   const resetRatesToDefault = async () => {
@@ -507,6 +513,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       updated_at: new Date().toISOString(),
     });
     logActivity('UPDATE_RATES', 'Admin mengembalikan ketentuan gaji ke nilai default SOP');
+    await fetchAllData();
   };
 
   // KELAS & SISWA
@@ -528,8 +535,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         status: newClassroom.status,
       },
     ]);
+    await fetchAllData();
   };
 
+  // Sinkronisasi otomatis ke meetings jika ldr_zone diupdate (Cascade Update)
   const updateClassroom = async (id: string, updatedData: Partial<Classroom>) => {
     setClassrooms((prev) =>
       prev.map((c) => (c.id === id ? { ...c, ...updatedData } : c))
@@ -544,12 +553,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (updatedData.status !== undefined) supabasePayload.status = updatedData.status;
 
     await supabase.from('classrooms').update(supabasePayload).eq('id', id);
-    logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id}`);
+
+    const newLdrZone = updatedData.ldrZone || (updatedData as any).ldr_zone;
+    if (newLdrZone !== undefined) {
+      setMeetings((prev) =>
+        prev.map((m) => (m.classroomId === id ? ({ ...m, ldrZoneSnapshot: newLdrZone } as Meeting) : m))
+      );
+
+      await supabase
+        .from('meetings')
+        .update({ ldr_zone_snapshot: newLdrZone })
+        .eq('classroom_id', id);
+    }
+
+    logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id} (Sync LDR: ${newLdrZone || 'tetap'})`);
+    await fetchAllData();
   };
 
   const deleteClassroom = async (id: string) => {
     setClassrooms((prev) => prev.filter((c) => c.id !== id));
     await supabase.from('classrooms').delete().eq('id', id);
+    await fetchAllData();
   };
 
   // JURNAL MENGAJAR (MEETINGS)
@@ -560,6 +584,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     date: string;
     notes?: string;
     hasVideoClaim?: boolean;
+    ldrZone?: string;
+    ldrZoneSnapshot?: string;
   }) => {
     if (!currentUser) return;
 
@@ -567,6 +593,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const existingIndex = meetings.findIndex(
       (m) => m.classroomId === meetingData.classroomId && m.meetingNumber === meetingData.meetingNumber
     );
+
+    const determinedLdrZone =
+      meetingData.ldrZoneSnapshot ||
+      meetingData.ldrZone ||
+      (targetClass ? targetClass.ldrZone : 'none');
 
     const meetingId = existingIndex >= 0 ? meetings[existingIndex].id : `mtg-${Date.now()}`;
     const newMeeting: Meeting = {
@@ -579,9 +610,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       lesson: meetingData.lesson,
       notes: meetingData.notes,
       isLocked: false,
-      ldrZoneSnapshot: targetClass ? targetClass.ldrZone : 'none',
+      ldrZoneSnapshot: determinedLdrZone,
       hasVideoClaim: meetingData.hasVideoClaim || false,
-    };
+    } as any;
 
     if (existingIndex >= 0) {
       setMeetings((prev) => {
@@ -610,7 +641,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (meetingData.hasVideoClaim) {
       const meetingMonth = meetingData.date.substring(0, 7);
       const adj = getAdjustmentForTutor(currentUser.id, meetingMonth);
-      saveAdjustment({
+      await saveAdjustment({
         ...adj,
         videoCount: (adj.videoCount || 0) + 1,
       });
@@ -622,6 +653,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         meetingData.hasVideoClaim ? ' (Klaim Video Siswa)' : ''
       }`
     );
+    await fetchAllData();
   };
 
   const updateMeeting = async (
@@ -631,27 +663,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       lesson: string;
       notes?: string;
       hasVideoClaim?: boolean;
+      ldrZone?: string;
+      ldrZoneSnapshot?: string;
       tutorId?: string;
       tutorName?: string;
     }
   ) => {
+    const determinedLdr = updatedData.ldrZoneSnapshot || updatedData.ldrZone;
+
     setMeetings((prev) =>
-      prev.map((m) => (m.id === meetingId ? { ...m, ...updatedData } : m))
+      prev.map((m) => {
+        if (m.id !== meetingId) return m;
+        return {
+          ...m,
+          date: updatedData.date,
+          lesson: updatedData.lesson,
+          notes: updatedData.notes,
+          hasVideoClaim: updatedData.hasVideoClaim,
+          tutorId: updatedData.tutorId || m.tutorId,
+          tutorName: updatedData.tutorName || m.tutorName,
+          ldrZoneSnapshot: determinedLdr || m.ldrZoneSnapshot || 'none',
+        } as Meeting;
+      })
     );
+
+    const supabaseUpdatePayload: Record<string, any> = {
+      date: updatedData.date,
+      lesson: updatedData.lesson,
+      notes: updatedData.notes,
+      has_video_claim: updatedData.hasVideoClaim,
+      tutor_id: updatedData.tutorId,
+      tutor_name: updatedData.tutorName,
+    };
+
+    if (determinedLdr) {
+      supabaseUpdatePayload.ldr_zone_snapshot = determinedLdr;
+    }
 
     await supabase
       .from('meetings')
-      .update({
-        date: updatedData.date,
-        lesson: updatedData.lesson,
-        notes: updatedData.notes,
-        has_video_claim: updatedData.hasVideoClaim,
-        tutor_id: updatedData.tutorId,
-        tutor_name: updatedData.tutorName,
-      })
+      .update(supabaseUpdatePayload)
       .eq('id', meetingId);
 
     logActivity('UPDATE_PAYROLL', `Admin mengoreksi data sesi jurnal (ID: ${meetingId})`);
+    await fetchAllData();
   };
 
   const clearMeetingSlot = async (classroomId: string, meetingNumber: number) => {
@@ -669,6 +724,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       'UPDATE_PAYROLL',
       `Admin mengosongkan / mereset slot jurnal pertemuan #${meetingNumber}`
     );
+    await fetchAllData();
   };
 
   const toggleLockMeeting = async (meetingId: string) => {
@@ -677,10 +733,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newLock = !target.isLocked;
 
     setMeetings((prev) =>
-      prev.map((m) => (m.id === meetingId ? { ...m, isLocked: newLock } : m))
+      prev.map((m) => (m.id === meetingId ? ({ ...m, isLocked: newLock } as Meeting) : m))
     );
 
     await supabase.from('meetings').update({ is_locked: newLock }).eq('id', meetingId);
+    await fetchAllData();
   };
 
   const lockEmptySlot = async (classroomId: string, meetingNumber: number) => {
@@ -705,7 +762,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isLocked: true,
         ldrZoneSnapshot: targetClass ? targetClass.ldrZone : 'none',
         hasVideoClaim: false,
-      };
+      } as any;
 
       setMeetings((prev) => [...prev, lockedPlaceholder]);
 
@@ -728,6 +785,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         'CREATE_MEETING',
         `Admin mengunci slot pertemuan #${meetingNumber} (Hangus) di kelas ${targetClass?.name || ''}`
       );
+      await fetchAllData();
     }
   };
 
@@ -758,6 +816,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ]);
 
     logActivity('CREATE_MEETING', `Mencatat sesi Free Trial untuk siswa: ${trialData.studentName}`);
+    await fetchAllData();
   };
 
   const updateFreeTrial = async (
@@ -780,12 +839,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       .eq('id', trialId);
 
     logActivity('UPDATE_PAYROLL', `Memperbarui data Free Trial ID: ${trialId}`);
+    await fetchAllData();
   };
 
   const deleteFreeTrial = async (trialId: string) => {
     setFreeTrials((prev) => prev.filter((ft) => ft.id !== trialId));
     await supabase.from('free_trials').delete().eq('id', trialId);
     logActivity('UPDATE_PAYROLL', `Menghapus sesi Free Trial ID: ${trialId}`);
+    await fetchAllData();
   };
 
   const toggleFreeTrialStatus = async (trialId: string) => {
@@ -798,6 +859,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
 
     await supabase.from('free_trials').update({ status: newStatus }).eq('id', trialId);
+    await fetchAllData();
   };
 
   // MONTHLY ADJUSTMENTS
@@ -824,35 +886,64 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const saveAdjustment = async (adj: MonthlyAdjustment) => {
+    const recordId = adj.id || `adj-${adj.tutorId}-${adj.month}`;
+
+    const updatedAdj: MonthlyAdjustment = {
+      ...adj,
+      id: recordId,
+      videoCount: Number(adj.videoCount) || 0,
+      reportCount: Number(adj.reportCount) || 0,
+      fnmCount: Number(adj.fnmCount) || 0,
+      customBonusNominal: Number(adj.customBonusNominal) || 0,
+      customBonusNote: adj.customBonusNote || '',
+      applySukaDuka: adj.applySukaDuka ?? true,
+      lateAttendanceCount: Number(adj.lateAttendanceCount) || 0,
+      violationCount: Number(adj.violationCount) || 0,
+      lateVideoCount: Number(adj.lateVideoCount) || 0,
+      suddenLeaveCount: Number(adj.suddenLeaveCount) || 0,
+      customDeductionNominal: Number(adj.customDeductionNominal) || 0,
+      customDeductionNote: adj.customDeductionNote || '',
+    };
+
     setAdjustments((prev) => {
       const idx = prev.findIndex((a) => a.tutorId === adj.tutorId && a.month === adj.month);
       if (idx >= 0) {
         const copy = [...prev];
-        copy[idx] = adj;
+        copy[idx] = updatedAdj;
         return copy;
       }
-      return [...prev, adj];
+      return [...prev, updatedAdj];
     });
 
-    await supabase.from('monthly_adjustments').upsert({
-      id: adj.id,
-      tutor_id: adj.tutorId,
-      month: adj.month,
-      video_count: adj.videoCount,
-      report_count: adj.reportCount,
-      fnm_count: adj.fnmCount,
-      custom_bonus_nominal: adj.customBonusNominal,
-      custom_bonus_note: adj.customBonusNote,
-      apply_suka_duka: adj.applySukaDuka,
-      late_attendance_count: adj.lateAttendanceCount,
-      violation_count: adj.violationCount,
-      late_video_count: adj.lateVideoCount,
-      sudden_leave_count: adj.suddenLeaveCount,
-      custom_deduction_nominal: adj.customDeductionNominal,
-      custom_deduction_note: adj.customDeductionNote,
-    });
+    const payload = {
+      id: recordId,
+      tutor_id: updatedAdj.tutorId,
+      month: updatedAdj.month,
+      video_count: updatedAdj.videoCount,
+      report_count: updatedAdj.reportCount,
+      fnm_count: updatedAdj.fnmCount,
+      custom_bonus_nominal: updatedAdj.customBonusNominal,
+      custom_bonus_note: updatedAdj.customBonusNote,
+      apply_suka_duka: updatedAdj.applySukaDuka,
+      late_attendance_count: updatedAdj.lateAttendanceCount,
+      violation_count: updatedAdj.violationCount,
+      late_video_count: updatedAdj.lateVideoCount,
+      sudden_leave_count: updatedAdj.suddenLeaveCount,
+      custom_deduction_nominal: updatedAdj.customDeductionNominal,
+      custom_deduction_note: updatedAdj.customDeductionNote,
+    };
 
-    logActivity('UPDATE_PAYROLL', `Memperbarui rincian bonus & potongan untuk periode ${adj.month}`);
+    const { error } = await supabase
+      .from('monthly_adjustments')
+      .upsert(payload);
+
+    if (error) {
+      console.error('Detail Error Supabase:', error);
+      alert(`Gagal menyimpan: ${error.message}`);
+    } else {
+      logActivity('UPDATE_PAYROLL', `Memperbarui rincian bonus & potongan tutor ID: ${adj.tutorId} (${adj.month})`);
+      await fetchAllData();
+    }
   };
 
   return (

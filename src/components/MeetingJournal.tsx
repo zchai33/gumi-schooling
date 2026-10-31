@@ -71,6 +71,7 @@ export default function MeetingJournal() {
   const [editNotes, setEditNotes] = useState<string>('');
   const [editTutorId, setEditTutorId] = useState<string>('');
   const [editClaimVideo, setEditClaimVideo] = useState<boolean>(false);
+  const [editLdrZone, setEditLdrZone] = useState<string>('none');
 
   // Daftar tutor untuk pilihan filter dropdown
   const tutorList = useMemo(() => {
@@ -86,7 +87,6 @@ export default function MeetingJournal() {
         cls.name.toLowerCase().includes(searchStudent.toLowerCase()) ||
         cls.students.some((st: string) => st.toLowerCase().includes(searchStudent.toLowerCase()));
 
-      // Cek apakah ada sesi di bulan aktif yang diajar oleh tutor terpilih
       let matchTutor = true;
       if (isAdmin && selectedTutorId) {
         matchTutor = meetings.some(
@@ -121,6 +121,8 @@ export default function MeetingJournal() {
     };
   }, [isAdmin, selectedTutorId, meetings, selectedMonth, filteredClassrooms, users]);
 
+  const selectedClassForModal = classrooms.find((c: Classroom) => c.id === activeSlot?.classId);
+
   const handleOpenFillModal = (classId: string, meetingNumber: number) => {
     if (!isAdmin && isJournalLocked) {
       alert('Pengisian jurnal sedang dinonaktifkan untuk proses audit oleh Admin.');
@@ -133,7 +135,7 @@ export default function MeetingJournal() {
     setClaimVideo(false);
   };
 
-  const handleSubmitMeeting = (e: React.FormEvent) => {
+  const handleSubmitMeeting = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeSlot) return;
     if (!isAdmin && isJournalLocked) {
@@ -145,13 +147,17 @@ export default function MeetingJournal() {
       return;
     }
 
-    addMeeting({
+    const currentClass = classrooms.find((c: Classroom) => c.id === activeSlot.classId);
+
+    await addMeeting({
       classroomId: activeSlot.classId,
       meetingNumber: activeSlot.meetingNumber,
       date: inputDate,
       lesson: inputLesson,
       notes: inputNotes,
       hasVideoClaim: claimVideo,
+      ldrZone: currentClass?.ldrZone || 'none',
+      ldrZoneSnapshot: currentClass?.ldrZone || 'none',
     });
 
     setActiveSlot(null);
@@ -164,19 +170,22 @@ export default function MeetingJournal() {
     setEditNotes(mtg.notes || '');
     setEditTutorId(mtg.tutorId);
     setEditClaimVideo(mtg.hasVideoClaim || false);
+    setEditLdrZone(mtg.ldrZoneSnapshot || 'none');
   };
 
-  const handleSaveEditMeeting = (e: React.FormEvent) => {
+  const handleSaveEditMeeting = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingMeeting) return;
 
     const assignedTutor = users.find((u: User) => u.id === editTutorId);
 
-    updateMeeting(editingMeeting.id, {
+    await updateMeeting(editingMeeting.id, {
       date: editDate,
       lesson: editLesson,
       notes: editNotes,
       hasVideoClaim: editClaimVideo,
+      ldrZone: editLdrZone,
+      ldrZoneSnapshot: editLdrZone,
       tutorId: editTutorId,
       tutorName: assignedTutor ? assignedTutor.name : editingMeeting.tutorName,
     });
@@ -184,13 +193,11 @@ export default function MeetingJournal() {
     setEditingMeeting(null);
   };
 
-  const handleClearSlot = (classroomId: string, meetingNumber: number) => {
+  const handleClearSlot = async (classroomId: string, meetingNumber: number) => {
     if (confirm(`Yakin ingin mengosongkan/menghapus isi sesi pertemuan #${meetingNumber}? Kolom akan bersih kembali.`)) {
-      clearMeetingSlot(classroomId, meetingNumber);
+      await clearMeetingSlot(classroomId, meetingNumber);
     }
   };
-
-  const selectedClassForModal = classrooms.find((c: Classroom) => c.id === activeSlot?.classId);
 
   return (
     <div className="space-y-6">
@@ -481,6 +488,7 @@ export default function MeetingJournal() {
                         </td>
                         {colIndexes.map((num: number) => {
                           const mtg = classMeetings.find((m: Meeting) => m.meetingNumber === num);
+                          const mtgLdr = mtg?.ldrZoneSnapshot;
 
                           return (
                             <td
@@ -495,6 +503,12 @@ export default function MeetingJournal() {
                                     {mtg.hasVideoClaim && (
                                       <span className="inline-flex items-center gap-1 text-[9px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">
                                         🎬 Video
+                                      </span>
+                                    )}
+
+                                    {mtgLdr && mtgLdr !== 'none' && (
+                                      <span className="inline-flex items-center gap-1 text-[9px] font-bold text-purple-800 bg-purple-100 px-1.5 py-0.5 rounded">
+                                        📍 {mtgLdr.replace('_', ' >').toUpperCase()} KM
                                       </span>
                                     )}
 
@@ -722,7 +736,7 @@ export default function MeetingJournal() {
                   <select
                     value={editTutorId}
                     onChange={(e) => setEditTutorId(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   >
                     {users
                       .filter((u: User) => u.role === 'tutor')
@@ -733,6 +747,22 @@ export default function MeetingJournal() {
                       ))}
                   </select>
                 </div>
+              </div>
+
+              {/* DROPDOWN KOREKSI ZONA LDR (KHUSUS ADMIN) */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Zona LDR Pertemuan Ini</label>
+                <select
+                  value={editLdrZone}
+                  onChange={(e) => setEditLdrZone(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white font-medium"
+                >
+                  <option value="none">Tidak Ada LDR (None)</option>
+                  <option value="ldr_10">LDR &gt; 10 KM (Zona 10)</option>
+                  <option value="ldr_15">LDR &gt; 15 KM (Zona 15)</option>
+                  <option value="ldr_20">LDR &gt; 20 KM (Zona 20)</option>
+                  <option value="panti_klungkung">Panti Klungkung</option>
+                </select>
               </div>
 
               <div>

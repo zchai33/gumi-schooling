@@ -78,8 +78,8 @@ export interface Meeting {
   lesson: string;
   notes?: string;
   isLocked: boolean;
-  ldrZoneSnapshot: LDRZone;
-  hasVideoClaim?: boolean; // <-- Tambahan klaim video sesi
+  ldrZoneSnapshot?: LDRZone | string;
+  hasVideoClaim?: boolean;
 }
 
 export interface FreeTrial {
@@ -95,7 +95,7 @@ export interface FreeTrial {
 export interface MonthlyAdjustment {
   id: string;
   tutorId: string;
-  month: string; // Format "YYYY-MM", misal "2026-09"
+  month: string; // Format "YYYY-MM", misal "2026-10"
   // Bonus counts
   videoCount: number;
   reportCount: number;

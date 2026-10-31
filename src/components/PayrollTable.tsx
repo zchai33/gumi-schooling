@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 import { MonthlyAdjustment } from '@/types';
 
@@ -11,6 +11,7 @@ export default function PayrollTable() {
     classrooms,
     meetings,
     freeTrials,
+    adjustments,
     rates,
     selectedMonth,
     setSelectedMonth,
@@ -23,6 +24,81 @@ export default function PayrollTable() {
   const [editingTutorId, setEditingTutorId] = useState<string | null>(null);
   const [adjustmentForm, setAdjustmentForm] = useState<MonthlyAdjustment | null>(null);
 
+  const tutors = useMemo(() => users.filter((u) => u.role === 'tutor'), [users]);
+
+  // Kalkulasi rekapitulasi penggajian per tutor secara reaktif
+  const payrollSummaries = useMemo(() => {
+    return tutors.map((tutor) => {
+      // 1. Fee Mengajar Sesi Kelas & LDR
+      const tutorMeetings = meetings.filter(
+        (m) => m.tutorId === tutor.id && !m.isLocked && m.date && m.date.startsWith(selectedMonth)
+      );
+
+      let teachingFee = 0;
+      let ldrFee = 0;
+
+      tutorMeetings.forEach((m) => {
+        const cls = classrooms.find((c) => c.id === m.classroomId);
+        teachingFee += cls ? rates.baseFees[cls.type] || 0 : 0;
+
+        const zone = m.ldrZoneSnapshot;
+        if (zone && zone !== 'none' && zone in rates.ldrBonus) {
+          ldrFee += rates.ldrBonus[zone as keyof typeof rates.ldrBonus] || 0;
+        }
+      });
+
+      // 2. Free Trial Selesai
+      const tutorTrials = freeTrials.filter(
+        (ft) => ft.tutorId === tutor.id && ft.status === 'completed' && ft.date && ft.date.startsWith(selectedMonth)
+      );
+      const trialFee = tutorTrials.length * (rates.baseFees['Free Trial'] || 25000);
+
+      // 3. Bonus & Denda Bulanan
+      const adj = getAdjustmentForTutor ? getAdjustmentForTutor(tutor.id, selectedMonth) : null;
+
+      const videoBonus = (adj?.videoCount || 0) * rates.standardBonus.videoPerItem;
+      const reportBonus = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
+      const fnmBonus = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
+      const customBonus = Number(adj?.customBonusNominal || 0);
+      const totalActivityBonus = videoBonus + reportBonus + fnmBonus + customBonus;
+
+      const sukaDukaDeduction = adj?.applySukaDuka ? rates.standardDeductions.sukaDuka : 0;
+      const lateDeduction = (adj?.lateAttendanceCount || 0) * rates.standardDeductions.lateAttendance;
+      const violationDeduction = (adj?.violationCount || 0) * rates.standardDeductions.violationOJL_GC;
+      const lateVideoDeduction = (adj?.lateVideoCount || 0) * rates.standardDeductions.lateVideo;
+      const suddenLeaveDeduction = (adj?.suddenLeaveCount || 0) * rates.standardDeductions.suddenLeave;
+      const customDeduction = Number(adj?.customDeductionNominal || 0);
+
+      const totalDeductions =
+        sukaDukaDeduction +
+        lateDeduction +
+        violationDeduction +
+        lateVideoDeduction +
+        suddenLeaveDeduction +
+        customDeduction;
+
+      const grossTotal = teachingFee + ldrFee + trialFee + totalActivityBonus;
+      const takeHomePay = Math.max(0, grossTotal - totalDeductions);
+
+      return {
+        tutor,
+        meetingCount: tutorMeetings.length,
+        trialCount: tutorTrials.length,
+        teachingFee,
+        ldrFee,
+        trialFee,
+        totalActivityBonus,
+        totalDeductions,
+        takeHomePay,
+        adjustment: adj,
+      };
+    });
+  }, [tutors, meetings, classrooms, freeTrials, rates, selectedMonth, adjustments, getAdjustmentForTutor]);
+
+  const totalPayrollExpenditure = useMemo(() => {
+    return payrollSummaries.reduce((acc, curr) => acc + curr.takeHomePay, 0);
+  }, [payrollSummaries]);
+
   if (currentUser?.role !== 'admin') {
     return (
       <div className="p-6 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-sm font-medium">
@@ -31,82 +107,16 @@ export default function PayrollTable() {
     );
   }
 
-  const tutors = users.filter((u) => u.role === 'tutor');
-
-  // Kalkulasi rekapitulasi penggajian per tutor
-  const payrollSummaries = tutors.map((tutor) => {
-    // 1. Fee Mengajar Sesi Kelas
-    const tutorMeetings = meetings.filter(
-      (m) => m.tutorId === tutor.id && !m.isLocked && m.date.startsWith(selectedMonth)
-    );
-
-    let teachingFee = 0;
-    let ldrFee = 0;
-
-    tutorMeetings.forEach((m) => {
-      const cls = classrooms.find((c) => c.id === m.classroomId);
-      teachingFee += cls ? rates.baseFees[cls.type] || 0 : 0;
-      if (m.ldrZoneSnapshot !== 'none') {
-        ldrFee += rates.ldrBonus[m.ldrZoneSnapshot] || 0;
-      }
-    });
-
-    // 2. Free Trial Selesai
-    const tutorTrials = freeTrials.filter(
-      (ft) => ft.tutorId === tutor.id && ft.status === 'completed' && ft.date.startsWith(selectedMonth)
-    );
-    const trialFee = tutorTrials.length * (rates.baseFees['Free Trial'] || 25000);
-
-    // 3. Bonus & Denda Bulanan
-    const adj = getAdjustmentForTutor(tutor.id, selectedMonth);
-
-    const videoBonus = adj.videoCount * rates.standardBonus.videoPerItem;
-    const reportBonus = adj.reportCount * rates.standardBonus.reportPerStudent;
-    const fnmBonus = adj.fnmCount * rates.standardBonus.fnmPerClosing;
-    const totalActivityBonus = videoBonus + reportBonus + fnmBonus + adj.customBonusNominal;
-
-    const sukaDukaDeduction = adj.applySukaDuka ? rates.standardDeductions.sukaDuka : 0;
-    const lateDeduction = adj.lateAttendanceCount * rates.standardDeductions.lateAttendance;
-    const violationDeduction = adj.violationCount * rates.standardDeductions.violationOJL_GC;
-    const lateVideoDeduction = adj.lateVideoCount * rates.standardDeductions.lateVideo;
-    const suddenLeaveDeduction = adj.suddenLeaveCount * rates.standardDeductions.suddenLeave;
-    const totalDeductions =
-      sukaDukaDeduction +
-      lateDeduction +
-      violationDeduction +
-      lateVideoDeduction +
-      suddenLeaveDeduction +
-      adj.customDeductionNominal;
-
-    const grossTotal = teachingFee + ldrFee + trialFee + totalActivityBonus;
-    const takeHomePay = Math.max(0, grossTotal - totalDeductions);
-
-    return {
-      tutor,
-      meetingCount: tutorMeetings.length,
-      trialCount: tutorTrials.length,
-      teachingFee,
-      ldrFee,
-      trialFee,
-      totalActivityBonus,
-      totalDeductions,
-      takeHomePay,
-      adjustment: adj,
-    };
-  });
-
-  const totalPayrollExpenditure = payrollSummaries.reduce((acc, curr) => acc + curr.takeHomePay, 0);
-
   const handleOpenEditAdjustment = (tutorId: string) => {
     const adj = getAdjustmentForTutor(tutorId, selectedMonth);
     setAdjustmentForm({ ...adj });
     setEditingTutorId(tutorId);
   };
 
-  const handleSaveAdjustment = (e: React.FormEvent) => {
+  const handleSaveAdjustment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (adjustmentForm) {
-      saveAdjustment(adjustmentForm);
+      await saveAdjustment(adjustmentForm);
       setEditingTutorId(null);
       setAdjustmentForm(null);
     }
@@ -134,22 +144,22 @@ export default function PayrollTable() {
             type="month"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-3 py-1.5 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-1.5 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
           />
         </div>
       </div>
 
       {/* Banner Ringkasan Total Pengeluaran */}
-      <div className="bg-gradient-to-r from-bg-gradient-to-r from-amber-500 to-amber-600 shadow-md shadow-amber-200/50 text-white rounded-2xl p-6 shadow-md shadow-blue-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="bg-gradient-to-r from-amber-500 to-amber-600 shadow-md shadow-amber-200/50 text-white rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <span className="text-xs uppercase tracking-wider font-semibold text-blue-100">
+          <span className="text-xs uppercase tracking-wider font-semibold text-amber-100">
             Total Estimasi Anggaran Penggajian ({selectedMonth})
           </span>
           <div className="text-3xl font-extrabold mt-1">
             Rp {totalPayrollExpenditure.toLocaleString('id-ID')}
           </div>
         </div>
-        <div className="text-xs text-blue-100 bg-white/10 px-3 py-2 rounded-xl border border-white/20">
+        <div className="text-xs text-amber-100 bg-white/10 px-3 py-2 rounded-xl border border-white/20">
           💡 Angka dihitung otomatis berdasarkan sesi valid + bonus rekapitulasi dikurangi denda.
         </div>
       </div>
@@ -167,7 +177,7 @@ export default function PayrollTable() {
                 <th className="py-3.5 px-4 text-right">Free Trial</th>
                 <th className="py-3.5 px-4 text-right">Bonus Tambahan</th>
                 <th className="py-3.5 px-4 text-right">Total Potongan</th>
-                <th className="py-3.5 px-4 text-right font-extrabold text-blue-900">Take-Home Pay</th>
+                <th className="py-3.5 px-4 text-right font-extrabold text-amber-900">Take-Home Pay</th>
                 <th className="py-3.5 px-4 text-center">Kelola Admin</th>
               </tr>
             </thead>
@@ -195,7 +205,7 @@ export default function PayrollTable() {
                   <td className="py-3.5 px-4 text-right text-rose-600 font-semibold">
                     -{row.totalDeductions.toLocaleString('id-ID')}
                   </td>
-                  <td className="py-3.5 px-4 text-right font-extrabold text-sm text-slate-900 bg-blue-50/30">
+                  <td className="py-3.5 px-4 text-right font-extrabold text-sm text-slate-900 bg-amber-50/40">
                     Rp {row.takeHomePay.toLocaleString('id-ID')}
                   </td>
                   <td className="py-3.5 px-4 text-center">
@@ -256,7 +266,7 @@ export default function PayrollTable() {
                       min="0"
                       value={adjustmentForm.videoCount}
                       onChange={(e) =>
-                        setAdjustmentForm({ ...adjustmentForm, videoCount: Number(e.target.value) })
+                        setAdjustmentForm({ ...adjustmentForm, videoCount: Number(e.target.value) || 0 })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
                     />
@@ -270,7 +280,7 @@ export default function PayrollTable() {
                       min="0"
                       value={adjustmentForm.reportCount}
                       onChange={(e) =>
-                        setAdjustmentForm({ ...adjustmentForm, reportCount: Number(e.target.value) })
+                        setAdjustmentForm({ ...adjustmentForm, reportCount: Number(e.target.value) || 0 })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
                     />
@@ -284,7 +294,7 @@ export default function PayrollTable() {
                       min="0"
                       value={adjustmentForm.fnmCount}
                       onChange={(e) =>
-                        setAdjustmentForm({ ...adjustmentForm, fnmCount: Number(e.target.value) })
+                        setAdjustmentForm({ ...adjustmentForm, fnmCount: Number(e.target.value) || 0 })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
                     />
@@ -300,7 +310,7 @@ export default function PayrollTable() {
                       step="1000"
                       value={adjustmentForm.customBonusNominal}
                       onChange={(e) =>
-                        setAdjustmentForm({ ...adjustmentForm, customBonusNominal: Number(e.target.value) })
+                        setAdjustmentForm({ ...adjustmentForm, customBonusNominal: Number(e.target.value) || 0 })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
                     />
@@ -357,7 +367,7 @@ export default function PayrollTable() {
                       onChange={(e) =>
                         setAdjustmentForm({
                           ...adjustmentForm,
-                          lateAttendanceCount: Number(e.target.value),
+                          lateAttendanceCount: Number(e.target.value) || 0,
                         })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
@@ -374,7 +384,7 @@ export default function PayrollTable() {
                       onChange={(e) =>
                         setAdjustmentForm({
                           ...adjustmentForm,
-                          violationCount: Number(e.target.value),
+                          violationCount: Number(e.target.value) || 0,
                         })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
@@ -394,7 +404,7 @@ export default function PayrollTable() {
                       onChange={(e) =>
                         setAdjustmentForm({
                           ...adjustmentForm,
-                          lateVideoCount: Number(e.target.value),
+                          lateVideoCount: Number(e.target.value) || 0,
                         })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
@@ -411,7 +421,7 @@ export default function PayrollTable() {
                       onChange={(e) =>
                         setAdjustmentForm({
                           ...adjustmentForm,
-                          suddenLeaveCount: Number(e.target.value),
+                          suddenLeaveCount: Number(e.target.value) || 0,
                         })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
@@ -430,7 +440,7 @@ export default function PayrollTable() {
                       onChange={(e) =>
                         setAdjustmentForm({
                           ...adjustmentForm,
-                          customDeductionNominal: Number(e.target.value),
+                          customDeductionNominal: Number(e.target.value) || 0,
                         })
                       }
                       className="w-full px-3 py-1.5 text-xs border rounded-xl bg-white"
@@ -464,7 +474,7 @@ export default function PayrollTable() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Simpan Penyesuaian
                 </button>

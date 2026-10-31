@@ -34,7 +34,7 @@ export const DashboardView: React.FC = () => {
     if (m.isLocked) return acc;
     const targetClass = classrooms.find((c) => c.id === m.classroomId);
     const baseFee = targetClass ? rates.baseFees[targetClass.type] || 0 : 0;
-    const ldrFee = m.ldrZoneSnapshot !== 'none' ? rates.ldrBonus[m.ldrZoneSnapshot] || 0 : 0;
+    const ldrFee = (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') ? ((rates.ldrBonus as any)[m.ldrZoneSnapshot] || 0) : 0;
     return acc + baseFee + ldrFee;
   }, 0);
 
@@ -43,7 +43,7 @@ export const DashboardView: React.FC = () => {
   const tutorEarnings = tutorMeetings.reduce((acc, m) => {
     const targetClass = classrooms.find((c) => c.id === m.classroomId);
     const baseFee = targetClass ? rates.baseFees[targetClass.type] || 0 : 0;
-    const ldrFee = m.ldrZoneSnapshot !== 'none' ? rates.ldrBonus[m.ldrZoneSnapshot] || 0 : 0;
+    const ldrFee = (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') ? ((rates.ldrBonus as any)[m.ldrZoneSnapshot] || 0) : 0;
     return acc + baseFee + ldrFee;
   }, 0);
 

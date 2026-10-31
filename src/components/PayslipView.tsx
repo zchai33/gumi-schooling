@@ -4,7 +4,17 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 
 export default function PayslipView() {
-  const { currentUser, users, classrooms, meetings, freeTrials, rates, selectedMonth, getAdjustmentForTutor } = useApp();
+  const {
+    currentUser,
+    users,
+    classrooms,
+    meetings,
+    freeTrials,
+    adjustments,
+    rates,
+    selectedMonth,
+    getAdjustmentForTutor,
+  } = useApp();
 
   const isAdmin = currentUser?.role === 'admin';
   const tutors = useMemo(() => users.filter((u) => u.role === 'tutor'), [users]);
@@ -25,8 +35,10 @@ export default function PayslipView() {
     tMeetings.forEach((m) => {
       const cls = classrooms.find((c) => c.id === m.classroomId);
       baseEarnings += cls ? rates.baseFees[cls.type] || 0 : 0;
-      if (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') {
-        ldrEarnings += rates.ldrBonus[m.ldrZoneSnapshot] || 0;
+      
+      const zone = m.ldrZoneSnapshot;
+      if (zone && zone !== 'none' && zone in rates.ldrBonus) {
+        ldrEarnings += rates.ldrBonus[zone as keyof typeof rates.ldrBonus] || 0;
       }
     });
 
@@ -73,7 +85,7 @@ export default function PayslipView() {
     };
   };
 
-  // HANYA hitung ringkasan semua tutor jika Admin sedang memilih 'all'
+  // Ringkasan semua tutor jika Admin sedang memilih 'all'
   const summaryList = useMemo(() => {
     if (!isAdmin || selectedTutorId !== 'all') return [];
     return tutors.map((t) => {
@@ -85,7 +97,7 @@ export default function PayslipView() {
         takeHomePay: calc.takeHomePay,
       };
     });
-  }, [isAdmin, selectedTutorId, tutors, meetings, classrooms, freeTrials, rates, selectedMonth]);
+  }, [isAdmin, selectedTutorId, tutors, meetings, classrooms, freeTrials, adjustments, rates, selectedMonth]);
 
   const grandTotalPayroll = useMemo(() => {
     return summaryList.reduce((acc, curr) => acc + curr.takeHomePay, 0);
@@ -216,7 +228,6 @@ export default function PayslipView() {
   // ==========================================
   // VIEW 2: SLIP GAJI DETAIL (TUTOR / ADMIN)
   // ==========================================
-  // Jika Tutor login, paksa ke akun pribadinya
   const targetId = isAdmin ? selectedTutorId : currentUser?.id;
   const activeTutor = users.find((u) => u.id === targetId) || tutors[0];
 
@@ -250,17 +261,18 @@ export default function PayslipView() {
   // 2. Bonus LDR
   const ldrBreakdown: Record<string, { count: number; bonusRate: number; total: number }> = {};
   tutorMeetings.forEach((m) => {
-    if (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') {
-      const bonus = rates.ldrBonus[m.ldrZoneSnapshot] || 0;
-      if (!ldrBreakdown[m.ldrZoneSnapshot]) {
-        ldrBreakdown[m.ldrZoneSnapshot] = {
+    const zone = m.ldrZoneSnapshot;
+    if (zone && zone !== 'none' && zone in rates.ldrBonus) {
+      const bonus = rates.ldrBonus[zone as keyof typeof rates.ldrBonus] || 0;
+      if (!ldrBreakdown[zone]) {
+        ldrBreakdown[zone] = {
           count: 0,
           bonusRate: bonus,
           total: 0,
         };
       }
-      ldrBreakdown[m.ldrZoneSnapshot].count += 1;
-      ldrBreakdown[m.ldrZoneSnapshot].total += bonus;
+      ldrBreakdown[zone].count += 1;
+      ldrBreakdown[zone].total += bonus;
     }
   });
 
@@ -420,7 +432,9 @@ export default function PayslipView() {
 
                 {Object.entries(ldrBreakdown).map(([zone, data]) => (
                   <tr key={zone}>
-                    <td className="py-2 px-3 text-purple-700">Bonus Transport LDR ({zone.replace('_', ' >').toUpperCase()} KM)</td>
+                    <td className="py-2 px-3 text-purple-700">
+                      Bonus Transport LDR ({zone.replace('_', ' >').toUpperCase()} KM)
+                    </td>
                     <td className="py-2 px-3 text-center text-slate-400">-</td>
                     <td className="py-2 px-3 text-right">Rp {data.bonusRate.toLocaleString('id-ID')}</td>
                     <td className="py-2 px-3 text-center font-bold">{data.count} sesi</td>

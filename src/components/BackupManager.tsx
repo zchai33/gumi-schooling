@@ -127,7 +127,7 @@ export default function BackupManager() {
       tMeetings.forEach((m) => {
         const cls = classrooms.find((c) => c.id === m.classroomId);
         baseEarnings += cls ? rates.baseFees[cls.type] || 0 : 0;
-        ldrEarnings += m.ldrZoneSnapshot !== 'none' ? rates.ldrBonus[m.ldrZoneSnapshot] || 0 : 0;
+        ldrEarnings += (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') ? ((rates.ldrBonus as any)[m.ldrZoneSnapshot] || 0) : 0;
       });
 
       const adj = adjustments.find((a) => a.tutorId === tutor.id && a.month === selectedMonth);
