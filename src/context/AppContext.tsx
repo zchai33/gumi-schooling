@@ -35,6 +35,13 @@ async function verifyPassword(plainInput: string, storedPassword: string): Promi
   return inputHash === storedPassword;
 }
 
+// Validator sederhana untuk memastikan tautan YouTube
+export const isValidYouTubeUrl = (url?: string): boolean => {
+  if (!url || !url.trim()) return false;
+  const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
+  return pattern.test(url.trim());
+};
+
 interface AppContextType {
   // Autentikasi & Akun
   isAuthReady: boolean;
@@ -54,9 +61,12 @@ interface AppContextType {
   selectedMonth: string;
   setSelectedMonth: (month: string) => void;
 
-  // Audit Pengisian Jurnal (Lockdown SOP)
+  // Saklar Audit Global & Saklar Kunci Periode Bulan Tertentu (Admin)
   isJournalLocked: boolean;
   toggleJournalLock: () => void;
+  lockedMonths: string[];
+  toggleLockMonth: (month: string) => void;
+  isMonthLocked: (month: string) => boolean;
 
   // Rate Config (Ketentuan Gaji)
   rates: RateConfig;
@@ -77,7 +87,7 @@ interface AppContextType {
     lesson: string;
     date: string;
     notes?: string;
-    hasVideoClaim?: boolean;
+    videoUrl?: string;
     ldrZone?: string;
     ldrZoneSnapshot?: string;
   }) => Promise<void>;
@@ -87,7 +97,7 @@ interface AppContextType {
       date: string;
       lesson: string;
       notes?: string;
-      hasVideoClaim?: boolean;
+      videoUrl?: string;
       ldrZone?: string;
       ldrZoneSnapshot?: string;
       tutorId?: string;
@@ -97,6 +107,7 @@ interface AppContextType {
   clearMeetingSlot: (classroomId: string, meetingNumber: number) => Promise<void>;
   toggleLockMeeting: (meetingId: string) => Promise<void>;
   lockEmptySlot: (classroomId: string, meetingNumber: number) => Promise<void>;
+  toggleSentToParent: (meetingId: string) => Promise<void>;
 
   // Free Trials
   freeTrials: FreeTrial[];
@@ -136,7 +147,7 @@ const defaultRates: RateConfig = {
     panti_klungkung: 50000,
   },
   standardBonus: {
-    videoPerItem: 10000,
+    videoPerItem: 2000,
     reportPerStudent: 25000,
     fnmPerClosing: 50000,
   },
@@ -186,7 +197,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const currentYearMonth = new Date().toISOString().substring(0, 7);
   const [selectedMonth, setSelectedMonth] = useState<string>(currentYearMonth);
 
-  // Status Kunci Jurnal (Audit SOP)
+  // Status Kunci Jurnal Global (Audit Mode Sementara)
   const [isJournalLocked, setIsJournalLocked] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('gumi_journal_submission_locked') === 'true';
@@ -204,13 +215,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  // Saklar Penguncian Bulan Manual oleh Admin (contoh: ['2026-10'])
+  const [lockedMonths, setLockedMonths] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('gumi_manual_locked_months');
+      return saved ? JSON.parse(saved) : ['2026-10'];
+    }
+    return ['2026-10'];
+  });
+
+  const toggleLockMonth = (month: string) => {
+    setLockedMonths((prev) => {
+      const isLocked = prev.includes(month);
+      const updated = isLocked ? prev.filter((m) => m !== month) : [...prev, month];
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('gumi_manual_locked_months', JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const isMonthLocked = (month: string) => {
+    return lockedMonths.includes(month);
+  };
+
   const [rates, setRates] = useState<RateConfig>(defaultRates);
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [freeTrials, setFreeTrials] = useState<FreeTrial[]>([]);
   const [adjustments, setAdjustments] = useState<MonthlyAdjustment[]>([]);
 
-  // 1. Cek sesi localStorage saat browser dibuka
+  // 1. Cek sesi login di localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedUser = localStorage.getItem('gumi_current_user');
@@ -225,7 +260,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, []);
 
-  // 2. Simpan atau hapus ke localStorage saat status user berubah
+  // 2. Simpan sesi login ke localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (currentUser) {
@@ -236,7 +271,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [currentUser]);
 
-  // 3. Tarik seluruh data dari Supabase
+  // 3. Tarik data dari Supabase
   const fetchAllData = useCallback(async () => {
     try {
       const { data: usersData } = await supabase.from('users').select('*');
@@ -272,19 +307,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const { data: meetingData } = await supabase.from('meetings').select('*');
       if (meetingData) {
         setMeetings(
-          meetingData.map((m: any) => ({
-            id: m.id,
-            classroomId: m.classroom_id,
-            meetingNumber: m.meeting_number,
-            tutorId: m.tutor_id,
-            tutorName: m.tutor_name,
-            date: m.date,
-            lesson: m.lesson,
-            notes: m.notes,
-            isLocked: m.is_locked,
-            ldrZoneSnapshot: m.ldr_zone_snapshot || 'none',
-            hasVideoClaim: m.has_video_claim,
-          }))
+          meetingData.map((m: any) => {
+            const hasValidLink = isValidYouTubeUrl(m.video_url);
+            return {
+              id: m.id,
+              classroomId: m.classroom_id,
+              meetingNumber: m.meeting_number,
+              tutorId: m.tutor_id,
+              tutorName: m.tutor_name,
+              date: m.date,
+              lesson: m.lesson,
+              notes: m.notes,
+              isLocked: m.is_locked,
+              ldrZoneSnapshot: m.ldr_zone_snapshot || 'none',
+              hasVideoClaim: hasValidLink || m.has_video_claim || false,
+              videoUrl: m.video_url || '',
+              isSentToParent: m.is_sent_to_parent || false,
+            };
+          })
         );
       }
 
@@ -326,7 +366,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       }
 
-      const { data: logsData } = await supabase.from('activity_logs').select('*').order('created_at', { ascending: false }).limit(20);
+      const { data: logsData } = await supabase
+        .from('activity_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(20);
       if (logsData) {
         setActivityLogs(
           logsData.map((l: any) => ({
@@ -398,7 +442,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ]);
   };
 
-  // LOGIN DENGAN VERIFIKASI HASH & AUTO-MIGRASI
+  // LOGIN DENGAN VERIFIKASI HASH
   const login = async (username: string, plainPass: string): Promise<boolean> => {
     const foundUser = users.find((u) => u.username.toLowerCase() === username.trim().toLowerCase());
     if (!foundUser) return false;
@@ -538,7 +582,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     await fetchAllData();
   };
 
-  // Sinkronisasi otomatis ke meetings jika ldr_zone diupdate (Cascade Update)
   const updateClassroom = async (id: string, updatedData: Partial<Classroom>) => {
     setClassrooms((prev) =>
       prev.map((c) => (c.id === id ? { ...c, ...updatedData } : c))
@@ -583,7 +626,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     lesson: string;
     date: string;
     notes?: string;
-    hasVideoClaim?: boolean;
+    videoUrl?: string;
     ldrZone?: string;
     ldrZoneSnapshot?: string;
   }) => {
@@ -599,6 +642,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       meetingData.ldrZone ||
       (targetClass ? targetClass.ldrZone : 'none');
 
+    const cleanVideoUrl = (meetingData.videoUrl || '').trim();
+    const hasValidVideo = isValidYouTubeUrl(cleanVideoUrl);
+
     const meetingId = existingIndex >= 0 ? meetings[existingIndex].id : `mtg-${Date.now()}`;
     const newMeeting: Meeting = {
       id: meetingId,
@@ -608,10 +654,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       tutorName: currentUser.name,
       date: meetingData.date,
       lesson: meetingData.lesson,
-      notes: meetingData.notes,
+      notes: meetingData.notes || '',
       isLocked: false,
       ldrZoneSnapshot: determinedLdrZone,
-      hasVideoClaim: meetingData.hasVideoClaim || false,
+      hasVideoClaim: hasValidVideo,
+      videoUrl: cleanVideoUrl,
+      isSentToParent: false,
     } as any;
 
     if (existingIndex >= 0) {
@@ -636,21 +684,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       is_locked: newMeeting.isLocked,
       ldr_zone_snapshot: newMeeting.ldrZoneSnapshot,
       has_video_claim: newMeeting.hasVideoClaim,
+      video_url: newMeeting.videoUrl,
+      is_sent_to_parent: newMeeting.isSentToParent,
     });
-
-    if (meetingData.hasVideoClaim) {
-      const meetingMonth = meetingData.date.substring(0, 7);
-      const adj = getAdjustmentForTutor(currentUser.id, meetingMonth);
-      await saveAdjustment({
-        ...adj,
-        videoCount: (adj.videoCount || 0) + 1,
-      });
-    }
 
     logActivity(
       'CREATE_MEETING',
       `Mengisi jurnal pertemuan #${meetingData.meetingNumber} di kelas ${targetClass?.name || ''}${
-        meetingData.hasVideoClaim ? ' (Klaim Video Siswa)' : ''
+        hasValidVideo ? ' (Dengan Tautan Video YouTube)' : ''
       }`
     );
     await fetchAllData();
@@ -662,7 +703,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       date: string;
       lesson: string;
       notes?: string;
-      hasVideoClaim?: boolean;
+      videoUrl?: string;
       ldrZone?: string;
       ldrZoneSnapshot?: string;
       tutorId?: string;
@@ -670,6 +711,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   ) => {
     const determinedLdr = updatedData.ldrZoneSnapshot || updatedData.ldrZone;
+    const cleanVideoUrl = (updatedData.videoUrl || '').trim();
+    const hasValidVideo = isValidYouTubeUrl(cleanVideoUrl);
 
     setMeetings((prev) =>
       prev.map((m) => {
@@ -679,7 +722,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           date: updatedData.date,
           lesson: updatedData.lesson,
           notes: updatedData.notes,
-          hasVideoClaim: updatedData.hasVideoClaim,
+          videoUrl: cleanVideoUrl,
+          hasVideoClaim: hasValidVideo,
           tutorId: updatedData.tutorId || m.tutorId,
           tutorName: updatedData.tutorName || m.tutorName,
           ldrZoneSnapshot: determinedLdr || m.ldrZoneSnapshot || 'none',
@@ -691,7 +735,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       date: updatedData.date,
       lesson: updatedData.lesson,
       notes: updatedData.notes,
-      has_video_claim: updatedData.hasVideoClaim,
+      video_url: cleanVideoUrl,
+      has_video_claim: hasValidVideo,
       tutor_id: updatedData.tutorId,
       tutor_name: updatedData.tutorName,
     };
@@ -740,6 +785,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     await fetchAllData();
   };
 
+  // Saklar Status Pengiriman Ortu (Admin Jempol)
+  const toggleSentToParent = async (meetingId: string) => {
+    const target = meetings.find((m) => m.id === meetingId);
+    if (!target) return;
+    const newStatus = !target.isSentToParent;
+
+    setMeetings((prev) =>
+      prev.map((m) => (m.id === meetingId ? ({ ...m, isSentToParent: newStatus } as Meeting) : m))
+    );
+
+    await supabase.from('meetings').update({ is_sent_to_parent: newStatus }).eq('id', meetingId);
+    await fetchAllData();
+  };
+
   const lockEmptySlot = async (classroomId: string, meetingNumber: number) => {
     if (currentUser?.role !== 'admin') return;
 
@@ -762,6 +821,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isLocked: true,
         ldrZoneSnapshot: targetClass ? targetClass.ldrZone : 'none',
         hasVideoClaim: false,
+        videoUrl: '',
+        isSentToParent: false,
       } as any;
 
       setMeetings((prev) => [...prev, lockedPlaceholder]);
@@ -778,6 +839,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           is_locked: true,
           ldr_zone_snapshot: lockedPlaceholder.ldrZoneSnapshot,
           has_video_claim: false,
+          video_url: '',
+          is_sent_to_parent: false,
         },
       ]);
 
@@ -965,6 +1028,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setSelectedMonth,
         isJournalLocked,
         toggleJournalLock,
+        lockedMonths,
+        toggleLockMonth,
+        isMonthLocked,
         rates,
         updateRates,
         resetRatesToDefault,
@@ -978,6 +1044,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         clearMeetingSlot,
         toggleLockMeeting,
         lockEmptySlot,
+        toggleSentToParent,
         freeTrials,
         addFreeTrial,
         updateFreeTrial,

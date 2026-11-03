@@ -35,7 +35,7 @@ export default function PayslipView() {
     tMeetings.forEach((m) => {
       const cls = classrooms.find((c) => c.id === m.classroomId);
       baseEarnings += cls ? rates.baseFees[cls.type] || 0 : 0;
-      
+
       const zone = m.ldrZoneSnapshot;
       if (zone && zone !== 'none' && zone in rates.ldrBonus) {
         ldrEarnings += rates.ldrBonus[zone as keyof typeof rates.ldrBonus] || 0;
@@ -48,7 +48,12 @@ export default function PayslipView() {
     const trialTotal = tTrials.length * (rates.baseFees['Free Trial'] || 25000);
 
     const adj = getAdjustmentForTutor ? getAdjustmentForTutor(tutorId, selectedMonth) : null;
-    const videoTotal = (adj?.videoCount || 0) * rates.standardBonus.videoPerItem;
+
+    // OTOMATIS: Hitung video dari link YouTube di jurnal + tambahan manual jika ada
+    const autoVideoCount = tMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
+    const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
+
+    const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
     const reportTotal = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
     const fnmTotal = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
     const customBonus = Number(adj?.customBonusNominal || 0);
@@ -81,6 +86,7 @@ export default function PayslipView() {
 
     return {
       sessionCount: tMeetings.length,
+      videoCount: totalVideoCount,
       takeHomePay,
     };
   };
@@ -126,7 +132,7 @@ export default function PayslipView() {
             <select
               value={selectedTutorId}
               onChange={(e) => setSelectedTutorId(e.target.value)}
-              className="px-3 py-2 text-xs border rounded-xl bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 text-xs border rounded-xl bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
             >
               <option value="all">👥 Semua Tutor (Tabel Ringkasan)</option>
               {tutors.map((t) => (
@@ -286,7 +292,11 @@ export default function PayslipView() {
   // 4. Penyesuaian Bonus & Potongan
   const adj = getAdjustmentForTutor ? getAdjustmentForTutor(activeTutor.id, selectedMonth) : null;
 
-  const videoTotal = (adj?.videoCount || 0) * rates.standardBonus.videoPerItem;
+  // OTOMATIS: Hitung video dari link YouTube di jurnal + tambahan manual
+  const autoVideoCount = tutorMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
+  const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
+
+  const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
   const reportTotal = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
   const fnmTotal = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
   const customBonusNominal = Number(adj?.customBonusNominal || 0);
@@ -333,7 +343,7 @@ export default function PayslipView() {
             <select
               value={selectedTutorId}
               onChange={(e) => setSelectedTutorId(e.target.value)}
-              className="px-3 py-2 text-xs border rounded-xl bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 text-xs border rounded-xl bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
             >
               <option value="all">👥 Semua Tutor (Tabel Ringkasan)</option>
               {tutors.map((t) => (
@@ -346,7 +356,7 @@ export default function PayslipView() {
 
           <button
             onClick={handlePrint}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2"
+            className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-2"
           >
             <span>🖨️</span> Cetak / Simpan PDF
           </button>
@@ -358,9 +368,11 @@ export default function PayslipView() {
         <div className="flex justify-between items-start border-b border-slate-200 pb-5">
           <div>
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 bg-blue-600 text-white rounded-lg flex items-center justify-center font-extrabold text-sm">
-                GS
-              </div>
+              <img
+                src="/logo_GSonly.png"
+                alt="Gumi Schooling"
+                className="h-10 w-auto object-contain"
+              />
               <h1 className="text-xl font-black text-slate-800 tracking-tight">GUMI SCHOOLING</h1>
             </div>
             <p className="text-xs text-slate-500 mt-1">Tutor Salary &amp; Activity Statement</p>
@@ -442,12 +454,20 @@ export default function PayslipView() {
                   </tr>
                 ))}
 
-                {(adj?.videoCount || 0) > 0 && (
+                {/* BARIS BONUS KONTEN VIDEO SISWA OTOMATIS */}
+                {totalVideoCount > 0 && (
                   <tr>
-                    <td className="py-2 px-3 text-emerald-700">Bonus Konten Video Siswa</td>
+                    <td className="py-2 px-3 text-emerald-700">
+                      Bonus Konten Video Siswa
+                      {autoVideoCount > 0 && (
+                        <span className="text-[10px] text-slate-400 block">
+                          ({autoVideoCount} video otomatis dari link YouTube terverifikasi)
+                        </span>
+                      )}
+                    </td>
                     <td className="py-2 px-3 text-center text-slate-400">-</td>
                     <td className="py-2 px-3 text-right">Rp {rates.standardBonus.videoPerItem.toLocaleString('id-ID')}</td>
-                    <td className="py-2 px-3 text-center font-bold">{adj?.videoCount} video</td>
+                    <td className="py-2 px-3 text-center font-bold">{totalVideoCount} video</td>
                     <td className="py-2 px-3 text-right font-semibold text-emerald-700">Rp {videoTotal.toLocaleString('id-ID')}</td>
                   </tr>
                 )}

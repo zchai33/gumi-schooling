@@ -9,7 +9,7 @@ export interface User {
   phone?: string;
   address?: string;
   birthDate?: string;
-  institution?: string; // Kampus / Universitas / Sekolah
+  institution?: string;
   status?: 'active' | 'inactive';
 }
 
@@ -62,7 +62,7 @@ export interface Classroom {
   id: string;
   name: string;
   type: ClassType;
-  students: string[]; // Mendukung 1 - 10 nama siswa
+  students: string[];
   totalMeetings: number;
   ldrZone: LDRZone;
   status: 'active' | 'completed';
@@ -80,6 +80,8 @@ export interface Meeting {
   isLocked: boolean;
   ldrZoneSnapshot?: LDRZone | string;
   hasVideoClaim?: boolean;
+  videoUrl?: string; // Tautan video YouTube
+  isSentToParent?: boolean; // Penanda admin sudah kirim ke ortu murid
 }
 
 export interface FreeTrial {
@@ -95,14 +97,12 @@ export interface FreeTrial {
 export interface MonthlyAdjustment {
   id: string;
   tutorId: string;
-  month: string; // Format "YYYY-MM", misal "2026-10"
-  // Bonus counts
+  month: string;
   videoCount: number;
   reportCount: number;
   fnmCount: number;
   customBonusNominal: number;
   customBonusNote: string;
-  // Deductions
   applySukaDuka: boolean;
   lateAttendanceCount: number;
   violationCount: number;

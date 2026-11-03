@@ -47,6 +47,8 @@ module.exports = mod;
 __turbopack_context__.s([
     "AppProvider",
     ()=>AppProvider,
+    "isValidYouTubeUrl",
+    ()=>isValidYouTubeUrl,
     "useApp",
     ()=>useApp
 ]);
@@ -77,6 +79,11 @@ async function verifyPassword(plainInput, storedPassword) {
     const inputHash = await hashPassword(plainInput);
     return inputHash === storedPassword;
 }
+const isValidYouTubeUrl = (url)=>{
+    if (!url || !url.trim()) return false;
+    const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
+    return pattern.test(url.trim());
+};
 const defaultRates = {
     baseFees: {
         'Kids-A': 35000,
@@ -96,7 +103,7 @@ const defaultRates = {
         panti_klungkung: 50000
     },
     standardBonus: {
-        videoPerItem: 10000,
+        videoPerItem: 2000,
         reportPerStudent: 25000,
         fnmPerClosing: 50000
     },
@@ -141,7 +148,7 @@ const AppProvider = ({ children })=>{
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('dashboard');
     const currentYearMonth = new Date().toISOString().substring(0, 7);
     const [selectedMonth, setSelectedMonth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(currentYearMonth);
-    // Status Kunci Jurnal (Audit SOP)
+    // Status Kunci Jurnal Global (Audit Mode Sementara)
     const [isJournalLocked, setIsJournalLocked] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>{
         if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
         ;
@@ -155,24 +162,47 @@ const AppProvider = ({ children })=>{
             return next;
         });
     };
+    // Saklar Penguncian Bulan Manual oleh Admin (contoh: ['2026-10'])
+    const [lockedMonths, setLockedMonths] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>{
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        return [
+            '2026-10'
+        ];
+    });
+    const toggleLockMonth = (month)=>{
+        setLockedMonths((prev)=>{
+            const isLocked = prev.includes(month);
+            const updated = isLocked ? prev.filter((m)=>m !== month) : [
+                ...prev,
+                month
+            ];
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
+            return updated;
+        });
+    };
+    const isMonthLocked = (month)=>{
+        return lockedMonths.includes(month);
+    };
     const [rates, setRates] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(defaultRates);
     const [classrooms, setClassrooms] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [meetings, setMeetings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [freeTrials, setFreeTrials] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [adjustments, setAdjustments] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    // 1. Cek sesi localStorage saat browser dibuka
+    // 1. Cek sesi login di localStorage
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
         ;
     }, []);
-    // 2. Simpan atau hapus ke localStorage saat status user berubah
+    // 2. Simpan sesi login ke localStorage
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
         ;
     }, [
         currentUser
     ]);
-    // 3. Tarik seluruh data dari Supabase
+    // 3. Tarik data dari Supabase
     const fetchAllData = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async ()=>{
         try {
             const { data: usersData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('users').select('*');
@@ -202,7 +232,9 @@ const AppProvider = ({ children })=>{
             }
             const { data: meetingData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('meetings').select('*');
             if (meetingData) {
-                setMeetings(meetingData.map((m)=>({
+                setMeetings(meetingData.map((m)=>{
+                    const hasValidLink = isValidYouTubeUrl(m.video_url);
+                    return {
                         id: m.id,
                         classroomId: m.classroom_id,
                         meetingNumber: m.meeting_number,
@@ -213,8 +245,11 @@ const AppProvider = ({ children })=>{
                         notes: m.notes,
                         isLocked: m.is_locked,
                         ldrZoneSnapshot: m.ldr_zone_snapshot || 'none',
-                        hasVideoClaim: m.has_video_claim
-                    })));
+                        hasVideoClaim: hasValidLink || m.has_video_claim || false,
+                        videoUrl: m.video_url || '',
+                        isSentToParent: m.is_sent_to_parent || false
+                    };
+                }));
             }
             const { data: trialsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').select('*');
             if (trialsData) {
@@ -329,7 +364,7 @@ const AppProvider = ({ children })=>{
             }
         ]);
     };
-    // LOGIN DENGAN VERIFIKASI HASH & AUTO-MIGRASI
+    // LOGIN DENGAN VERIFIKASI HASH
     const login = async (username, plainPass)=>{
         const foundUser = users.find((u)=>u.username.toLowerCase() === username.trim().toLowerCase());
         if (!foundUser) return false;
@@ -464,7 +499,6 @@ const AppProvider = ({ children })=>{
         ]);
         await fetchAllData();
     };
-    // Sinkronisasi otomatis ke meetings jika ldr_zone diupdate (Cascade Update)
     const updateClassroom = async (id, updatedData)=>{
         setClassrooms((prev)=>prev.map((c)=>c.id === id ? {
                     ...c,
@@ -502,6 +536,8 @@ const AppProvider = ({ children })=>{
         const targetClass = classrooms.find((c)=>c.id === meetingData.classroomId);
         const existingIndex = meetings.findIndex((m)=>m.classroomId === meetingData.classroomId && m.meetingNumber === meetingData.meetingNumber);
         const determinedLdrZone = meetingData.ldrZoneSnapshot || meetingData.ldrZone || (targetClass ? targetClass.ldrZone : 'none');
+        const cleanVideoUrl = (meetingData.videoUrl || '').trim();
+        const hasValidVideo = isValidYouTubeUrl(cleanVideoUrl);
         const meetingId = existingIndex >= 0 ? meetings[existingIndex].id : `mtg-${Date.now()}`;
         const newMeeting = {
             id: meetingId,
@@ -511,10 +547,12 @@ const AppProvider = ({ children })=>{
             tutorName: currentUser.name,
             date: meetingData.date,
             lesson: meetingData.lesson,
-            notes: meetingData.notes,
+            notes: meetingData.notes || '',
             isLocked: false,
             ldrZoneSnapshot: determinedLdrZone,
-            hasVideoClaim: meetingData.hasVideoClaim || false
+            hasVideoClaim: hasValidVideo,
+            videoUrl: cleanVideoUrl,
+            isSentToParent: false
         };
         if (existingIndex >= 0) {
             setMeetings((prev)=>{
@@ -541,21 +579,17 @@ const AppProvider = ({ children })=>{
             notes: newMeeting.notes,
             is_locked: newMeeting.isLocked,
             ldr_zone_snapshot: newMeeting.ldrZoneSnapshot,
-            has_video_claim: newMeeting.hasVideoClaim
+            has_video_claim: newMeeting.hasVideoClaim,
+            video_url: newMeeting.videoUrl,
+            is_sent_to_parent: newMeeting.isSentToParent
         });
-        if (meetingData.hasVideoClaim) {
-            const meetingMonth = meetingData.date.substring(0, 7);
-            const adj = getAdjustmentForTutor(currentUser.id, meetingMonth);
-            await saveAdjustment({
-                ...adj,
-                videoCount: (adj.videoCount || 0) + 1
-            });
-        }
-        logActivity('CREATE_MEETING', `Mengisi jurnal pertemuan #${meetingData.meetingNumber} di kelas ${targetClass?.name || ''}${meetingData.hasVideoClaim ? ' (Klaim Video Siswa)' : ''}`);
+        logActivity('CREATE_MEETING', `Mengisi jurnal pertemuan #${meetingData.meetingNumber} di kelas ${targetClass?.name || ''}${hasValidVideo ? ' (Dengan Tautan Video YouTube)' : ''}`);
         await fetchAllData();
     };
     const updateMeeting = async (meetingId, updatedData)=>{
         const determinedLdr = updatedData.ldrZoneSnapshot || updatedData.ldrZone;
+        const cleanVideoUrl = (updatedData.videoUrl || '').trim();
+        const hasValidVideo = isValidYouTubeUrl(cleanVideoUrl);
         setMeetings((prev)=>prev.map((m)=>{
                 if (m.id !== meetingId) return m;
                 return {
@@ -563,7 +597,8 @@ const AppProvider = ({ children })=>{
                     date: updatedData.date,
                     lesson: updatedData.lesson,
                     notes: updatedData.notes,
-                    hasVideoClaim: updatedData.hasVideoClaim,
+                    videoUrl: cleanVideoUrl,
+                    hasVideoClaim: hasValidVideo,
                     tutorId: updatedData.tutorId || m.tutorId,
                     tutorName: updatedData.tutorName || m.tutorName,
                     ldrZoneSnapshot: determinedLdr || m.ldrZoneSnapshot || 'none'
@@ -573,7 +608,8 @@ const AppProvider = ({ children })=>{
             date: updatedData.date,
             lesson: updatedData.lesson,
             notes: updatedData.notes,
-            has_video_claim: updatedData.hasVideoClaim,
+            video_url: cleanVideoUrl,
+            has_video_claim: hasValidVideo,
             tutor_id: updatedData.tutorId,
             tutor_name: updatedData.tutorName
         };
@@ -603,6 +639,20 @@ const AppProvider = ({ children })=>{
         }).eq('id', meetingId);
         await fetchAllData();
     };
+    // Saklar Status Pengiriman Ortu (Admin Jempol)
+    const toggleSentToParent = async (meetingId)=>{
+        const target = meetings.find((m)=>m.id === meetingId);
+        if (!target) return;
+        const newStatus = !target.isSentToParent;
+        setMeetings((prev)=>prev.map((m)=>m.id === meetingId ? {
+                    ...m,
+                    isSentToParent: newStatus
+                } : m));
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('meetings').update({
+            is_sent_to_parent: newStatus
+        }).eq('id', meetingId);
+        await fetchAllData();
+    };
     const lockEmptySlot = async (classroomId, meetingNumber)=>{
         if (currentUser?.role !== 'admin') return;
         const existing = meetings.find((m)=>m.classroomId === classroomId && m.meetingNumber === meetingNumber);
@@ -620,7 +670,9 @@ const AppProvider = ({ children })=>{
                 lesson: 'Sesi Dikosongkan / Hangus oleh Admin',
                 isLocked: true,
                 ldrZoneSnapshot: targetClass ? targetClass.ldrZone : 'none',
-                hasVideoClaim: false
+                hasVideoClaim: false,
+                videoUrl: '',
+                isSentToParent: false
             };
             setMeetings((prev)=>[
                     ...prev,
@@ -637,7 +689,9 @@ const AppProvider = ({ children })=>{
                     lesson: lockedPlaceholder.lesson,
                     is_locked: true,
                     ldr_zone_snapshot: lockedPlaceholder.ldrZoneSnapshot,
-                    has_video_claim: false
+                    has_video_claim: false,
+                    video_url: '',
+                    is_sent_to_parent: false
                 }
             ]);
             logActivity('CREATE_MEETING', `Admin mengunci slot pertemuan #${meetingNumber} (Hangus) di kelas ${targetClass?.name || ''}`);
@@ -806,6 +860,9 @@ const AppProvider = ({ children })=>{
             setSelectedMonth,
             isJournalLocked,
             toggleJournalLock,
+            lockedMonths,
+            toggleLockMonth,
+            isMonthLocked,
             rates,
             updateRates,
             resetRatesToDefault,
@@ -819,6 +876,7 @@ const AppProvider = ({ children })=>{
             clearMeetingSlot,
             toggleLockMeeting,
             lockEmptySlot,
+            toggleSentToParent,
             freeTrials,
             addFreeTrial,
             updateFreeTrial,
@@ -832,7 +890,7 @@ const AppProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AppContext.tsx",
-        lineNumber: 950,
+        lineNumber: 1013,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

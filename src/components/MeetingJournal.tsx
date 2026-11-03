@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { useApp } from '@/context/AppContext';
+import { useApp, isValidYouTubeUrl } from '@/context/AppContext';
 import { Classroom, Meeting, User } from '@/types';
 
 export default function MeetingJournal() {
@@ -17,25 +17,16 @@ export default function MeetingJournal() {
     lockEmptySlot,
     selectedMonth,
     setSelectedMonth,
+    isJournalLocked,
+    toggleJournalLock,
+    toggleLockMonth,
+    isMonthLocked,
   } = useApp();
 
   const isAdmin = currentUser?.role === 'admin';
 
-  // State Saklar Kunci Pengisian Jurnal (Audit Mode)
-  const [isJournalLocked, setIsJournalLocked] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('gumi_journal_submission_locked') === 'true';
-    }
-    return false;
-  });
-
-  const handleToggleJournalLock = () => {
-    const nextState = !isJournalLocked;
-    setIsJournalLocked(nextState);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('gumi_journal_submission_locked', String(nextState));
-    }
-  };
+  // Periksa apakah bulan yang sedang dibuka ini berstatus terkunci
+  const isPeriodLocked = isMonthLocked(selectedMonth);
 
   // 1. Tab Kategori Program
   const tabTypes: { id: string; label: string }[] = [
@@ -62,7 +53,7 @@ export default function MeetingJournal() {
   const [inputDate, setInputDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [inputLesson, setInputLesson] = useState<string>('');
   const [inputNotes, setInputNotes] = useState<string>('');
-  const [claimVideo, setClaimVideo] = useState<boolean>(false);
+  const [inputVideoUrl, setInputVideoUrl] = useState<string>('');
 
   // 5. State Modal Edit Sesi untuk Admin (Human Error Correction)
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
@@ -70,7 +61,7 @@ export default function MeetingJournal() {
   const [editLesson, setEditLesson] = useState<string>('');
   const [editNotes, setEditNotes] = useState<string>('');
   const [editTutorId, setEditTutorId] = useState<string>('');
-  const [editClaimVideo, setEditClaimVideo] = useState<boolean>(false);
+  const [editVideoUrl, setEditVideoUrl] = useState<string>('');
   const [editLdrZone, setEditLdrZone] = useState<string>('none');
 
   // Daftar tutor untuk pilihan filter dropdown
@@ -124,26 +115,32 @@ export default function MeetingJournal() {
   const selectedClassForModal = classrooms.find((c: Classroom) => c.id === activeSlot?.classId);
 
   const handleOpenFillModal = (classId: string, meetingNumber: number) => {
-    if (!isAdmin && isJournalLocked) {
-      alert('Pengisian jurnal sedang dinonaktifkan untuk proses audit oleh Admin.');
+    if (!isAdmin && (isJournalLocked || isPeriodLocked)) {
+      alert(`Pengisian jurnal untuk periode ${selectedMonth} telah ditutup/dikunci oleh Admin.`);
       return;
     }
     setActiveSlot({ classId, meetingNumber });
     setInputDate(`${selectedMonth}-01`);
     setInputLesson('');
     setInputNotes('');
-    setClaimVideo(false);
+    setInputVideoUrl('');
   };
 
   const handleSubmitMeeting = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeSlot) return;
-    if (!isAdmin && isJournalLocked) {
-      alert('Pengisian jurnal sedang dinonaktifkan untuk proses audit oleh Admin.');
+    if (!isAdmin && (isJournalLocked || isPeriodLocked)) {
+      alert(`Pengisian jurnal untuk periode ${selectedMonth} telah ditutup/dikunci oleh Admin.`);
       return;
     }
     if (!inputLesson.trim()) {
       alert('Harap masukkan materi pelajaran (lesson)!');
+      return;
+    }
+
+    const cleanUrl = inputVideoUrl.trim();
+    if (cleanUrl !== '' && !isValidYouTubeUrl(cleanUrl)) {
+      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...)');
       return;
     }
 
@@ -155,7 +152,7 @@ export default function MeetingJournal() {
       date: inputDate,
       lesson: inputLesson,
       notes: inputNotes,
-      hasVideoClaim: claimVideo,
+      videoUrl: cleanUrl,
       ldrZone: currentClass?.ldrZone || 'none',
       ldrZoneSnapshot: currentClass?.ldrZone || 'none',
     });
@@ -169,7 +166,7 @@ export default function MeetingJournal() {
     setEditLesson(mtg.lesson);
     setEditNotes(mtg.notes || '');
     setEditTutorId(mtg.tutorId);
-    setEditClaimVideo(mtg.hasVideoClaim || false);
+    setEditVideoUrl(mtg.videoUrl || '');
     setEditLdrZone(mtg.ldrZoneSnapshot || 'none');
   };
 
@@ -177,13 +174,19 @@ export default function MeetingJournal() {
     e.preventDefault();
     if (!editingMeeting) return;
 
+    const cleanUrl = editVideoUrl.trim();
+    if (cleanUrl !== '' && !isValidYouTubeUrl(cleanUrl)) {
+      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...)');
+      return;
+    }
+
     const assignedTutor = users.find((u: User) => u.id === editTutorId);
 
     await updateMeeting(editingMeeting.id, {
       date: editDate,
       lesson: editLesson,
       notes: editNotes,
-      hasVideoClaim: editClaimVideo,
+      videoUrl: cleanUrl,
       ldrZone: editLdrZone,
       ldrZoneSnapshot: editLdrZone,
       tutorId: editTutorId,
@@ -211,19 +214,34 @@ export default function MeetingJournal() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* SAKLAR AUDIT KHUSUS ADMIN */}
+          {/* SAKLAR KONTROL ADMIN (KUNCI PERIODE BULAN TERPILIH) */}
           {isAdmin && (
             <button
-              onClick={handleToggleJournalLock}
+              onClick={() => toggleLockMonth(selectedMonth)}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2 border ${
-                isJournalLocked
-                  ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
-                  : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                isPeriodLocked
+                  ? 'bg-rose-50 text-rose-700 border-rose-300 hover:bg-rose-100'
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
               }`}
-              title="Kunci atau buka izin pengisian jurnal untuk seluruh tutor"
+              title="Klik untuk mengunci atau membuka akses pengisian jurnal di bulan ini bagi tutor"
             >
-              <span>{isJournalLocked ? '🔒' : '🔓'}</span>
-              <span>{isJournalLocked ? 'Akses Tutor: TERKUNCI (Audit)' : 'Akses Tutor: TERBUKA'}</span>
+              <span>{isPeriodLocked ? '🔒' : '🔓'}</span>
+              <span>{isPeriodLocked ? `Bulan ${selectedMonth}: TERKUNCI` : `Bulan ${selectedMonth}: TERBUKA`}</span>
+            </button>
+          )}
+
+          {/* SAKLAR AUDIT GLOBAL SEMENTARA */}
+          {isAdmin && (
+            <button
+              onClick={toggleJournalLock}
+              className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all border ${
+                isJournalLocked
+                  ? 'bg-amber-100 text-amber-900 border-amber-300'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+              }`}
+              title="Kunci global seluruh form pengisian untuk audit dadakan"
+            >
+              {isJournalLocked ? '⚠️ Audit Global: AKTIF' : 'Audit Global: Non-aktif'}
             </button>
           )}
 
@@ -240,14 +258,27 @@ export default function MeetingJournal() {
         </div>
       </div>
 
-      {/* BANNER NOTIFIKASI JIKA SEDANG AUDIT (SISI TUTOR) */}
-      {!isAdmin && isJournalLocked && (
+      {/* BANNER NOTIFIKASI BULAN INI TERKUNCI (SISI TUTOR) */}
+      {!isAdmin && isPeriodLocked && (
+        <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-3 text-rose-900 animate-in fade-in">
+          <span className="text-2xl">🔒</span>
+          <div>
+            <h4 className="font-bold text-xs">Periode Bulan Ini Telah Ditutup (Read-Only)</h4>
+            <p className="text-[11px] text-rose-800/80 mt-0.5">
+              Admin telah mengunci pencatatan jurnal untuk periode <strong>{selectedMonth}</strong>. Data pada bulan ini hanya dapat dilihat untuk arsip dan tidak dapat ditambah atau diubah oleh tutor.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* BANNER NOTIFIKASI AUDIT GLOBAL JIKA AKTIF */}
+      {!isAdmin && !isPeriodLocked && isJournalLocked && (
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3 text-amber-900 animate-in fade-in">
           <span className="text-2xl">🔒</span>
           <div>
             <h4 className="font-bold text-xs">Akses Pengisian Jurnal Sedang Ditutup (Audit Mode)</h4>
             <p className="text-[11px] text-amber-800/80 mt-0.5">
-              Admin sedang melakukan peninjauan & audit sesi bulanan. Anda tetap dapat melihat catatan dan mencari data murid, namun tombol pengisian sesi baru sementara dinonaktifkan.
+              Admin sedang melakukan peninjauan sesi. Tombol pengisian sesi baru sementara dinonaktifkan.
             </p>
           </div>
         </div>
@@ -313,7 +344,7 @@ export default function MeetingJournal() {
             </div>
           )}
 
-          {/* Badge Indikator Hasil Pencarian & Cek Fakta */}
+          {/* Badge Indikator Hasil Pencarian */}
           <div className="flex items-center gap-2 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shrink-0 self-stretch md:self-auto justify-center">
             {auditTutorSessionStats ? (
               <span className="text-amber-700 flex items-center gap-1.5">
@@ -363,7 +394,6 @@ export default function MeetingJournal() {
                       CLASS
                     </span>
                     <div>
-                      {/* NAMA MURID BESAR */}
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
                           Murid:
@@ -373,7 +403,6 @@ export default function MeetingJournal() {
                         </h3>
                       </div>
 
-                      {/* DETAIL KELAS */}
                       <div className="flex items-center gap-2 text-xs text-slate-500 mt-1 flex-wrap">
                         <span className="font-semibold text-slate-700 bg-white px-2.5 py-0.5 rounded-md border border-slate-200">
                           {cls.name}
@@ -484,7 +513,7 @@ export default function MeetingJournal() {
                       {/* Baris 5: Lesson, Status, Edit & Reset */}
                       <tr>
                         <td className="py-3 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
-                          Lesson
+                          Lesson &amp; Note
                         </td>
                         {colIndexes.map((num: number) => {
                           const mtg = classMeetings.find((m: Meeting) => m.meetingNumber === num);
@@ -499,11 +528,29 @@ export default function MeetingJournal() {
                                 <div className="space-y-1.5">
                                   <p className="font-medium text-slate-800 leading-snug">{mtg.lesson}</p>
 
+                                  {mtg.notes && (
+                                    <p className="text-[10px] text-slate-500 italic line-clamp-2">
+                                      &ldquo;{mtg.notes}&rdquo;
+                                    </p>
+                                  )}
+
                                   <div className="flex items-center gap-1 flex-wrap pt-0.5">
-                                    {mtg.hasVideoClaim && (
-                                      <span className="inline-flex items-center gap-1 text-[9px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">
-                                        🎬 Video
-                                      </span>
+                                    {mtg.videoUrl ? (
+                                      <a
+                                        href={mtg.videoUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 text-[9px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-1.5 py-0.5 rounded transition-colors"
+                                        title="Buka Video di YouTube"
+                                      >
+                                        ▶️ Video YT ↗
+                                      </a>
+                                    ) : (
+                                      mtg.hasVideoClaim && (
+                                        <span className="inline-flex items-center gap-1 text-[9px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">
+                                          🎬 Video
+                                        </span>
+                                      )
                                     )}
 
                                     {mtgLdr && mtgLdr !== 'none' && (
@@ -519,7 +566,7 @@ export default function MeetingJournal() {
                                     )}
                                   </div>
 
-                                  {/* KONTROL ADMIN UNTUK MEMPERBAIKI KESALAHAN TUTOR */}
+                                  {/* KONTROL EDIT KHUSUS ADMIN */}
                                   {isAdmin && (
                                     <div className="pt-1.5 flex items-center gap-2 border-t border-slate-100">
                                       <button
@@ -548,9 +595,9 @@ export default function MeetingJournal() {
                               ) : (
                                 /* KOLOM KOSONG DI BULAN INI */
                                 <div className="space-y-1.5">
-                                  {!isAdmin && isJournalLocked ? (
+                                  {!isAdmin && (isJournalLocked || isPeriodLocked) ? (
                                     <div className="w-full py-1 text-[10px] text-slate-400 bg-slate-50 border border-slate-200 rounded text-center font-medium">
-                                      🔒 Terkunci (Audit)
+                                      🔒 {isPeriodLocked ? 'Bulan Ditutup' : 'Audit Mode'}
                                     </div>
                                   ) : (
                                     <button
@@ -588,7 +635,7 @@ export default function MeetingJournal() {
       {/* MODAL 1: INPUT JURNAL BARU */}
       {activeSlot && selectedClassForModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -645,11 +692,11 @@ export default function MeetingJournal() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Materi Pelajaran / Topik Bahasan (Lesson)
+                  Materi Pelajaran / Topik Bahasan (Lesson) <span className="text-rose-500">*</span>
                 </label>
-                <textarea
-                  rows={3}
-                  placeholder="Misal: Alfabet W and H, Phonics Review"
+                <input
+                  type="text"
+                  placeholder="Misal: Counting Number & Alphabet Review"
                   value={inputLesson}
                   onChange={(e) => setInputLesson(e.target.value)}
                   className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
@@ -657,24 +704,40 @@ export default function MeetingJournal() {
                 />
               </div>
 
-              {/* CHECKBOX KLAIM FEE VIDEO */}
-              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5 font-bold text-xs text-amber-900">
-                    <span>🎬</span> Klaim Fee Video Siswa
-                  </div>
-                  <p className="text-[10px] text-amber-700/80 mt-0.5">
-                    Centang jika sesi ini mengunggah konten video murid (+Rp 10.000).
-                  </p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input
-                    type="checkbox"
-                    checked={claimVideo}
-                    onChange={(e) => setClaimVideo(e.target.checked)}
-                    className="w-4 h-4 text-amber-500 rounded border-gray-300 focus:ring-amber-500"
-                  />
+              {/* KOLOM INPUT LINK YOUTUBE */}
+              <div className="p-3 bg-rose-50/60 border border-rose-200 rounded-2xl space-y-1.5">
+                <label className="block text-xs font-bold text-rose-900 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <span>🎬</span> Link Video Pembelajaran (YouTube)
+                  </span>
+                  <span className="text-[10px] font-normal text-rose-600 bg-rose-100 px-2 py-0.5 rounded-full">
+                    Opsional (+Rp 2.000)
+                  </span>
                 </label>
+                <input
+                  type="url"
+                  placeholder="https://youtu.be/... atau https://youtube.com/watch?v=..."
+                  value={inputVideoUrl}
+                  onChange={(e) => setInputVideoUrl(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:rose-500 bg-white"
+                />
+                <p className="text-[10px] text-rose-700/80">
+                  Sistem otomatis memberikan bonus video jika tautan YouTube valid dan bisa diakses.
+                </p>
+              </div>
+
+              {/* KOLOM CATATAN / NOTE PERKEMBANGAN SISWA */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  Catatan Pembelajaran / Note Perkembangan Siswa
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Tuliskan catatan kelas atau performa murid hari ini (misal: Hari ini Radheya mampu berhitung 1-20 dengan sangat baik)..."
+                  value={inputNotes}
+                  onChange={(e) => setInputNotes(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
+                />
               </div>
 
               <div className="pt-3 flex items-center justify-end gap-2 border-t">
@@ -700,7 +763,7 @@ export default function MeetingJournal() {
       {/* MODAL 2: EDIT SESI (KHUSUS ADMIN) */}
       {editingMeeting && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
@@ -749,7 +812,7 @@ export default function MeetingJournal() {
                 </div>
               </div>
 
-              {/* DROPDOWN KOREKSI ZONA LDR (KHUSUS ADMIN) */}
+              {/* DROPDOWN KOREKSI ZONA LDR */}
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Zona LDR Pertemuan Ini</label>
                 <select
@@ -767,10 +830,10 @@ export default function MeetingJournal() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Materi Pelajaran / Topik Bahasan (Lesson)
+                  Materi Pelajaran / Topik Bahasan (Lesson) <span className="text-rose-500">*</span>
                 </label>
-                <textarea
-                  rows={3}
+                <input
+                  type="text"
                   value={editLesson}
                   onChange={(e) => setEditLesson(e.target.value)}
                   className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
@@ -778,34 +841,30 @@ export default function MeetingJournal() {
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Catatan Tambahan</label>
+              {/* EDIT LINK YOUTUBE */}
+              <div className="p-3 bg-rose-50/60 border border-rose-200 rounded-2xl space-y-1.5">
+                <label className="block text-xs font-bold text-rose-900">
+                  🎬 Tautan Video Pembelajaran (YouTube)
+                </label>
                 <input
-                  type="text"
+                  type="url"
+                  placeholder="https://youtu.be/... atau https://youtube.com/watch?v=..."
+                  value={editVideoUrl}
+                  onChange={(e) => setEditVideoUrl(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  Catatan Pembelajaran / Note Siswa
+                </label>
+                <textarea
+                  rows={3}
                   value={editNotes}
                   onChange={(e) => setEditNotes(e.target.value)}
                   className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                 />
-              </div>
-
-              {/* CHECKBOX KLAIM FEE VIDEO */}
-              <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5 font-bold text-xs text-amber-900">
-                    <span>🎬</span> Klaim Fee Video Siswa
-                  </div>
-                  <p className="text-[10px] text-amber-700/80 mt-0.5">
-                    Status bonus video dokumentasi murid (+Rp 10.000).
-                  </p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input
-                    type="checkbox"
-                    checked={editClaimVideo}
-                    onChange={(e) => setEditClaimVideo(e.target.checked)}
-                    className="w-4 h-4 text-amber-500 rounded border-gray-300 focus:ring-amber-500"
-                  />
-                </label>
               </div>
 
               <div className="pt-3 flex items-center justify-end gap-2 border-t">

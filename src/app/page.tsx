@@ -8,6 +8,7 @@ import RateConfigPanel from '@/components/RateConfigPanel';
 import ClassroomManager from '@/components/ClassroomManager';
 import MeetingJournal from '@/components/MeetingJournal';
 import FreeTrialLog from '@/components/FreeTrialLog';
+import DokvidKelasView from '@/components/DokvidKelasView';
 import PayrollTable from '@/components/PayrollTable';
 import PayslipView from '@/components/PayslipView';
 import UserManager from '@/components/UserManager';
@@ -17,8 +18,8 @@ export default function HomePage() {
   const { currentUser, isAuthReady, isDataReady, login, logout, activeTab, setActiveTab } = useApp();
 
   // State Login Form
-  const [usernameInput, setUsernameInput] = useState('admin');
-  const [passwordInput, setPasswordInput] = useState('admin');
+  const [usernameInput, setUsernameInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
 
   // State Mobile Menu Drawer
@@ -29,7 +30,7 @@ export default function HomePage() {
     setLoginError('');
     const success = await login(usernameInput, passwordInput);
     if (!success) {
-      setLoginError('Username atau password salah! Coba admin / admin atau dewi / tutor');
+      setLoginError('Username atau password salah!');
     }
   };
 
@@ -64,7 +65,6 @@ export default function HomePage() {
                 alt="Gumi Schooling Logo"
                 className="h-20 w-auto object-contain drop-shadow-sm"
                 onError={(e) => {
-                  // Fallback jika file logo.png belum ditaruh di public
                   (e.target as HTMLElement).style.display = 'none';
                 }}
               />
@@ -110,17 +110,14 @@ export default function HomePage() {
               type="submit"
               className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-amber-200 active:scale-[0.99]"
             >
-              Masuk ke Aplikasi
+              Masuk Sekarang
             </button>
           </form>
 
           <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 text-xs text-slate-600 space-y-1">
-            <p className="font-bold text-amber-800">Akun Pengujian Demo:</p>
+            <p className="font-bold text-amber-800">PERHATIAN</p>
             <p>
-              <strong>Admin:</strong> username: <code className="text-amber-700 font-bold">admin</code> | pass: <code className="text-amber-700 font-bold">admin</code>
-            </p>
-            <p>
-              <strong>Tutor:</strong> username: <code className="text-amber-700 font-bold">dewi</code> | pass: <code className="text-amber-700 font-bold">tutor</code>
+              Jika mengalami kendala atau lupa akun, segera hubungi <code className="text-amber-700 font-bold">Admin Gumi Schooling. </code>Terimakasih atas perhatiannya.-
             </p>
           </div>
         </div>
@@ -135,6 +132,7 @@ export default function HomePage() {
     { id: 'users', label: 'Kelola Akun', icon: '👥', adminOnly: true },
     { id: 'classrooms', label: 'Kelas / Siswa', icon: '🏫', adminOnly: true },
     { id: 'meetings', label: 'Isi Jurnal', icon: '📖', adminOnly: false },
+    { id: 'dokvid', label: 'Dokvid Kelas', icon: '📹', adminOnly: false },
     { id: 'free-trials', label: 'Free Trials', icon: '🎯', adminOnly: false },
     { id: 'payroll', label: 'Rekap Payroll', icon: '💼', adminOnly: true },
     { id: 'payslip', label: 'Slip Gaji', icon: '📄', adminOnly: false },
@@ -263,6 +261,7 @@ export default function HomePage() {
           {activeTab === 'users' && <UserManager />}
           {activeTab === 'classrooms' && <ClassroomManager />}
           {activeTab === 'meetings' && <MeetingJournal />}
+          {activeTab === 'dokvid' && <DokvidKelasView />}
           {activeTab === 'free-trials' && <FreeTrialLog />}
           {activeTab === 'payroll' && <PayrollTable />}
           {activeTab === 'payslip' && <PayslipView />}
