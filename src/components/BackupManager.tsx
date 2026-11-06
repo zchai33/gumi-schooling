@@ -125,10 +125,14 @@ export default function BackupManager() {
       let baseEarnings = 0;
       let ldrEarnings = 0;
       tMeetings.forEach((m) => {
-        const cls = classrooms.find((c) => c.id === m.classroomId);
-        baseEarnings += cls ? rates.baseFees[cls.type] || 0 : 0;
-        ldrEarnings += (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') ? ((rates.ldrBonus as any)[m.ldrZoneSnapshot] || 0) : 0;
-      });
+      const cls = classrooms.find((c) => c.id === m.classroomId);
+      // Tentukan tarif sesuai status tutor (magang vs kontrak)
+      const tutorObj = users.find((u) => u.id === m.tutorId);
+      const activeRates = tutorObj?.employmentType === 'intern' ? rates?.intern : rates?.contract;
+
+      baseEarnings += cls ? activeRates?.baseFees[cls.type] || 0 : 0;
+      ldrEarnings += (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') ? (((activeRates?.ldrBonus as any) || {})[m.ldrZoneSnapshot] || 0) : 0;
+    });
 
       const adj = adjustments.find((a) => a.tutorId === tutor.id && a.month === selectedMonth);
       const videoBonus = (adj?.videoCount || 0) * rates.standardBonus.videoPerItem;
