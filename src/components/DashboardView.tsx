@@ -6,6 +6,7 @@ import { useApp } from '@/context/AppContext';
 export const DashboardView: React.FC = () => {
   const {
     currentUser,
+    users,
     classrooms,
     meetings,
     activityLogs,
@@ -33,19 +34,31 @@ export const DashboardView: React.FC = () => {
   const totalBaseEarnings = filteredMeetingsByMonth.reduce((acc, m) => {
     if (m.isLocked) return acc;
     const targetClass = classrooms.find((c) => c.id === m.classroomId);
-    const baseFee = targetClass ? rates.baseFees[targetClass.type] || 0 : 0;
-    const ldrFee = (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') ? ((rates.ldrBonus as any)[m.ldrZoneSnapshot] || 0) : 0;
-    return acc + baseFee + ldrFee;
+    // Cari data tutor sesi ini untuk menentukan apakah tarif Kontrak atau Magang
+const tutorObj = users?.find((u) => u.id === m.tutorId);
+const activeRates = tutorObj?.employmentType === 'intern' ? rates?.intern : rates?.contract;
+
+const baseFee = targetClass ? activeRates?.baseFees?.[targetClass.type] || 0 : 0;
+const ldrFee = (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') 
+  ? ((activeRates?.ldrBonus as any)?.[m.ldrZoneSnapshot] || 0) 
+  : 0;
+
+return acc + baseFee + ldrFee;
   }, 0);
 
   // 3. STATISTIK TUTOR PRIBADI (Berdasarkan Bulan Terpilih)
   const tutorMeetings = filteredMeetingsByMonth.filter((m) => m.tutorId === currentUser.id && !m.isLocked);
-  const tutorEarnings = tutorMeetings.reduce((acc, m) => {
-    const targetClass = classrooms.find((c) => c.id === m.classroomId);
-    const baseFee = targetClass ? rates.baseFees[targetClass.type] || 0 : 0;
-    const ldrFee = (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none') ? ((rates.ldrBonus as any)[m.ldrZoneSnapshot] || 0) : 0;
-    return acc + baseFee + ldrFee;
-  }, 0);
+    // Ambil struktur tarif sesuai status akun tutor yang sedang login
+const tutorActiveRates = currentUser?.employmentType === 'intern' ? rates?.intern : rates?.contract;
+
+const tutorEarnings = tutorMeetings.reduce((acc, m) => {
+  const targetClass = classrooms.find((c) => c.id === m.classroomId);
+  const baseFee = targetClass ? tutorActiveRates?.baseFees?.[targetClass.type] || 0 : 0;
+  const ldrFee = (m.ldrZoneSnapshot && m.ldrZoneSnapshot !== 'none')
+    ? ((tutorActiveRates?.ldrBonus as any)?.[m.ldrZoneSnapshot] || 0)
+    : 0;
+  return acc + baseFee + ldrFee;
+}, 0);
 
   const tutorAdjustment = adjustments.find((a) => a.tutorId === currentUser.id && a.month === selectedMonth);
   const tutorVideoBonus = (tutorAdjustment?.videoCount || 0) * rates.standardBonus.videoPerItem;
