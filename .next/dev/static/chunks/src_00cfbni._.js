@@ -43,23 +43,45 @@ const isValidYouTubeUrl = (url)=>{
     const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
     return pattern.test(url.trim());
 };
+// Konfigurasi Standar SOP Gumi (Memisahkan Kontrak vs Magang)
 const defaultRates = {
-    baseFees: {
-        'Kids-A': 35000,
-        'Kids-B': 30000,
-        'SPL-A': 36000,
-        'SPL-B': 32000,
-        Group: 35000,
-        'Test Prep-A': 55000,
-        'Test Prep-B': 40000,
-        'Social Banjar/Panti': 50000,
-        'Free Trial': 25000
+    contract: {
+        baseFees: {
+            'Kids-A': 35000,
+            'Kids-B': 30000,
+            'SPL-A': 36000,
+            'SPL-B': 32000,
+            Group: 35000,
+            'Test Prep-A': 55000,
+            'Test Prep-B': 40000,
+            'Social Banjar/Panti': 50000,
+            'Free Trial': 25000
+        },
+        ldrBonus: {
+            ldr_10: 10000,
+            ldr_15: 15000,
+            ldr_20: 20000,
+            panti_klungkung: 50000
+        }
     },
-    ldrBonus: {
-        ldr_10: 10000,
-        ldr_15: 15000,
-        ldr_20: 20000,
-        panti_klungkung: 50000
+    intern: {
+        baseFees: {
+            'Kids-A': 25000,
+            'Kids-B': 20000,
+            'SPL-A': 25000,
+            'SPL-B': 22000,
+            Group: 25000,
+            'Test Prep-A': 40000,
+            'Test Prep-B': 30000,
+            'Social Banjar/Panti': 35000,
+            'Free Trial': 20000
+        },
+        ldrBonus: {
+            ldr_10: 7500,
+            ldr_15: 10000,
+            ldr_20: 15000,
+            panti_klungkung: 35000
+        }
     },
     standardBonus: {
         videoPerItem: 2000,
@@ -80,6 +102,7 @@ const defaultUsers = [
         username: 'admin',
         name: 'Admin Gumi',
         role: 'admin',
+        employmentType: 'contract',
         password: 'admin',
         phone: '081234567890',
         address: 'Denpasar, Bali',
@@ -90,6 +113,7 @@ const defaultUsers = [
         username: 'dewi',
         name: 'Dewi Ayu',
         role: 'tutor',
+        employmentType: 'contract',
         password: 'tutor',
         phone: '081987654321',
         address: 'Gianyar, Bali',
@@ -108,7 +132,7 @@ const AppProvider = ({ children })=>{
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('dashboard');
     const currentYearMonth = new Date().toISOString().substring(0, 7);
     const [selectedMonth, setSelectedMonth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(currentYearMonth);
-    // Status Kunci Jurnal Global (Audit Mode Sementara)
+    // Status Kunci Jurnal Global
     const [isJournalLocked, setIsJournalLocked] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
         "AppProvider.useState": ()=>{
             if ("TURBOPACK compile-time truthy", 1) {
@@ -127,7 +151,7 @@ const AppProvider = ({ children })=>{
             return next;
         });
     };
-    // Saklar Penguncian Bulan Manual oleh Admin (contoh: ['2026-10'])
+    // Saklar Penguncian Bulan Manual
     const [lockedMonths, setLockedMonths] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
         "AppProvider.useState": ()=>{
             if ("TURBOPACK compile-time truthy", 1) {
@@ -197,15 +221,40 @@ const AppProvider = ({ children })=>{
             try {
                 const { data: usersData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').select('*');
                 if (usersData && usersData.length > 0) {
-                    setUsers(usersData);
+                    setUsers(usersData.map({
+                        "AppProvider.useCallback[fetchAllData]": (u)=>({
+                                id: u.id,
+                                username: u.username,
+                                name: u.name,
+                                role: u.role,
+                                employmentType: u.employment_type || 'contract',
+                                password: u.password,
+                                phone: u.phone,
+                                address: u.address,
+                                birthDate: u.birth_date,
+                                institution: u.institution,
+                                status: u.status
+                            })
+                    }["AppProvider.useCallback[fetchAllData]"]));
                 }
                 const { data: ratesData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('rate_configs').select('*').eq('id', 'default_rates').single();
                 if (ratesData) {
+                    // Cek apakah Supabase menyimpan format bertingkat baru atau format tunggal lama
+                    const contractBase = ratesData.contract?.baseFees || ratesData.base_fees || defaultRates.contract.baseFees;
+                    const contractLdr = ratesData.contract?.ldrBonus || ratesData.ldr_bonus || defaultRates.contract.ldrBonus;
+                    const internBase = ratesData.intern?.baseFees || defaultRates.intern.baseFees;
+                    const internLdr = ratesData.intern?.ldrBonus || defaultRates.intern.ldrBonus;
                     setRates({
-                        baseFees: ratesData.base_fees,
-                        ldrBonus: ratesData.ldr_bonus,
-                        standardBonus: ratesData.standard_bonus,
-                        standardDeductions: ratesData.standard_deductions
+                        contract: {
+                            baseFees: contractBase,
+                            ldrBonus: contractLdr
+                        },
+                        intern: {
+                            baseFees: internBase,
+                            ldrBonus: internLdr
+                        },
+                        standardBonus: ratesData.standard_bonus || defaultRates.standardBonus,
+                        standardDeductions: ratesData.standard_deductions || defaultRates.standardDeductions
                     });
                 }
                 const { data: classData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('classrooms').select('*');
@@ -343,6 +392,14 @@ const AppProvider = ({ children })=>{
                 "AppProvider.useEffect.channel": ()=>{
                     fetchAllData();
                 }
+            }["AppProvider.useEffect.channel"]).on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'users'
+            }, {
+                "AppProvider.useEffect.channel": ()=>{
+                    fetchAllData();
+                }
             }["AppProvider.useEffect.channel"]).subscribe();
             return ({
                 "AppProvider.useEffect": ()=>{
@@ -409,6 +466,7 @@ const AppProvider = ({ children })=>{
         const newUser = {
             ...userData,
             id: `usr-${Date.now()}`,
+            employmentType: userData.employmentType || 'contract',
             password: securedPassword,
             status: 'active'
         };
@@ -422,6 +480,7 @@ const AppProvider = ({ children })=>{
                 username: newUser.username,
                 name: newUser.name,
                 role: newUser.role,
+                employment_type: newUser.employmentType,
                 password: newUser.password,
                 phone: newUser.phone,
                 address: newUser.address,
@@ -429,7 +488,7 @@ const AppProvider = ({ children })=>{
                 status: newUser.status
             }
         ]);
-        logActivity('UPDATE_PAYROLL', `Menambahkan akun baru: ${newUser.name} (${newUser.role})`);
+        logActivity('UPDATE_PAYROLL', `Menambahkan akun baru: ${newUser.name} (${newUser.role} - ${newUser.employmentType})`);
         await fetchAllData();
     };
     const updateUser = async (id, updatedData)=>{
@@ -449,7 +508,14 @@ const AppProvider = ({ children })=>{
                     ...payload
                 } : prev);
         }
-        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').update(payload).eq('id', id);
+        const supabasePayload = {
+            ...payload
+        };
+        if (payload.employmentType !== undefined) {
+            supabasePayload.employment_type = payload.employmentType;
+            delete supabasePayload.employmentType;
+        }
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('users').update(supabasePayload).eq('id', id);
         logActivity('UPDATE_PAYROLL', `Memperbarui data profil/kredensial akun: ID ${id}`);
         await fetchAllData();
     };
@@ -470,21 +536,26 @@ const AppProvider = ({ children })=>{
         setRates(newRates);
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('rate_configs').upsert({
             id: 'default_rates',
-            base_fees: newRates.baseFees,
-            ldr_bonus: newRates.ldrBonus,
+            contract: newRates.contract,
+            intern: newRates.intern,
+            // Tetap simpan fallback field lama agar tidak merusak kueri lain
+            base_fees: newRates.contract.baseFees,
+            ldr_bonus: newRates.contract.ldrBonus,
             standard_bonus: newRates.standardBonus,
             standard_deductions: newRates.standardDeductions,
             updated_at: new Date().toISOString()
         });
-        logActivity('UPDATE_RATES', 'Admin memperbarui konfigurasi ketentuan gaji');
+        logActivity('UPDATE_RATES', 'Admin memperbarui konfigurasi ketentuan gaji (Kontrak & Magang)');
         await fetchAllData();
     };
     const resetRatesToDefault = async ()=>{
         setRates(defaultRates);
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('rate_configs').upsert({
             id: 'default_rates',
-            base_fees: defaultRates.baseFees,
-            ldr_bonus: defaultRates.ldrBonus,
+            contract: defaultRates.contract,
+            intern: defaultRates.intern,
+            base_fees: defaultRates.contract.baseFees,
+            ldr_bonus: defaultRates.contract.ldrBonus,
             standard_bonus: defaultRates.standardBonus,
             standard_deductions: defaultRates.standardDeductions,
             updated_at: new Date().toISOString()
@@ -538,7 +609,7 @@ const AppProvider = ({ children })=>{
                 ldr_zone_snapshot: newLdrZone
             }).eq('classroom_id', id);
         }
-        logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id} (Sync LDR: ${newLdrZone || 'tetap'})`);
+        logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id}`);
         await fetchAllData();
     };
     const deleteClassroom = async (id)=>{
@@ -599,7 +670,7 @@ const AppProvider = ({ children })=>{
             video_url: newMeeting.videoUrl,
             is_sent_to_parent: newMeeting.isSentToParent
         });
-        logActivity('CREATE_MEETING', `Mengisi jurnal pertemuan #${meetingData.meetingNumber} di kelas ${targetClass?.name || ''}${hasValidVideo ? ' (Dengan Tautan Video YouTube)' : ''}`);
+        logActivity('CREATE_MEETING', `Mengisi jurnal pertemuan #${meetingData.meetingNumber} di kelas ${targetClass?.name || ''}`);
         await fetchAllData();
     };
     const updateMeeting = async (meetingId, updatedData)=>{
@@ -655,7 +726,6 @@ const AppProvider = ({ children })=>{
         }).eq('id', meetingId);
         await fetchAllData();
     };
-    // Saklar Status Pengiriman Ortu (Admin Jempol)
     const toggleSentToParent = async (meetingId)=>{
         const target = meetings.find((m)=>m.id === meetingId);
         if (!target) return;
@@ -714,7 +784,7 @@ const AppProvider = ({ children })=>{
             await fetchAllData();
         }
     };
-    // FREE TRIALS (SUDAH MENDUKUNG NOTES & VIDEO_URL)
+    // FREE TRIALS
     const addFreeTrial = async (trialData)=>{
         if (!currentUser) return;
         const cleanVideoUrl = (trialData.videoUrl || '').trim();
@@ -932,7 +1002,7 @@ const AppProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AppContext.tsx",
-        lineNumber: 1068,
+        lineNumber: 1133,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

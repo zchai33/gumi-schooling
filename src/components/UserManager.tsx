@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { User } from '@/types';
+import { User, EmploymentType } from '@/types';
 
 export default function UserManager() {
   const { currentUser, users, addUser, updateUser, deleteUser } = useApp();
@@ -20,6 +20,7 @@ export default function UserManager() {
     username: '',
     name: '',
     role: 'tutor' as 'admin' | 'tutor',
+    employmentType: 'contract' as EmploymentType,
     password: '',
     phone: '',
     address: '',
@@ -32,6 +33,7 @@ export default function UserManager() {
     username: '',
     name: '',
     role: 'tutor' as 'admin' | 'tutor',
+    employmentType: 'contract' as EmploymentType,
     password: '',
     phone: '',
     address: '',
@@ -72,6 +74,7 @@ export default function UserManager() {
       username: '',
       name: '',
       role: 'tutor',
+      employmentType: 'contract',
       password: '',
       phone: '',
       address: '',
@@ -99,6 +102,7 @@ export default function UserManager() {
       username: addForm.username.trim(),
       name: addForm.name.trim(),
       role: addForm.role,
+      employmentType: addForm.role === 'admin' ? 'contract' : addForm.employmentType,
       password: addForm.password.trim(),
       phone: addForm.phone.trim(),
       address: addForm.address.trim(),
@@ -115,6 +119,7 @@ export default function UserManager() {
       username: u.username,
       name: u.name,
       role: u.role,
+      employmentType: u.employmentType || 'contract',
       password: u.password || '',
       phone: u.phone || '',
       address: u.address || '',
@@ -144,6 +149,7 @@ export default function UserManager() {
       username: editForm.username.trim(),
       name: editForm.name.trim(),
       role: editForm.role,
+      employmentType: editForm.role === 'admin' ? 'contract' : editForm.employmentType,
       password: editForm.password.trim(),
       phone: editForm.phone.trim(),
       address: editForm.address.trim(),
@@ -151,7 +157,7 @@ export default function UserManager() {
       status: editForm.status,
     });
 
-    alert('Data akun dan password berhasil diperbarui!');
+    alert('Data akun berhasil diperbarui!');
     setEditingUser(null);
   };
 
@@ -172,13 +178,13 @@ export default function UserManager() {
         <div>
           <h2 className="text-xl font-bold text-slate-800">Kelola Akun Pengguna</h2>
           <p className="text-xs text-slate-500 mt-1">
-            Atur kredensial akun Tutor &amp; Admin. Anda dapat mengubah password dan username Admin di sini untuk keamanan.
+            Atur kredensial akun Tutor &amp; Admin serta tentukan skema gaji (Kontrak / Magang 3 Bulan).
           </p>
         </div>
 
         <button
           onClick={handleOpenAddModal}
-          className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto"
+          className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-2 self-start md:self-auto"
         >
           <span>👤</span> + Tambah Akun Baru
         </button>
@@ -219,7 +225,7 @@ export default function UserManager() {
             placeholder="Cari nama, username, kampus..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
           <span className="absolute left-3 top-2.5 text-xs text-slate-400">🔍</span>
         </div>
@@ -228,11 +234,12 @@ export default function UserManager() {
       {/* Tabel Akun */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left border-collapse min-w-[700px]">
+          <table className="w-full text-xs text-left border-collapse min-w-[760px]">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px] tracking-wider">
                 <th className="py-3.5 px-4">Nama &amp; Username</th>
                 <th className="py-3.5 px-4">Role Akses</th>
+                <th className="py-3.5 px-4">Status Kepegawaian</th>
                 <th className="py-3.5 px-4">Password Terdaftar</th>
                 <th className="py-3.5 px-4">Kontak / HP</th>
                 <th className="py-3.5 px-4">Kampus / Asal</th>
@@ -269,6 +276,21 @@ export default function UserManager() {
                       </span>
                     </td>
 
+                    {/* STATUS KEPEGAWAIAN (KONTRAK VS MAGANG) */}
+                    <td className="py-3 px-4">
+                      {u.role === 'admin' ? (
+                        <span className="text-slate-400 italic text-[11px]">-</span>
+                      ) : u.employmentType === 'intern' ? (
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 inline-flex items-center gap-1">
+                          🌱 Magang (3 Bln)
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300 inline-flex items-center gap-1">
+                          📜 Kontrak Reguler
+                        </span>
+                      )}
+                    </td>
+
                     {/* KOLOM PASSWORD DENGAN ICON TOGGLE MATA */}
                     <td className="py-3 px-4">
                       <div className="inline-flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
@@ -282,13 +304,11 @@ export default function UserManager() {
                           title={isPasswordShown ? 'Sembunyikan Password' : 'Lihat Password'}
                         >
                           {isPasswordShown ? (
-                            // Icon Mata Tertutup
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                               <line x1="1" y1="1" x2="23" y2="23"></line>
                             </svg>
                           ) : (
-                            // Icon Mata Terbuka
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                               <circle cx="12" cy="12" r="3"></circle>
@@ -310,10 +330,10 @@ export default function UserManager() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleOpenEditModal(u)}
-                          className="px-2.5 py-1 text-xs font-semibold bg-blue-50 text-amber-700 hover:bg-amber-50 rounded-lg transition-all"
+                          className="px-2.5 py-1 text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg transition-all"
                           title="Edit Profil & Password"
                         >
-                          ✏️ Edit / Password
+                          ✏️ Edit
                         </button>
                         {u.id !== currentUser.id && (
                           <button
@@ -337,7 +357,7 @@ export default function UserManager() {
       {/* MODAL 1: TAMBAH AKUN BARU */}
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-3">
               <h3 className="font-bold text-slate-800 text-base">Buat Akun Pengguna Baru</h3>
               <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 text-lg">
@@ -353,7 +373,7 @@ export default function UserManager() {
                   placeholder="Misal: Made Rai"
                   value={addForm.name}
                   onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   required
                 />
               </div>
@@ -366,23 +386,43 @@ export default function UserManager() {
                     placeholder="maderai"
                     value={addForm.username}
                     onChange={(e) => setAddForm({ ...addForm, username: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-mono"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Role / Hak Akses</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Role Akses</label>
                   <select
                     value={addForm.role}
                     onChange={(e) => setAddForm({ ...addForm, role: e.target.value as 'admin' | 'tutor' })}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   >
                     <option value="tutor">Tutor</option>
                     <option value="admin">Admin</option>
                   </select>
                 </div>
               </div>
+
+              {/* DROPDOWN STATUS KEPEGAWAIAN (JIKA ROLE TUTOR) */}
+              {addForm.role === 'tutor' && (
+                <div className="p-3 bg-amber-50/60 border border-amber-200 rounded-2xl">
+                  <label className="block text-xs font-bold text-amber-900 mb-1">
+                    🌱 Status Kepegawaian Tutor
+                  </label>
+                  <select
+                    value={addForm.employmentType}
+                    onChange={(e) => setAddForm({ ...addForm, employmentType: e.target.value as EmploymentType })}
+                    className="w-full px-3 py-2 text-xs border border-amber-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white font-semibold text-slate-800"
+                  >
+                    <option value="contract">📜 Tutor Kontrak (Skema Gaji Reguler)</option>
+                    <option value="intern">🌱 Tutor Magang (Probation 3 Bulan)</option>
+                  </select>
+                  <p className="text-[10px] text-amber-700 mt-1">
+                    Menentukan acuan fee mengajar dan LDR yang digunakan pada slip gaji tutor.
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Password</label>
@@ -391,7 +431,7 @@ export default function UserManager() {
                   placeholder="Ketik password..."
                   value={addForm.password}
                   onChange={(e) => setAddForm({ ...addForm, password: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-mono"
                   required
                 />
               </div>
@@ -404,7 +444,7 @@ export default function UserManager() {
                     placeholder="0812..."
                     value={addForm.phone}
                     onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -414,7 +454,7 @@ export default function UserManager() {
                     placeholder="Universitas Udayana"
                     value={addForm.institution}
                     onChange={(e) => setAddForm({ ...addForm, institution: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -426,7 +466,7 @@ export default function UserManager() {
                   placeholder="Denpasar, Bali"
                   value={addForm.address}
                   onChange={(e) => setAddForm({ ...addForm, address: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -440,7 +480,7 @@ export default function UserManager() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Buat Akun
                 </button>
@@ -450,13 +490,13 @@ export default function UserManager() {
         </div>
       )}
 
-      {/* MODAL 2: EDIT AKUN & GANTI PASSWORD (TERMASUK ADMIN) */}
+      {/* MODAL 2: EDIT AKUN & STATUS KEPEGAWAIAN */}
       {editingUser && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
                   Update Kredensial &amp; Profil
                 </span>
                 <h3 className="font-bold text-slate-800 text-base">{editingUser.name}</h3>
@@ -473,7 +513,7 @@ export default function UserManager() {
                   type="text"
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                   required
                 />
               </div>
@@ -485,7 +525,7 @@ export default function UserManager() {
                     type="text"
                     value={editForm.username}
                     onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-mono font-semibold text-slate-800"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-mono font-semibold text-slate-800"
                     required
                   />
                 </div>
@@ -496,7 +536,7 @@ export default function UserManager() {
                     disabled={editingUser.id === currentUser.id}
                     value={editForm.role}
                     onChange={(e) => setEditForm({ ...editForm, role: e.target.value as 'admin' | 'tutor' })}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
                   >
                     <option value="admin">Admin</option>
                     <option value="tutor">Tutor</option>
@@ -504,9 +544,26 @@ export default function UserManager() {
                 </div>
               </div>
 
+              {/* EDIT STATUS KEPEGAWAIAN TUTOR */}
+              {editForm.role === 'tutor' && (
+                <div className="p-3 bg-amber-50/60 border border-amber-200 rounded-2xl">
+                  <label className="block text-xs font-bold text-amber-900 mb-1">
+                    🌱 Status Kepegawaian (Bisa diubah setelah 3 bulan)
+                  </label>
+                  <select
+                    value={editForm.employmentType}
+                    onChange={(e) => setEditForm({ ...editForm, employmentType: e.target.value as EmploymentType })}
+                    className="w-full px-3 py-2 text-xs border border-amber-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white font-semibold text-slate-800"
+                  >
+                    <option value="contract">📜 Tutor Kontrak (Skema Gaji Reguler)</option>
+                    <option value="intern">🌱 Tutor Magang (Probation 3 Bulan)</option>
+                  </select>
+                </div>
+              )}
+
               {/* FIELD PASSWORD BARU */}
-              <div className="p-3 bg-amber-50/60 border border-amber-200 rounded-2xl">
-                <label className="block text-xs font-bold text-amber-900 mb-1">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                <label className="block text-xs font-bold text-slate-800 mb-1">
                   🔑 Password Login Akun
                 </label>
                 <input
@@ -514,12 +571,9 @@ export default function UserManager() {
                   placeholder="Ketik password baru..."
                   value={editForm.password}
                   onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-amber-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-mono font-bold bg-white text-slate-800"
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-mono font-bold bg-white text-slate-800"
                   required
                 />
-                <p className="text-[10px] text-amber-700 mt-1">
-                  Ganti password ini dan simpan agar aman dari akses tidak berizin.
-                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -529,7 +583,7 @@ export default function UserManager() {
                     type="text"
                     value={editForm.phone}
                     onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 <div>
@@ -538,7 +592,7 @@ export default function UserManager() {
                     type="text"
                     value={editForm.institution}
                     onChange={(e) => setEditForm({ ...editForm, institution: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -549,7 +603,7 @@ export default function UserManager() {
                   type="text"
                   value={editForm.address}
                   onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -563,7 +617,7 @@ export default function UserManager() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Simpan Perubahan
                 </button>

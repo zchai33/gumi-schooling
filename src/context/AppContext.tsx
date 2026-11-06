@@ -10,6 +10,7 @@ import {
   Meeting,
   FreeTrial,
   MonthlyAdjustment,
+  EmploymentType,
 } from '@/types';
 
 // ==========================================
@@ -35,7 +36,7 @@ async function verifyPassword(plainInput: string, storedPassword: string): Promi
   return inputHash === storedPassword;
 }
 
-// Validator sederhana untuk memastikan tautan YouTube
+// Validator tautan YouTube
 export const isValidYouTubeUrl = (url?: string): boolean => {
   if (!url || !url.trim()) return false;
   const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
@@ -68,7 +69,7 @@ interface AppContextType {
   toggleLockMonth: (month: string) => void;
   isMonthLocked: (month: string) => boolean;
 
-  // Rate Config (Ketentuan Gaji)
+  // Rate Config (Ketentuan Gaji Kontrak & Magang)
   rates: RateConfig;
   updateRates: (newRates: RateConfig) => Promise<void>;
   resetRatesToDefault: () => Promise<void>;
@@ -109,7 +110,7 @@ interface AppContextType {
   lockEmptySlot: (classroomId: string, meetingNumber: number) => Promise<void>;
   toggleSentToParent: (meetingId: string) => Promise<void>;
 
-  // Free Trials (Diperbarui dengan notes & videoUrl)
+  // Free Trials
   freeTrials: FreeTrial[];
   addFreeTrial: (trialData: {
     studentName: string;
@@ -143,23 +144,45 @@ interface AppContextType {
   refreshData: () => Promise<void>;
 }
 
+// Konfigurasi Standar SOP Gumi (Memisahkan Kontrak vs Magang)
 const defaultRates: RateConfig = {
-  baseFees: {
-    'Kids-A': 35000,
-    'Kids-B': 30000,
-    'SPL-A': 36000,
-    'SPL-B': 32000,
-    Group: 35000,
-    'Test Prep-A': 55000,
-    'Test Prep-B': 40000,
-    'Social Banjar/Panti': 50000,
-    'Free Trial': 25000,
+  contract: {
+    baseFees: {
+      'Kids-A': 35000,
+      'Kids-B': 30000,
+      'SPL-A': 36000,
+      'SPL-B': 32000,
+      Group: 35000,
+      'Test Prep-A': 55000,
+      'Test Prep-B': 40000,
+      'Social Banjar/Panti': 50000,
+      'Free Trial': 25000,
+    },
+    ldrBonus: {
+      ldr_10: 10000,
+      ldr_15: 15000,
+      ldr_20: 20000,
+      panti_klungkung: 50000,
+    },
   },
-  ldrBonus: {
-    ldr_10: 10000,
-    ldr_15: 15000,
-    ldr_20: 20000,
-    panti_klungkung: 50000,
+  intern: {
+    baseFees: {
+      'Kids-A': 25000,
+      'Kids-B': 20000,
+      'SPL-A': 25000,
+      'SPL-B': 22000,
+      Group: 25000,
+      'Test Prep-A': 40000,
+      'Test Prep-B': 30000,
+      'Social Banjar/Panti': 35000,
+      'Free Trial': 20000,
+    },
+    ldrBonus: {
+      ldr_10: 7500,
+      ldr_15: 10000,
+      ldr_20: 15000,
+      panti_klungkung: 35000,
+    },
   },
   standardBonus: {
     videoPerItem: 2000,
@@ -181,6 +204,7 @@ const defaultUsers: User[] = [
     username: 'admin',
     name: 'Admin Gumi',
     role: 'admin',
+    employmentType: 'contract',
     password: 'admin',
     phone: '081234567890',
     address: 'Denpasar, Bali',
@@ -191,6 +215,7 @@ const defaultUsers: User[] = [
     username: 'dewi',
     name: 'Dewi Ayu',
     role: 'tutor',
+    employmentType: 'contract',
     password: 'tutor',
     phone: '081987654321',
     address: 'Gianyar, Bali',
@@ -212,7 +237,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const currentYearMonth = new Date().toISOString().substring(0, 7);
   const [selectedMonth, setSelectedMonth] = useState<string>(currentYearMonth);
 
-  // Status Kunci Jurnal Global (Audit Mode Sementara)
+  // Status Kunci Jurnal Global
   const [isJournalLocked, setIsJournalLocked] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('gumi_journal_submission_locked') === 'true';
@@ -230,7 +255,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  // Saklar Penguncian Bulan Manual oleh Admin (contoh: ['2026-10'])
+  // Saklar Penguncian Bulan Manual
   const [lockedMonths, setLockedMonths] = useState<string[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('gumi_manual_locked_months');
@@ -291,16 +316,43 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const { data: usersData } = await supabase.from('users').select('*');
       if (usersData && usersData.length > 0) {
-        setUsers(usersData);
+        setUsers(
+          usersData.map((u: any) => ({
+            id: u.id,
+            username: u.username,
+            name: u.name,
+            role: u.role,
+            employmentType: (u.employment_type as EmploymentType) || 'contract',
+            password: u.password,
+            phone: u.phone,
+            address: u.address,
+            birthDate: u.birth_date,
+            institution: u.institution,
+            status: u.status,
+          }))
+        );
       }
 
       const { data: ratesData } = await supabase.from('rate_configs').select('*').eq('id', 'default_rates').single();
       if (ratesData) {
+        // Cek apakah Supabase menyimpan format bertingkat baru atau format tunggal lama
+        const contractBase = ratesData.contract?.baseFees || ratesData.base_fees || defaultRates.contract.baseFees;
+        const contractLdr = ratesData.contract?.ldrBonus || ratesData.ldr_bonus || defaultRates.contract.ldrBonus;
+
+        const internBase = ratesData.intern?.baseFees || defaultRates.intern.baseFees;
+        const internLdr = ratesData.intern?.ldrBonus || defaultRates.intern.ldrBonus;
+
         setRates({
-          baseFees: ratesData.base_fees,
-          ldrBonus: ratesData.ldr_bonus,
-          standardBonus: ratesData.standard_bonus,
-          standardDeductions: ratesData.standard_deductions,
+          contract: {
+            baseFees: contractBase,
+            ldrBonus: contractLdr,
+          },
+          intern: {
+            baseFees: internBase,
+            ldrBonus: internLdr,
+          },
+          standardBonus: ratesData.standard_bonus || defaultRates.standardBonus,
+          standardDeductions: ratesData.standard_deductions || defaultRates.standardDeductions,
         });
       }
 
@@ -427,6 +479,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       .on('postgres_changes', { event: '*', schema: 'public', table: 'monthly_adjustments' }, () => {
         fetchAllData();
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => {
+        fetchAllData();
+      })
       .subscribe();
 
     return () => {
@@ -493,6 +548,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newUser: User = {
       ...userData,
       id: `usr-${Date.now()}`,
+      employmentType: userData.employmentType || 'contract',
       password: securedPassword,
       status: 'active',
     };
@@ -504,6 +560,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         username: newUser.username,
         name: newUser.name,
         role: newUser.role,
+        employment_type: newUser.employmentType,
         password: newUser.password,
         phone: newUser.phone,
         address: newUser.address,
@@ -512,7 +569,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       },
     ]);
 
-    logActivity('UPDATE_PAYROLL', `Menambahkan akun baru: ${newUser.name} (${newUser.role})`);
+    logActivity('UPDATE_PAYROLL', `Menambahkan akun baru: ${newUser.name} (${newUser.role} - ${newUser.employmentType})`);
     await fetchAllData();
   };
 
@@ -531,7 +588,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setCurrentUser((prev) => (prev ? { ...prev, ...payload } : prev));
     }
 
-    await supabase.from('users').update(payload).eq('id', id);
+    const supabasePayload: any = { ...payload };
+    if (payload.employmentType !== undefined) {
+      supabasePayload.employment_type = payload.employmentType;
+      delete supabasePayload.employmentType;
+    }
+
+    await supabase.from('users').update(supabasePayload).eq('id', id);
     logActivity('UPDATE_PAYROLL', `Memperbarui data profil/kredensial akun: ID ${id}`);
     await fetchAllData();
   };
@@ -554,13 +617,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setRates(newRates);
     await supabase.from('rate_configs').upsert({
       id: 'default_rates',
-      base_fees: newRates.baseFees,
-      ldr_bonus: newRates.ldrBonus,
+      contract: newRates.contract,
+      intern: newRates.intern,
+      // Tetap simpan fallback field lama agar tidak merusak kueri lain
+      base_fees: newRates.contract.baseFees,
+      ldr_bonus: newRates.contract.ldrBonus,
       standard_bonus: newRates.standardBonus,
       standard_deductions: newRates.standardDeductions,
       updated_at: new Date().toISOString(),
     });
-    logActivity('UPDATE_RATES', 'Admin memperbarui konfigurasi ketentuan gaji');
+    logActivity('UPDATE_RATES', 'Admin memperbarui konfigurasi ketentuan gaji (Kontrak & Magang)');
     await fetchAllData();
   };
 
@@ -568,8 +634,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setRates(defaultRates);
     await supabase.from('rate_configs').upsert({
       id: 'default_rates',
-      base_fees: defaultRates.baseFees,
-      ldr_bonus: defaultRates.ldrBonus,
+      contract: defaultRates.contract,
+      intern: defaultRates.intern,
+      base_fees: defaultRates.contract.baseFees,
+      ldr_bonus: defaultRates.contract.ldrBonus,
       standard_bonus: defaultRates.standardBonus,
       standard_deductions: defaultRates.standardDeductions,
       updated_at: new Date().toISOString(),
@@ -627,7 +695,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .eq('classroom_id', id);
     }
 
-    logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id} (Sync LDR: ${newLdrZone || 'tetap'})`);
+    logActivity('UPDATE_PAYROLL', `Admin mengedit data kelas: ID ${id}`);
     await fetchAllData();
   };
 
@@ -708,9 +776,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     logActivity(
       'CREATE_MEETING',
-      `Mengisi jurnal pertemuan #${meetingData.meetingNumber} di kelas ${targetClass?.name || ''}${
-        hasValidVideo ? ' (Dengan Tautan Video YouTube)' : ''
-      }`
+      `Mengisi jurnal pertemuan #${meetingData.meetingNumber} di kelas ${targetClass?.name || ''}`
     );
     await fetchAllData();
   };
@@ -803,7 +869,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     await fetchAllData();
   };
 
-  // Saklar Status Pengiriman Ortu (Admin Jempol)
   const toggleSentToParent = async (meetingId: string) => {
     const target = meetings.find((m) => m.id === meetingId);
     if (!target) return;
@@ -870,7 +935,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  // FREE TRIALS (SUDAH MENDUKUNG NOTES & VIDEO_URL)
+  // FREE TRIALS
   const addFreeTrial = async (trialData: {
     studentName: string;
     lesson: string;

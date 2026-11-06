@@ -1,10 +1,12 @@
 export type UserRole = 'admin' | 'tutor';
+export type EmploymentType = 'contract' | 'intern'; // Pembeda Tutor Kontrak vs Magang
 
 export interface User {
   id: string;
   username: string;
   name: string;
   role: UserRole;
+  employmentType?: EmploymentType; // Default 'contract'
   password?: string;
   phone?: string;
   address?: string;
@@ -36,7 +38,7 @@ export type ClassType =
 
 export type LDRZone = 'none' | 'ldr_10' | 'ldr_15' | 'ldr_20' | 'panti_klungkung';
 
-export interface RateConfig {
+export interface FeeStructure {
   baseFees: Record<ClassType, number>;
   ldrBonus: {
     ldr_10: number;
@@ -44,6 +46,11 @@ export interface RateConfig {
     ldr_20: number;
     panti_klungkung: number;
   };
+}
+
+export interface RateConfig {
+  contract: FeeStructure; // Ketentuan tarif tutor kontrak
+  intern: FeeStructure;   // Ketentuan tarif tutor magang (3 bulan)
   standardBonus: {
     videoPerItem: number;
     reportPerStudent: number;
@@ -80,8 +87,8 @@ export interface Meeting {
   isLocked: boolean;
   ldrZoneSnapshot?: LDRZone | string;
   hasVideoClaim?: boolean;
-  videoUrl?: string; // Tautan video YouTube
-  isSentToParent?: boolean; // Penanda admin sudah kirim ke ortu murid
+  videoUrl?: string;
+  isSentToParent?: boolean;
 }
 
 export interface FreeTrial {
@@ -93,8 +100,8 @@ export interface FreeTrial {
   lesson: string;
   status: 'completed' | 'pending';
   notes?: string;
-  videoUrl?: string; // Tautan video YouTube
-  isSentToParent?: boolean; // Penanda admin sudah kirim ke ortu murid
+  videoUrl?: string;
+  isSentToParent?: boolean;
 }
 
 export interface MonthlyAdjustment {

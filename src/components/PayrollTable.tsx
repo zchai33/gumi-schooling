@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
-import { MonthlyAdjustment } from '@/types';
+import { MonthlyAdjustment, FeeStructure } from '@/types';
 
 export default function PayrollTable() {
   const {
@@ -29,7 +29,11 @@ export default function PayrollTable() {
   // Kalkulasi rekapitulasi penggajian per tutor secara reaktif
   const payrollSummaries = useMemo(() => {
     return tutors.map((tutor) => {
-      // 1. Fee Mengajar Sesi Kelas & LDR
+      // 1. Tentukan wadah acuan tarif sesuai status kepegawaian tutor
+      const tutorRates: FeeStructure =
+        tutor.employmentType === 'intern' ? rates.intern : rates.contract;
+
+      // 2. Fee Mengajar Sesi Kelas & LDR
       const tutorMeetings = meetings.filter(
         (m) => m.tutorId === tutor.id && !m.isLocked && m.date && m.date.startsWith(selectedMonth)
       );
@@ -39,21 +43,21 @@ export default function PayrollTable() {
 
       tutorMeetings.forEach((m) => {
         const cls = classrooms.find((c) => c.id === m.classroomId);
-        teachingFee += cls ? rates.baseFees[cls.type] || 0 : 0;
+        teachingFee += cls ? tutorRates.baseFees[cls.type] || 0 : 0;
 
         const zone = m.ldrZoneSnapshot;
-        if (zone && zone !== 'none' && zone in rates.ldrBonus) {
-          ldrFee += rates.ldrBonus[zone as keyof typeof rates.ldrBonus] || 0;
+        if (zone && zone !== 'none' && zone in tutorRates.ldrBonus) {
+          ldrFee += tutorRates.ldrBonus[zone as keyof typeof tutorRates.ldrBonus] || 0;
         }
       });
 
-      // 2. Free Trial Selesai
+      // 3. Free Trial Selesai
       const tutorTrials = freeTrials.filter(
         (ft) => ft.tutorId === tutor.id && ft.status === 'completed' && ft.date && ft.date.startsWith(selectedMonth)
       );
-      const trialFee = tutorTrials.length * (rates.baseFees['Free Trial'] || 25000);
+      const trialFee = tutorTrials.length * (tutorRates.baseFees['Free Trial'] || 25000);
 
-      // 3. Bonus & Denda Bulanan
+      // 4. Bonus & Denda Bulanan
       const adj = getAdjustmentForTutor ? getAdjustmentForTutor(tutor.id, selectedMonth) : null;
 
       const videoBonus = (adj?.videoCount || 0) * rates.standardBonus.videoPerItem;
@@ -133,7 +137,7 @@ export default function PayrollTable() {
         <div>
           <h2 className="text-xl font-bold text-slate-800">Rekapitulasi Payroll Tutor</h2>
           <p className="text-xs text-slate-500 mt-1">
-            Perhitungan menyeluruh fee mengajar, bonus kegiatan, potongan denda, dan Take-Home Pay.
+            Perhitungan menyeluruh fee mengajar (Kontrak vs Magang), bonus kegiatan, potongan denda, dan Take-Home Pay.
           </p>
         </div>
 
@@ -160,17 +164,17 @@ export default function PayrollTable() {
           </div>
         </div>
         <div className="text-xs text-amber-100 bg-white/10 px-3 py-2 rounded-xl border border-white/20">
-          💡 Angka dihitung otomatis berdasarkan sesi valid + bonus rekapitulasi dikurangi denda.
+          💡 Angka dihitung otomatis berdasarkan tarif status tutor (Kontrak / Magang) + bonus dikurangi denda.
         </div>
       </div>
 
-      {/* Tabel Payroll dengan Horizontal Scrolling */}
+      {/* Tabel Payroll */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[950px]">
+          <table className="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[980px]">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
-                <th className="py-3.5 px-4">Nama Tutor</th>
+                <th className="py-3.5 px-4">Nama &amp; Status Tutor</th>
                 <th className="py-3.5 px-4 text-center">Sesi Kelas</th>
                 <th className="py-3.5 px-4 text-right">Fee Mengajar</th>
                 <th className="py-3.5 px-4 text-right">Bonus LDR</th>
@@ -184,7 +188,20 @@ export default function PayrollTable() {
             <tbody className="divide-y divide-slate-100">
               {payrollSummaries.map((row) => (
                 <tr key={row.tutor.id} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-slate-800">{row.tutor.name}</td>
+                  <td className="py-3.5 px-4">
+                    <div className="font-bold text-slate-800 text-sm">{row.tutor.name}</div>
+                    <div className="mt-0.5">
+                      {row.tutor.employmentType === 'intern' ? (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                          🌱 Magang (3 Bln)
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                          📜 Kontrak
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="py-3.5 px-4 text-center">
                     <span className="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
                       {row.meetingCount} sesi
@@ -237,7 +254,7 @@ export default function PayrollTable() {
           <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
-                <h3 className="font-bold text-slate-800 text-base">Kelola Bonus & Denda Manual</h3>
+                <h3 className="font-bold text-slate-800 text-base">Kelola Bonus &amp; Denda Manual</h3>
                 <p className="text-xs text-slate-500">
                   Tutor: <strong>{users.find((u) => u.id === editingTutorId)?.name}</strong> (Periode: {selectedMonth})
                 </p>
@@ -333,10 +350,10 @@ export default function PayrollTable() {
               {/* Seksi Potongan & Denda */}
               <div className="p-4 bg-rose-50/50 rounded-2xl border border-rose-100 space-y-3">
                 <h4 className="font-bold text-rose-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                  <span>⚠️</span> Potongan & Denda Pelanggaran
+                  <span>⚠️</span> Potongan &amp; Denda Pelanggaran
                 </h4>
 
-                {/* Suka Duka Otomatis */}
+                {/* Suka Duka */}
                 <div className="flex items-center justify-between p-2.5 bg-white rounded-xl border border-rose-200">
                   <div>
                     <p className="text-xs font-bold text-slate-800">Iuran Wajib Suka Duka</p>
@@ -375,7 +392,7 @@ export default function PayrollTable() {
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                      Pelanggaran OJL & GC (x Rp {rates.standardDeductions.violationOJL_GC.toLocaleString('id-ID')})
+                      Pelanggaran OJL &amp; GC (x Rp {rates.standardDeductions.violationOJL_GC.toLocaleString('id-ID')})
                     </label>
                     <input
                       type="number"

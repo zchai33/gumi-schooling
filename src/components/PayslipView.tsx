@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
+import { User, FeeStructure } from '@/types';
 
 export default function PayslipView() {
   const {
@@ -24,8 +25,13 @@ export default function PayslipView() {
     isAdmin ? 'all' : currentUser?.id || ''
   );
 
-  // Helper fungsi hitung gaji per tutor (murni hitungan matematis tanpa efek samping)
+  // Helper fungsi hitung gaji per tutor (mengacu pada status contract atau intern masing-masing)
   const calculateTutorPayroll = (tutorId: string) => {
+    const tutorObj = users.find((u) => u.id === tutorId);
+    // Tentukan wadah tarif mengajar & LDR sesuai status tutor
+    const activeRates: FeeStructure =
+      tutorObj?.employmentType === 'intern' ? rates.intern : rates.contract;
+
     const tMeetings = meetings.filter(
       (m) => m.tutorId === tutorId && !m.isLocked && m.date && m.date.startsWith(selectedMonth)
     );
@@ -34,26 +40,23 @@ export default function PayslipView() {
     let ldrEarnings = 0;
     tMeetings.forEach((m) => {
       const cls = classrooms.find((c) => c.id === m.classroomId);
-      baseEarnings += cls ? rates.baseFees[cls.type] || 0 : 0;
+      baseEarnings += cls ? activeRates.baseFees[cls.type] || 0 : 0;
 
       const zone = m.ldrZoneSnapshot;
-      if (zone && zone !== 'none' && zone in rates.ldrBonus) {
-        ldrEarnings += rates.ldrBonus[zone as keyof typeof rates.ldrBonus] || 0;
+      if (zone && zone !== 'none' && zone in activeRates.ldrBonus) {
+        ldrEarnings += activeRates.ldrBonus[zone as keyof typeof activeRates.ldrBonus] || 0;
       }
     });
 
     const tTrials = freeTrials.filter(
       (ft) => ft.tutorId === tutorId && ft.status === 'completed' && ft.date && ft.date.startsWith(selectedMonth)
     );
-    const trialTotal = tTrials.length * (rates.baseFees['Free Trial'] || 25000);
+    const trialTotal = tTrials.length * (activeRates.baseFees['Free Trial'] || 25000);
 
     const adj = getAdjustmentForTutor ? getAdjustmentForTutor(tutorId, selectedMonth) : null;
 
     /*
      * FITUR BONUS VIDEO: Dinonaktifkan sementara sesuai penyesuaian SOP Gumi
-     * const autoVideoCount = tMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
-     * const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
-     * const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
      */
     const totalVideoCount = 0;
     const videoTotal = 0;
@@ -92,6 +95,7 @@ export default function PayslipView() {
       sessionCount: tMeetings.length,
       videoCount: totalVideoCount,
       takeHomePay,
+      employmentType: tutorObj?.employmentType || 'contract',
     };
   };
 
@@ -103,6 +107,7 @@ export default function PayslipView() {
       return {
         id: t.id,
         name: t.name,
+        employmentType: calc.employmentType,
         sessionCount: calc.sessionCount,
         takeHomePay: calc.takeHomePay,
       };
@@ -141,7 +146,7 @@ export default function PayslipView() {
               <option value="all">👥 Semua Tutor (Tabel Ringkasan)</option>
               {tutors.map((t) => (
                 <option key={t.id} value={t.id}>
-                  👤 {t.name}
+                  👤 {t.name} ({t.employmentType === 'intern' ? 'Magang' : 'Kontrak'})
                 </option>
               ))}
             </select>
@@ -182,13 +187,14 @@ export default function PayslipView() {
                 <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[11px]">
                   <th className="py-3 px-4 text-center w-16">No</th>
                   <th className="py-3 px-4">Nama Tutor</th>
+                  <th className="py-3 px-4 text-center">Status</th>
                   <th className="py-3 px-4 text-right">Total Gaji</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 {summaryList.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="py-6 text-center text-slate-400">
+                    <td colSpan={4} className="py-6 text-center text-slate-400">
                       Tidak ada data tutor terdaftar.
                     </td>
                   </tr>
@@ -207,6 +213,17 @@ export default function PayslipView() {
                           (Lihat Detail ↗)
                         </span>
                       </td>
+                      <td className="py-3.5 px-4 text-center">
+                        {item.employmentType === 'intern' ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                            🌱 Magang
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                            📜 Kontrak
+                          </span>
+                        )}
+                      </td>
                       <td className="py-3.5 px-4 text-right font-bold text-emerald-600">
                         Rp {item.takeHomePay.toLocaleString('id-ID')}
                       </td>
@@ -216,7 +233,7 @@ export default function PayslipView() {
               </tbody>
               <tfoot>
                 <tr className="bg-slate-900 text-white font-bold border-t-2 border-slate-800">
-                  <td colSpan={2} className="py-4 px-4 text-left uppercase tracking-wider text-xs">
+                  <td colSpan={3} className="py-4 px-4 text-left uppercase tracking-wider text-xs">
                     Keseluruhan Gaji Tutor
                   </td>
                   <td className="py-4 px-4 text-right text-sm text-emerald-400 font-black">
@@ -245,6 +262,10 @@ export default function PayslipView() {
     return <div className="p-6 text-slate-400">Data tutor tidak ditemukan.</div>;
   }
 
+  // Menentukan wadah tarif mengajar & LDR sesuai status tutor yang sedang aktif
+  const tutorRates: FeeStructure =
+    activeTutor.employmentType === 'intern' ? rates.intern : rates.contract;
+
   // 1. Data Pertemuan Kelas Bulan Ini
   const tutorMeetings = meetings.filter(
     (m) => m.tutorId === activeTutor.id && !m.isLocked && m.date && m.date.startsWith(selectedMonth)
@@ -254,7 +275,7 @@ export default function PayslipView() {
   tutorMeetings.forEach((m) => {
     const cls = classrooms.find((c) => c.id === m.classroomId);
     if (cls) {
-      const fee = rates.baseFees[cls.type] || 0;
+      const fee = tutorRates.baseFees[cls.type] || 0;
       if (!classroomBreakdown[cls.type]) {
         classroomBreakdown[cls.type] = {
           type: cls.type,
@@ -272,8 +293,8 @@ export default function PayslipView() {
   const ldrBreakdown: Record<string, { count: number; bonusRate: number; total: number }> = {};
   tutorMeetings.forEach((m) => {
     const zone = m.ldrZoneSnapshot;
-    if (zone && zone !== 'none' && zone in rates.ldrBonus) {
-      const bonus = rates.ldrBonus[zone as keyof typeof rates.ldrBonus] || 0;
+    if (zone && zone !== 'none' && zone in tutorRates.ldrBonus) {
+      const bonus = tutorRates.ldrBonus[zone as keyof typeof tutorRates.ldrBonus] || 0;
       if (!ldrBreakdown[zone]) {
         ldrBreakdown[zone] = {
           count: 0,
@@ -290,19 +311,15 @@ export default function PayslipView() {
   const tutorTrials = freeTrials.filter(
     (ft) => ft.tutorId === activeTutor.id && ft.status === 'completed' && ft.date && ft.date.startsWith(selectedMonth)
   );
-  const trialRate = rates.baseFees['Free Trial'] || 25000;
+  const trialRate = tutorRates.baseFees['Free Trial'] || 25000;
   const trialTotal = tutorTrials.length * trialRate;
 
   // 4. Penyesuaian Bonus & Potongan
   const adj = getAdjustmentForTutor ? getAdjustmentForTutor(activeTutor.id, selectedMonth) : null;
 
   /*
-   * FITUR BONUS VIDEO: Dinonaktifkan sementara sesuai penyesuaian SOP Gumi
-   * const autoVideoCount = tutorMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
-   * const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
-   * const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
+   * FITUR BONUS VIDEO: Dinonaktifkan sementara sesuai SOP baru
    */
-  const autoVideoCount = 0;
   const totalVideoCount = 0;
   const videoTotal = 0;
 
@@ -357,7 +374,7 @@ export default function PayslipView() {
               <option value="all">👥 Semua Tutor (Tabel Ringkasan)</option>
               {tutors.map((t) => (
                 <option key={t.id} value={t.id}>
-                  👤 {t.name}
+                  👤 {t.name} ({t.employmentType === 'intern' ? 'Magang' : 'Kontrak'})
                 </option>
               ))}
             </select>
@@ -393,15 +410,23 @@ export default function PayslipView() {
           </div>
         </div>
 
-        {/* Info Tutor */}
+        {/* Info Tutor & Status Kepegawaian */}
         <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
           <div>
             <span className="text-slate-400 block text-[10px] uppercase font-semibold">Nama Tutor:</span>
             <strong className="text-slate-800 text-sm">{activeTutor.name}</strong>
           </div>
           <div>
-            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Role / Posisi:</span>
-            <span className="text-slate-700 font-semibold">Tutor Pengajar</span>
+            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Status Kepegawaian:</span>
+            {activeTutor.employmentType === 'intern' ? (
+              <span className="inline-flex items-center gap-1 font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300">
+                🌱 Tutor Magang (Probation 3 Bln)
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-md border border-slate-300">
+                📜 Tutor Kontrak Reguler
+              </span>
+            )}
           </div>
         </div>
 
@@ -462,25 +487,6 @@ export default function PayslipView() {
                     <td className="py-2 px-3 text-right font-semibold text-purple-700">Rp {data.total.toLocaleString('id-ID')}</td>
                   </tr>
                 ))}
-
-                {/* BARIS BONUS KONTEN VIDEO SISWA OTOMATIS (DINONAKTIFKAN SEMENTARA SESUAI SOP BARU)
-                {totalVideoCount > 0 && (
-                  <tr>
-                    <td className="py-2 px-3 text-emerald-700">
-                      Bonus Konten Video Siswa
-                      {autoVideoCount > 0 && (
-                        <span className="text-[10px] text-slate-400 block">
-                          ({autoVideoCount} video otomatis dari link YouTube terverifikasi)
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-2 px-3 text-center text-slate-400">-</td>
-                    <td className="py-2 px-3 text-right">Rp {rates.standardBonus.videoPerItem.toLocaleString('id-ID')}</td>
-                    <td className="py-2 px-3 text-center font-bold">{totalVideoCount} video</td>
-                    <td className="py-2 px-3 text-right font-semibold text-emerald-700">Rp {videoTotal.toLocaleString('id-ID')}</td>
-                  </tr>
-                )}
-                */}
 
                 {(adj?.reportCount || 0) > 0 && (
                   <tr>
