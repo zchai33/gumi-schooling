@@ -49,11 +49,15 @@ export default function PayslipView() {
 
     const adj = getAdjustmentForTutor ? getAdjustmentForTutor(tutorId, selectedMonth) : null;
 
-    // OTOMATIS: Hitung video dari link YouTube di jurnal + tambahan manual jika ada
-    const autoVideoCount = tMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
-    const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
+    /*
+     * FITUR BONUS VIDEO: Dinonaktifkan sementara sesuai penyesuaian SOP Gumi
+     * const autoVideoCount = tMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
+     * const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
+     * const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
+     */
+    const totalVideoCount = 0;
+    const videoTotal = 0;
 
-    const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
     const reportTotal = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
     const fnmTotal = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
     const customBonus = Number(adj?.customBonusNominal || 0);
@@ -292,11 +296,16 @@ export default function PayslipView() {
   // 4. Penyesuaian Bonus & Potongan
   const adj = getAdjustmentForTutor ? getAdjustmentForTutor(activeTutor.id, selectedMonth) : null;
 
-  // OTOMATIS: Hitung video dari link YouTube di jurnal + tambahan manual
-  const autoVideoCount = tutorMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
-  const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
+  /*
+   * FITUR BONUS VIDEO: Dinonaktifkan sementara sesuai penyesuaian SOP Gumi
+   * const autoVideoCount = tutorMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
+   * const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
+   * const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
+   */
+  const autoVideoCount = 0;
+  const totalVideoCount = 0;
+  const videoTotal = 0;
 
-  const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
   const reportTotal = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
   const fnmTotal = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
   const customBonusNominal = Number(adj?.customBonusNominal || 0);
@@ -454,7 +463,7 @@ export default function PayslipView() {
                   </tr>
                 ))}
 
-                {/* BARIS BONUS KONTEN VIDEO SISWA OTOMATIS */}
+                {/* BARIS BONUS KONTEN VIDEO SISWA OTOMATIS (DINONAKTIFKAN SEMENTARA SESUAI SOP BARU)
                 {totalVideoCount > 0 && (
                   <tr>
                     <td className="py-2 px-3 text-emerald-700">
@@ -471,6 +480,7 @@ export default function PayslipView() {
                     <td className="py-2 px-3 text-right font-semibold text-emerald-700">Rp {videoTotal.toLocaleString('id-ID')}</td>
                   </tr>
                 )}
+                */}
 
                 {(adj?.reportCount || 0) > 0 && (
                   <tr>

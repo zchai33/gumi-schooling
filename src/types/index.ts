@@ -92,6 +92,9 @@ export interface FreeTrial {
   date: string;
   lesson: string;
   status: 'completed' | 'pending';
+  notes?: string;
+  videoUrl?: string; // Tautan video YouTube
+  isSentToParent?: boolean; // Penanda admin sudah kirim ke ortu murid
 }
 
 export interface MonthlyAdjustment {

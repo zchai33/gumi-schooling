@@ -710,9 +710,6 @@ export default function MeetingJournal() {
                   <span className="flex items-center gap-1.5">
                     <span>🎬</span> Link Video Pembelajaran (YouTube)
                   </span>
-                  <span className="text-[10px] font-normal text-rose-600 bg-rose-100 px-2 py-0.5 rounded-full">
-                    Opsional (+Rp 2.000)
-                  </span>
                 </label>
                 <input
                   type="url"
@@ -722,7 +719,7 @@ export default function MeetingJournal() {
                   className="w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:rose-500 bg-white"
                 />
                 <p className="text-[10px] text-rose-700/80">
-                  Sistem otomatis memberikan bonus video jika tautan YouTube valid dan bisa diakses.
+                  Silahkan cantumkan tautan YouTube valid dan bisa diakses.
                 </p>
               </div>
 

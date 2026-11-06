@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useApp } from '@/context/AppContext';
+import { useApp, isValidYouTubeUrl } from '@/context/AppContext';
 import { FreeTrial, User } from '@/types';
 
 export default function FreeTrialLog() {
@@ -16,7 +16,12 @@ export default function FreeTrialLog() {
     selectedMonth,
     setSelectedMonth,
     rates,
+    isJournalLocked,
+    isMonthLocked,
   } = useApp();
+
+  const isAdmin = currentUser?.role === 'admin';
+  const isPeriodLocked = isMonthLocked ? isMonthLocked(selectedMonth) : false;
 
   // Search & Filter
   const [searchStudent, setSearchStudent] = useState('');
@@ -25,12 +30,16 @@ export default function FreeTrialLog() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [studentName, setStudentName] = useState('');
   const [lesson, setLesson] = useState('');
+  const [inputVideoUrl, setInputVideoUrl] = useState('');
+  const [notes, setNotes] = useState('');
   const [date, setDate] = useState(`${selectedMonth}-01`);
 
   // Modal Edit Sesi Free Trial (Admin)
   const [editingTrial, setEditingTrial] = useState<FreeTrial | null>(null);
   const [editStudentName, setEditStudentName] = useState('');
   const [editLesson, setEditLesson] = useState('');
+  const [editVideoUrl, setEditVideoUrl] = useState('');
+  const [editNotes, setEditNotes] = useState('');
   const [editDate, setEditDate] = useState('');
   const [editTutorId, setEditTutorId] = useState('');
 
@@ -45,25 +54,38 @@ export default function FreeTrialLog() {
   });
 
   const handleOpenAddModal = () => {
+    if (!isAdmin && (isJournalLocked || isPeriodLocked)) {
+      alert(`Pengisian sesi Free Trial untuk periode ${selectedMonth} sedang ditutup/dikunci.`);
+      return;
+    }
     setStudentName('');
     setLesson('');
-    // Set default tanggal hari ini jika cocok bulan berjalan, atau awal bulan terpilih
+    setInputVideoUrl('');
+    setNotes('');
     const today = new Date().toISOString().split('T')[0];
     setDate(today.startsWith(selectedMonth) ? today : `${selectedMonth}-01`);
     setShowAddModal(true);
   };
 
-  const handleCreateTrial = (e: React.FormEvent) => {
+  const handleCreateTrial = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!studentName.trim() || !lesson.trim()) {
-      alert('Harap lengkapi nama calon siswa dan materi ice breaking!');
+      alert('Harap lengkapi nama calon siswa dan materi pembelajaran!');
       return;
     }
 
-    addFreeTrial({
+    const cleanUrl = inputVideoUrl.trim();
+    if (cleanUrl !== '' && !isValidYouTubeUrl(cleanUrl)) {
+      alert('Tautan video tidak valid! Masukkan tautan YouTube yang benar.');
+      return;
+    }
+
+    await addFreeTrial({
       studentName,
       lesson,
       date,
+      notes,
+      videoUrl: cleanUrl,
     });
 
     setShowAddModal(false);
@@ -73,22 +95,32 @@ export default function FreeTrialLog() {
     setEditingTrial(ft);
     setEditStudentName(ft.studentName);
     setEditLesson(ft.lesson);
+    setEditVideoUrl(ft.videoUrl || '');
+    setEditNotes(ft.notes || '');
     setEditDate(ft.date);
     setEditTutorId(ft.tutorId);
   };
 
-  const handleSaveEditTrial = (e: React.FormEvent) => {
+  const handleSaveEditTrial = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingTrial) return;
 
+    const cleanUrl = editVideoUrl.trim();
+    if (cleanUrl !== '' && !isValidYouTubeUrl(cleanUrl)) {
+      alert('Tautan video tidak valid! Masukkan tautan YouTube yang benar.');
+      return;
+    }
+
     const assignedTutor = users.find((u: User) => u.id === editTutorId);
 
-    updateFreeTrial(editingTrial.id, {
+    await updateFreeTrial(editingTrial.id, {
       studentName: editStudentName,
       lesson: editLesson,
       date: editDate,
       tutorId: editTutorId,
       tutorName: assignedTutor ? assignedTutor.name : editingTrial.tutorName,
+      notes: editNotes,
+      videoUrl: cleanUrl,
     });
 
     setEditingTrial(null);
@@ -98,6 +130,14 @@ export default function FreeTrialLog() {
     if (confirm(`Hapus sesi Free Trial untuk siswa "${name}"?`)) {
       deleteFreeTrial(id);
     }
+  };
+
+  // Salin template pesan WhatsApp khusus Free Trial untuk Dokvid / Broadcast
+  const handleCopyWATemplate = (ft: FreeTrial) => {
+    const videoText = ft.videoUrl ? `\nLink Dokumentasi: ${ft.videoUrl}` : '';
+    const text = `Halo Ayah/Bunda ${ft.studentName}, terima kasih telah mengikuti sesi *Free Trial* bersama Gumi Schooling pada ${ft.date}.\n\nMateri yang dipelajari: *${ft.lesson}*\nCatatan Perkembangan: ${ft.notes || 'Anak aktif dan antusias selama pembelajaran.'}${videoText}\n\nSalam hangat,\nTim Gumi Schooling Education Centre`;
+    navigator.clipboard.writeText(text);
+    alert('Template laporan WhatsApp berhasil disalin ke clipboard!');
   };
 
   return (
@@ -113,25 +153,40 @@ export default function FreeTrialLog() {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Month Picker Sinkron */}
           <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
             <span className="text-xs font-semibold text-slate-600 pl-1">Periode:</span>
             <input
               type="month"
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="px-2.5 py-1 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-2.5 py-1 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
 
-          <button
-            onClick={handleOpenAddModal}
-            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2"
-          >
-            <span>🎯</span> + Catat Free Trial
-          </button>
+          {!isAdmin && isPeriodLocked ? (
+            <div className="px-4 py-2.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-semibold">
+              🔒 Periode Terkunci
+            </div>
+          ) : (
+            <button
+              onClick={handleOpenAddModal}
+              className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-2"
+            >
+              <span>🎯</span> + Catat Free Trial
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Banner Informasi Penguncian */}
+      {!isAdmin && isPeriodLocked && (
+        <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2.5 text-xs text-rose-900 font-medium">
+          <span>🔒</span>
+          <span>
+            Periode <strong>{selectedMonth}</strong> telah ditutup oleh Admin. Data Free Trial bersifat <strong>Read-Only</strong>.
+          </span>
+        </div>
+      )}
 
       {/* Bar Pencarian */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
@@ -141,7 +196,7 @@ export default function FreeTrialLog() {
             placeholder="Cari nama calon murid atau tutor..."
             value={searchStudent}
             onChange={(e) => setSearchStudent(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
           <span className="absolute left-3 top-2.5 text-xs text-slate-400">🔍</span>
           {searchStudent && (
@@ -162,22 +217,23 @@ export default function FreeTrialLog() {
       {/* Tabel Data Free Trial */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left border-collapse min-w-[650px]">
+          <table className="w-full text-xs text-left border-collapse min-w-[750px]">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px] tracking-wider">
                 <th className="py-3.5 px-4">Tanggal</th>
                 <th className="py-3.5 px-4">Nama Calon Siswa</th>
                 <th className="py-3.5 px-4">Tutor Pengajar</th>
-                <th className="py-3.5 px-4">Materi / Ice Breaking</th>
+                <th className="py-3.5 px-4">Materi &amp; Catatan Perkembangan</th>
                 <th className="py-3.5 px-4 text-center">Status</th>
-                {currentUser?.role === 'admin' && <th className="py-3.5 px-4 text-center">Aksi Admin</th>}
+                <th className="py-3.5 px-4 text-center">Broadcast WA</th>
+                {isAdmin && <th className="py-3.5 px-4 text-center">Aksi Admin</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredTrials.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={currentUser?.role === 'admin' ? 6 : 5}
+                    colSpan={isAdmin ? 7 : 6}
                     className="py-12 text-center text-slate-400 text-sm"
                   >
                     Belum ada catatan Free Trial untuk periode bulan {selectedMonth}.
@@ -195,30 +251,71 @@ export default function FreeTrialLog() {
                     <td className="py-3 px-4 font-semibold text-slate-700">
                       {ft.tutorName}
                     </td>
-                    <td className="py-3 px-4 text-slate-600 max-w-xs leading-relaxed">
-                      {ft.lesson}
+                    <td className="py-3 px-4 text-slate-700 max-w-sm">
+                      <p className="font-semibold text-slate-800 leading-snug">{ft.lesson}</p>
+                      {ft.notes && (
+                        <p className="text-[10px] text-slate-500 italic mt-0.5 line-clamp-2">
+                          &ldquo;{ft.notes}&rdquo;
+                        </p>
+                      )}
+                      {ft.videoUrl && (
+                        <div className="mt-1">
+                          <a
+                            href={ft.videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[9px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-1.5 py-0.5 rounded transition-colors"
+                          >
+                            ▶️ Video YT ↗
+                          </a>
+                        </div>
+                      )}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <button
-                        onClick={() => toggleFreeTrialStatus(ft.id)}
-                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${
-                          ft.status === 'completed'
+                        {isAdmin ? (
+                        // JIKA ADMIN: BISA KLIK UNTUK MENGUBAH STATUS (INTERAKTIF)
+                        <button
+                          onClick={() => toggleFreeTrialStatus(ft.id)}
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm ${
+                            ft.status === 'completed'
                             ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
                             : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-                        }`}
-                        title="Klik untuk mengubah status"
+                          }`}
+                          title="Klik untuk mengubah status sesi"
+                          >
+                          {ft.status === 'completed' ? '✓ Selesai' : '⏳ Pending'}
+                        </button>
+                      ) : (
+                      // JIKA TUTOR: HANYA LABEL/BADGE VIEW-ONLY (TIDAK BISA DIKLIK)
+                    <span
+                      className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider cursor-default ${
+                      ft.status === 'completed'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        : 'bg-amber-50 text-amber-700 border border-amber-200'
+                      }`}
+                    >
+                      {ft.status === 'completed' ? '✓ Selesai' : '⏳ Pending'}
+                    </span>
+                      )}
+                    </td>
+
+                    {/* Tombol Salin Format Pesan WA */}
+                    <td className="py-3 px-4 text-center whitespace-nowrap">
+                      <button
+                        onClick={() => handleCopyWATemplate(ft)}
+                        className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 transition-all"
                       >
-                        {ft.status === 'completed' ? '✓ Selesai' : '⏳ Pending'}
+                        <span>📲</span> Salin WA
                       </button>
                     </td>
 
                     {/* Tombol Koreksi Admin */}
-                    {currentUser?.role === 'admin' && (
-                      <td className="py-3 px-4 text-center">
+                    {isAdmin && (
+                      <td className="py-3 px-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleOpenEditModal(ft)}
-                            className="p-1 text-blue-600 hover:text-blue-800 rounded hover:bg-blue-50"
+                            className="p-1 text-amber-600 hover:text-amber-800 rounded hover:bg-amber-50"
                             title="Edit Data"
                           >
                             ✏️
@@ -228,7 +325,7 @@ export default function FreeTrialLog() {
                             className="p-1 text-rose-600 hover:text-rose-800 rounded hover:bg-rose-50"
                             title="Hapus Trial"
                           >
-                            🗑️️
+                            🗑
                           </button>
                         </div>
                       </td>
@@ -244,9 +341,14 @@ export default function FreeTrialLog() {
       {/* MODAL 1: CATAT FREE TRIAL BARU */}
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="font-bold text-slate-800 text-base">Catat Sesi Free Trial</h3>
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                  Input Jurnal Free Trial
+                </span>
+                <h3 className="font-bold text-slate-800 text-base">Catat Sesi Free Trial</h3>
+              </div>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-slate-400 hover:text-slate-600 text-lg"
@@ -258,14 +360,14 @@ export default function FreeTrialLog() {
             <form onSubmit={handleCreateTrial} className="space-y-3.5">
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Nama Calon Siswa
+                  Nama Calon Siswa <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
                   placeholder="Misal: Made Junior"
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                   required
                 />
               </div>
@@ -273,13 +375,13 @@ export default function FreeTrialLog() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">
-                    Tanggal Pertemuan
+                    Tanggal Pertemuan <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                     required
                   />
                 </div>
@@ -299,15 +401,48 @@ export default function FreeTrialLog() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Materi / Rincian Ice Breaking
+                  Materi Pelajaran / Topik Bahasan (Lesson) <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Misal: Counting Number & Alphabet Review"
+                  value={lesson}
+                  onChange={(e) => setLesson(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
+                  required
+                />
+              </div>
+
+              {/* TAUTAN VIDEO YOUTUBE */}
+              <div className="p-3 bg-rose-50/60 border border-rose-200 rounded-2xl space-y-1.5">
+                <label className="block text-xs font-bold text-rose-900 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <span>🎬</span> Link Video Dokumentasi (YouTube)
+                  </span>
+                  <span className="text-[10px] font-normal text-rose-600 bg-rose-100 px-2 py-0.5 rounded-full">
+                    Opsional
+                  </span>
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://youtu.be/... atau https://youtube.com/watch?v=..."
+                  value={inputVideoUrl}
+                  onChange={(e) => setInputVideoUrl(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                />
+              </div>
+
+              {/* CATATAN SISWA */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  Catatan Pembelajaran / Note Perkembangan Siswa
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Misal: Phonics A-B-C, Alphabet Song, Assessment Level"
-                  value={lesson}
-                  onChange={(e) => setLesson(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  placeholder="Tuliskan catatan kelas atau performa calon murid hari ini..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -321,9 +456,9 @@ export default function FreeTrialLog() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
-                  Simpan Sesi
+                  Simpan ke Jurnal
                 </button>
               </div>
             </form>
@@ -331,10 +466,10 @@ export default function FreeTrialLog() {
         </div>
       )}
 
-      {/* MODAL 2: EDIT FREE TRIAL (ADMIN KOREKSI ERROR) */}
+      {/* MODAL 2: EDIT FREE TRIAL (ADMIN) */}
       {editingTrial && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
@@ -359,7 +494,7 @@ export default function FreeTrialLog() {
                   type="text"
                   value={editStudentName}
                   onChange={(e) => setEditStudentName(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                   required
                 />
               </div>
@@ -373,7 +508,7 @@ export default function FreeTrialLog() {
                     type="date"
                     value={editDate}
                     onChange={(e) => setEditDate(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                     required
                   />
                 </div>
@@ -385,7 +520,7 @@ export default function FreeTrialLog() {
                   <select
                     value={editTutorId}
                     onChange={(e) => setEditTutorId(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   >
                     {users
                       .filter((u: User) => u.role === 'tutor')
@@ -400,14 +535,40 @@ export default function FreeTrialLog() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Materi / Rincian Ice Breaking
+                  Materi Pelajaran / Topik Bahasan (Lesson)
+                </label>
+                <input
+                  type="text"
+                  value={editLesson}
+                  onChange={(e) => setEditLesson(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
+                  required
+                />
+              </div>
+
+              {/* EDIT VIDEO URL */}
+              <div className="p-3 bg-rose-50/60 border border-rose-200 rounded-2xl space-y-1.5">
+                <label className="block text-xs font-bold text-rose-900">
+                  🎬 Tautan Video Dokumentasi (YouTube)
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://youtu.be/... atau https://youtube.com/watch?v=..."
+                  value={editVideoUrl}
+                  onChange={(e) => setEditVideoUrl(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  Catatan Pembelajaran / Note Perkembangan Siswa
                 </label>
                 <textarea
                   rows={3}
-                  value={editLesson}
-                  onChange={(e) => setEditLesson(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -421,7 +582,7 @@ export default function FreeTrialLog() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Simpan Perubahan
                 </button>

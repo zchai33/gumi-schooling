@@ -255,7 +255,10 @@ const AppProvider = ({ children })=>{
                                 tutorName: ft.tutor_name,
                                 date: ft.date,
                                 lesson: ft.lesson,
-                                status: ft.status
+                                notes: ft.notes || '',
+                                videoUrl: ft.video_url || '',
+                                status: ft.status,
+                                isSentToParent: ft.is_sent_to_parent || false
                             })
                     }["AppProvider.useCallback[fetchAllData]"]));
                 }
@@ -371,8 +374,8 @@ const AppProvider = ({ children })=>{
                 user_id: newLog.userId,
                 user_name: newLog.userName,
                 role: newLog.role,
-                action: newLog.action,
-                details: newLog.details,
+                action,
+                details,
                 timestamp: newLog.timestamp
             }
         ]);
@@ -711,9 +714,10 @@ const AppProvider = ({ children })=>{
             await fetchAllData();
         }
     };
-    // FREE TRIALS
+    // FREE TRIALS (SUDAH MENDUKUNG NOTES & VIDEO_URL)
     const addFreeTrial = async (trialData)=>{
         if (!currentUser) return;
+        const cleanVideoUrl = (trialData.videoUrl || '').trim();
         const newTrial = {
             id: `ft-${Date.now()}`,
             studentName: trialData.studentName,
@@ -721,7 +725,10 @@ const AppProvider = ({ children })=>{
             tutorName: currentUser.name,
             date: trialData.date,
             lesson: trialData.lesson,
-            status: 'completed'
+            notes: trialData.notes || '',
+            videoUrl: cleanVideoUrl,
+            status: 'completed',
+            isSentToParent: false
         };
         setFreeTrials((prev)=>[
                 ...prev,
@@ -735,24 +742,32 @@ const AppProvider = ({ children })=>{
                 tutor_name: newTrial.tutorName,
                 date: newTrial.date,
                 lesson: newTrial.lesson,
-                status: newTrial.status
+                notes: newTrial.notes,
+                video_url: newTrial.videoUrl,
+                status: newTrial.status,
+                is_sent_to_parent: false
             }
         ]);
         logActivity('CREATE_MEETING', `Mencatat sesi Free Trial untuk siswa: ${trialData.studentName}`);
         await fetchAllData();
     };
     const updateFreeTrial = async (trialId, updatedData)=>{
+        const cleanVideoUrl = (updatedData.videoUrl || '').trim();
         setFreeTrials((prev)=>prev.map((ft)=>ft.id === trialId ? {
                     ...ft,
-                    ...updatedData
+                    ...updatedData,
+                    videoUrl: cleanVideoUrl
                 } : ft));
-        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').update({
+        const payload = {
             student_name: updatedData.studentName,
             lesson: updatedData.lesson,
             date: updatedData.date,
             tutor_id: updatedData.tutorId,
-            tutor_name: updatedData.tutorName
-        }).eq('id', trialId);
+            tutor_name: updatedData.tutorName,
+            notes: updatedData.notes || '',
+            video_url: cleanVideoUrl
+        };
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').update(payload).eq('id', trialId);
         logActivity('UPDATE_PAYROLL', `Memperbarui data Free Trial ID: ${trialId}`);
         await fetchAllData();
     };
@@ -772,6 +787,19 @@ const AppProvider = ({ children })=>{
                 } : ft));
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').update({
             status: newStatus
+        }).eq('id', trialId);
+        await fetchAllData();
+    };
+    const toggleSentToParentTrial = async (trialId)=>{
+        const target = freeTrials.find((ft)=>ft.id === trialId);
+        if (!target) return;
+        const newStatus = !target.isSentToParent;
+        setFreeTrials((prev)=>prev.map((ft)=>ft.id === trialId ? {
+                    ...ft,
+                    isSentToParent: newStatus
+                } : ft));
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').update({
+            is_sent_to_parent: newStatus
         }).eq('id', trialId);
         await fetchAllData();
     };
@@ -895,6 +923,7 @@ const AppProvider = ({ children })=>{
             updateFreeTrial,
             deleteFreeTrial,
             toggleFreeTrialStatus,
+            toggleSentToParentTrial,
             adjustments,
             getAdjustmentForTutor,
             saveAdjustment,
@@ -903,7 +932,7 @@ const AppProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AppContext.tsx",
-        lineNumber: 1013,
+        lineNumber: 1068,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

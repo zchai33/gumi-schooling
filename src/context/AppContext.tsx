@@ -109,15 +109,30 @@ interface AppContextType {
   lockEmptySlot: (classroomId: string, meetingNumber: number) => Promise<void>;
   toggleSentToParent: (meetingId: string) => Promise<void>;
 
-  // Free Trials
+  // Free Trials (Diperbarui dengan notes & videoUrl)
   freeTrials: FreeTrial[];
-  addFreeTrial: (trialData: { studentName: string; lesson: string; date: string }) => Promise<void>;
+  addFreeTrial: (trialData: {
+    studentName: string;
+    lesson: string;
+    date: string;
+    notes?: string;
+    videoUrl?: string;
+  }) => Promise<void>;
   updateFreeTrial: (
     trialId: string,
-    updatedData: { studentName: string; lesson: string; date: string; tutorId?: string; tutorName?: string }
+    updatedData: {
+      studentName: string;
+      lesson: string;
+      date: string;
+      tutorId?: string;
+      tutorName?: string;
+      notes?: string;
+      videoUrl?: string;
+    }
   ) => Promise<void>;
   deleteFreeTrial: (trialId: string) => Promise<void>;
   toggleFreeTrialStatus: (trialId: string) => Promise<void>;
+  toggleSentToParentTrial: (trialId: string) => Promise<void>;
 
   // Penyesuaian Payroll (Bonus & Denda)
   adjustments: MonthlyAdjustment[];
@@ -338,7 +353,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             tutorName: ft.tutor_name,
             date: ft.date,
             lesson: ft.lesson,
+            notes: ft.notes || '',
+            videoUrl: ft.video_url || '',
             status: ft.status,
+            isSentToParent: ft.is_sent_to_parent || false,
           }))
         );
       }
@@ -435,8 +453,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         user_id: newLog.userId,
         user_name: newLog.userName,
         role: newLog.role,
-        action: newLog.action,
-        details: newLog.details,
+        action,
+        details,
         timestamp: newLog.timestamp,
       },
     ]);
@@ -852,9 +870,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  // FREE TRIALS
-  const addFreeTrial = async (trialData: { studentName: string; lesson: string; date: string }) => {
+  // FREE TRIALS (SUDAH MENDUKUNG NOTES & VIDEO_URL)
+  const addFreeTrial = async (trialData: {
+    studentName: string;
+    lesson: string;
+    date: string;
+    notes?: string;
+    videoUrl?: string;
+  }) => {
     if (!currentUser) return;
+    const cleanVideoUrl = (trialData.videoUrl || '').trim();
+
     const newTrial: FreeTrial = {
       id: `ft-${Date.now()}`,
       studentName: trialData.studentName,
@@ -862,7 +888,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       tutorName: currentUser.name,
       date: trialData.date,
       lesson: trialData.lesson,
+      notes: trialData.notes || '',
+      videoUrl: cleanVideoUrl,
       status: 'completed',
+      isSentToParent: false,
     };
     setFreeTrials((prev) => [...prev, newTrial]);
 
@@ -874,7 +903,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         tutor_name: newTrial.tutorName,
         date: newTrial.date,
         lesson: newTrial.lesson,
+        notes: newTrial.notes,
+        video_url: newTrial.videoUrl,
         status: newTrial.status,
+        is_sent_to_parent: false,
       },
     ]);
 
@@ -884,23 +916,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateFreeTrial = async (
     trialId: string,
-    updatedData: { studentName: string; lesson: string; date: string; tutorId?: string; tutorName?: string }
+    updatedData: {
+      studentName: string;
+      lesson: string;
+      date: string;
+      tutorId?: string;
+      tutorName?: string;
+      notes?: string;
+      videoUrl?: string;
+    }
   ) => {
+    const cleanVideoUrl = (updatedData.videoUrl || '').trim();
+
     setFreeTrials((prev) =>
-      prev.map((ft) => (ft.id === trialId ? { ...ft, ...updatedData } : ft))
+      prev.map((ft) => (ft.id === trialId ? { ...ft, ...updatedData, videoUrl: cleanVideoUrl } : ft))
     );
 
-    await supabase
-      .from('free_trials')
-      .update({
-        student_name: updatedData.studentName,
-        lesson: updatedData.lesson,
-        date: updatedData.date,
-        tutor_id: updatedData.tutorId,
-        tutor_name: updatedData.tutorName,
-      })
-      .eq('id', trialId);
+    const payload: any = {
+      student_name: updatedData.studentName,
+      lesson: updatedData.lesson,
+      date: updatedData.date,
+      tutor_id: updatedData.tutorId,
+      tutor_name: updatedData.tutorName,
+      notes: updatedData.notes || '',
+      video_url: cleanVideoUrl,
+    };
 
+    await supabase.from('free_trials').update(payload).eq('id', trialId);
     logActivity('UPDATE_PAYROLL', `Memperbarui data Free Trial ID: ${trialId}`);
     await fetchAllData();
   };
@@ -922,6 +964,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
 
     await supabase.from('free_trials').update({ status: newStatus }).eq('id', trialId);
+    await fetchAllData();
+  };
+
+  const toggleSentToParentTrial = async (trialId: string) => {
+    const target = freeTrials.find((ft) => ft.id === trialId);
+    if (!target) return;
+    const newStatus = !target.isSentToParent;
+
+    setFreeTrials((prev) =>
+      prev.map((ft) => (ft.id === trialId ? { ...ft, isSentToParent: newStatus } : ft))
+    );
+
+    await supabase.from('free_trials').update({ is_sent_to_parent: newStatus }).eq('id', trialId);
     await fetchAllData();
   };
 
@@ -1050,6 +1105,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateFreeTrial,
         deleteFreeTrial,
         toggleFreeTrialStatus,
+        toggleSentToParentTrial,
         adjustments,
         getAdjustmentForTutor,
         saveAdjustment,

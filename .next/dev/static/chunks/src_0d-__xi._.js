@@ -3401,74 +3401,139 @@ var _s = __turbopack_context__.k.signature();
 ;
 function DokvidKelasView() {
     _s();
-    const { currentUser, classrooms, meetings, selectedMonth, setSelectedMonth, toggleSentToParent } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
+    const { currentUser, classrooms, meetings, freeTrials, selectedMonth, setSelectedMonth, toggleSentToParent, toggleSentToParentTrial } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
     const isAdmin = currentUser?.role === 'admin';
     // Filter Tanggal Spesifik (Default: kosong/semua hari di bulan terpilih)
     const [selectedDate, setSelectedDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [searchQuery, setSearchQuery] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [copiedId, setCopiedId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    // Ambil sesi bulan aktif (jika Tutor, HANYA ambil sesi miliknya)
-    const monthlyMeetings = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
-        "DokvidKelasView.useMemo[monthlyMeetings]": ()=>{
-            return meetings.filter({
-                "DokvidKelasView.useMemo[monthlyMeetings]": (m)=>{
+    // 1. Gabungkan sesi Jurnal Reguler + Sesi Free Trial di bulan terpilih
+    const monthlyItems = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "DokvidKelasView.useMemo[monthlyItems]": ()=>{
+            // A. Sesi Jurnal Reguler
+            const regularList = meetings.filter({
+                "DokvidKelasView.useMemo[monthlyItems].regularList": (m)=>{
                     const matchMonth = m.date && m.date.startsWith(selectedMonth) && !m.isLocked;
                     const matchTutor = isAdmin ? true : m.tutorId === currentUser?.id;
                     return matchMonth && matchTutor;
                 }
-            }["DokvidKelasView.useMemo[monthlyMeetings]"]);
+            }["DokvidKelasView.useMemo[monthlyItems].regularList"]).map({
+                "DokvidKelasView.useMemo[monthlyItems].regularList": (m)=>{
+                    const cls = classrooms.find({
+                        "DokvidKelasView.useMemo[monthlyItems].regularList.cls": (c)=>c.id === m.classroomId
+                    }["DokvidKelasView.useMemo[monthlyItems].regularList.cls"]);
+                    return {
+                        id: m.id,
+                        sourceType: 'regular',
+                        date: m.date,
+                        tutorId: m.tutorId,
+                        tutorName: m.tutorName,
+                        studentTitle: cls ? cls.students.join(', ') : 'Nama Siswa',
+                        classDetail: `Kelas: ${cls ? cls.name : '-'} (${cls ? cls.type : '-'})`,
+                        meetingBadgeText: `Pertemuan #${m.meetingNumber}`,
+                        lesson: m.lesson,
+                        notes: m.notes,
+                        videoUrl: m.videoUrl,
+                        isSentToParent: m.isSentToParent || false
+                    };
+                }
+            }["DokvidKelasView.useMemo[monthlyItems].regularList"]);
+            // B. Sesi Free Trial
+            const trialList = freeTrials.filter({
+                "DokvidKelasView.useMemo[monthlyItems].trialList": (ft)=>{
+                    const matchMonth = ft.date && ft.date.startsWith(selectedMonth);
+                    const matchTutor = isAdmin ? true : ft.tutorId === currentUser?.id;
+                    return matchMonth && matchTutor;
+                }
+            }["DokvidKelasView.useMemo[monthlyItems].trialList"]).map({
+                "DokvidKelasView.useMemo[monthlyItems].trialList": (ft)=>({
+                        id: ft.id,
+                        sourceType: 'free_trial',
+                        date: ft.date,
+                        tutorId: ft.tutorId,
+                        tutorName: ft.tutorName,
+                        studentTitle: ft.studentName,
+                        classDetail: 'Sesi Uji Coba Calon Siswa Baru (Free Trial)',
+                        meetingBadgeText: '🎯 Free Trial',
+                        lesson: ft.lesson,
+                        notes: ft.notes,
+                        videoUrl: ft.videoUrl,
+                        isSentToParent: ft.isSentToParent || false
+                    })
+            }["DokvidKelasView.useMemo[monthlyItems].trialList"]);
+            // Satukan dan urutkan berdasarkan tanggal terbaru
+            return [
+                ...regularList,
+                ...trialList
+            ].sort({
+                "DokvidKelasView.useMemo[monthlyItems]": (a, b)=>b.date.localeCompare(a.date)
+            }["DokvidKelasView.useMemo[monthlyItems]"]);
         }
-    }["DokvidKelasView.useMemo[monthlyMeetings]"], [
+    }["DokvidKelasView.useMemo[monthlyItems]"], [
         meetings,
+        freeTrials,
+        classrooms,
         selectedMonth,
         isAdmin,
         currentUser?.id
     ]);
-    // Filter berdasarkan tanggal dan kolom pencarian
-    const filteredMeetings = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
-        "DokvidKelasView.useMemo[filteredMeetings]": ()=>{
-            return monthlyMeetings.filter({
-                "DokvidKelasView.useMemo[filteredMeetings]": (m)=>{
-                    const cls = classrooms.find({
-                        "DokvidKelasView.useMemo[filteredMeetings].cls": (c)=>c.id === m.classroomId
-                    }["DokvidKelasView.useMemo[filteredMeetings].cls"]);
-                    const matchDate = selectedDate ? m.date === selectedDate : true;
+    // 2. Filter berdasarkan tanggal dan kata kunci pencarian
+    const filteredItems = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "DokvidKelasView.useMemo[filteredItems]": ()=>{
+            return monthlyItems.filter({
+                "DokvidKelasView.useMemo[filteredItems]": (item)=>{
+                    const matchDate = selectedDate ? item.date === selectedDate : true;
                     const q = searchQuery.toLowerCase().trim();
-                    const matchSearch = q === '' || cls && cls.name.toLowerCase().includes(q) || cls && cls.students.some({
-                        "DokvidKelasView.useMemo[filteredMeetings]": (s)=>s.toLowerCase().includes(q)
-                    }["DokvidKelasView.useMemo[filteredMeetings]"]) || m.tutorName.toLowerCase().includes(q) || m.lesson.toLowerCase().includes(q);
+                    const matchSearch = q === '' || item.studentTitle.toLowerCase().includes(q) || item.classDetail.toLowerCase().includes(q) || item.tutorName.toLowerCase().includes(q) || item.lesson.toLowerCase().includes(q);
                     return matchDate && matchSearch;
                 }
-            }["DokvidKelasView.useMemo[filteredMeetings]"]);
+            }["DokvidKelasView.useMemo[filteredItems]"]);
         }
-    }["DokvidKelasView.useMemo[filteredMeetings]"], [
-        monthlyMeetings,
-        classrooms,
+    }["DokvidKelasView.useMemo[filteredItems]"], [
+        monthlyItems,
         selectedDate,
         searchQuery
     ]);
     // Generator Teks Template WhatsApp
-    const generateBroadcastText = (m, cls)=>{
-        const studentNames = cls ? cls.students.join(', ') : 'Student';
-        const className = cls ? cls.name : '-';
-        const videoSection = m.videoUrl ? `Link : ${m.videoUrl}\n` : '';
-        const noteSection = m.notes ? m.notes : 'Pembelajaran berjalan lancar dan interaktif.';
+    const generateBroadcastText = (item)=>{
+        const videoSection = item.videoUrl ? `Link : ${item.videoUrl}\n` : '';
+        const noteSection = item.notes ? item.notes : 'Pembelajaran berjalan lancar dan interaktif.';
+        if (item.sourceType === 'free_trial') {
+            return `👋 Hello! Here's the Free Trial class update for today
+
+Student : ${item.studentTitle} (Free Trial Class)
+Date : ${item.date}
+Tutor : ${item.tutorName}
+Lesson : ${item.lesson}
+${videoSection}Note : ${noteSection}`;
+        }
         return `👋 Hello! Here's the class for today
 
-Class : ${studentNames} (${className})
-Meeting : ${m.meetingNumber}
-Date : ${m.date}
-Tutor : ${m.tutorName}
-Lesson : ${m.lesson}
+Class : ${item.studentTitle} (${item.classDetail.replace('Kelas: ', '')})
+Meeting : ${item.meetingBadgeText.replace('Pertemuan #', '')}
+Date : ${item.date}
+Tutor : ${item.tutorName}
+Lesson : ${item.lesson}
 ${videoSection}Note : ${noteSection}`;
     };
-    const handleCopyText = (meetingId, text)=>{
+    const handleCopyText = (itemId, text)=>{
         navigator.clipboard.writeText(text);
-        setCopiedId(meetingId);
+        setCopiedId(itemId);
         setTimeout(()=>setCopiedId(null), 3000);
     };
-    const totalWithVideo = filteredMeetings.filter((m)=>m.videoUrl && m.videoUrl.trim() !== '').length;
-    const totalSent = filteredMeetings.filter((m)=>m.isSentToParent).length;
+    // Handler toggle status pengiriman ke ortu sesuai jenis sesi
+    const handleToggleSent = (item)=>{
+        if (!isAdmin) return;
+        if (item.sourceType === 'free_trial') {
+            if (toggleSentToParentTrial) {
+                toggleSentToParentTrial(item.id);
+            }
+        } else {
+            toggleSentToParent(item.id);
+        }
+    };
+    const totalWithVideo = filteredItems.filter((item)=>item.videoUrl && item.videoUrl.trim() !== '').length;
+    const totalSent = filteredItems.filter((item)=>item.isSentToParent).length;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "space-y-6",
         children: [
@@ -3485,7 +3550,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "📹"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 82,
+                                        lineNumber: 162,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -3493,27 +3558,27 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Dokvid Kelas & Laporan Ortu"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 83,
+                                        lineNumber: 163,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 81,
+                                lineNumber: 161,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-xs text-slate-500 mt-1",
-                                children: isAdmin ? 'Pusat tinjauan materi, video pembelajaran murid, dan salin draf format broadcast WhatsApp ke orang tua.' : 'Daftar riwayat materi dan video pembelajaran murid yang Anda ajar.'
+                                children: isAdmin ? 'Pusat tinjauan materi, video pembelajaran murid (Reguler & Free Trial), dan salin draf format broadcast WhatsApp ke orang tua.' : 'Daftar riwayat materi dan video pembelajaran murid yang Anda ajar.'
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 85,
+                                lineNumber: 165,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 80,
+                        lineNumber: 160,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3527,7 +3592,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Bulan:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 95,
+                                        lineNumber: 175,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3537,13 +3602,13 @@ ${videoSection}Note : ${noteSection}`;
                                         className: "px-2.5 py-1 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 96,
+                                        lineNumber: 176,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 94,
+                                lineNumber: 174,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3554,7 +3619,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Tanggal:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 106,
+                                        lineNumber: 186,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3564,7 +3629,7 @@ ${videoSection}Note : ${noteSection}`;
                                         className: "px-2.5 py-1 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 107,
+                                        lineNumber: 187,
                                         columnNumber: 13
                                     }, this),
                                     selectedDate && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3574,25 +3639,25 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "✕"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 114,
+                                        lineNumber: 194,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 105,
+                                lineNumber: 185,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 92,
+                        lineNumber: 172,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 79,
+                lineNumber: 159,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3608,24 +3673,24 @@ ${videoSection}Note : ${noteSection}`;
                                         children: isAdmin ? 'Total Sesi Masuk' : 'Total Sesi Saya'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 130,
+                                        lineNumber: 210,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "text-2xl font-black text-slate-800 mt-0.5",
                                         children: [
-                                            filteredMeetings.length,
+                                            filteredItems.length,
                                             " Sesi"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 133,
+                                        lineNumber: 213,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 129,
+                                lineNumber: 209,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3633,13 +3698,13 @@ ${videoSection}Note : ${noteSection}`;
                                 children: "📚"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 135,
+                                lineNumber: 215,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 128,
+                        lineNumber: 208,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3652,7 +3717,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Dengan Video YouTube"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 140,
+                                        lineNumber: 220,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3663,13 +3728,13 @@ ${videoSection}Note : ${noteSection}`;
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 141,
+                                        lineNumber: 221,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 139,
+                                lineNumber: 219,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3677,13 +3742,13 @@ ${videoSection}Note : ${noteSection}`;
                                 children: "🎬"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 143,
+                                lineNumber: 223,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 138,
+                        lineNumber: 218,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3696,7 +3761,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Terkirim ke Ortu"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 148,
+                                        lineNumber: 228,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3704,17 +3769,17 @@ ${videoSection}Note : ${noteSection}`;
                                         children: [
                                             totalSent,
                                             " / ",
-                                            filteredMeetings.length
+                                            filteredItems.length
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 149,
+                                        lineNumber: 229,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 147,
+                                lineNumber: 227,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3722,19 +3787,19 @@ ${videoSection}Note : ${noteSection}`;
                                 children: "👍"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 153,
+                                lineNumber: 233,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 146,
+                        lineNumber: 226,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 127,
+                lineNumber: 207,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3744,13 +3809,13 @@ ${videoSection}Note : ${noteSection}`;
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                             type: "text",
-                            placeholder: isAdmin ? 'Cari berdasarkan nama murid, nama kelas, atau tutor...' : 'Cari berdasarkan nama murid atau kelas Anda...',
+                            placeholder: isAdmin ? 'Cari berdasarkan nama murid, kelas, atau tutor...' : 'Cari berdasarkan nama murid atau kelas Anda...',
                             value: searchQuery,
                             onChange: (e)=>setSearchQuery(e.target.value),
                             className: "w-full pl-9 pr-8 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                         }, void 0, false, {
                             fileName: "[project]/src/components/DokvidKelasView.tsx",
-                            lineNumber: 160,
+                            lineNumber: 240,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3758,7 +3823,7 @@ ${videoSection}Note : ${noteSection}`;
                             children: "🔍"
                         }, void 0, false, {
                             fileName: "[project]/src/components/DokvidKelasView.tsx",
-                            lineNumber: 171,
+                            lineNumber: 251,
                             columnNumber: 11
                         }, this),
                         searchQuery && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3767,18 +3832,18 @@ ${videoSection}Note : ${noteSection}`;
                             children: "✕"
                         }, void 0, false, {
                             fileName: "[project]/src/components/DokvidKelasView.tsx",
-                            lineNumber: 173,
+                            lineNumber: 253,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/DokvidKelasView.tsx",
-                    lineNumber: 159,
+                    lineNumber: 239,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 158,
+                lineNumber: 238,
                 columnNumber: 7
             }, this),
             copiedId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3788,7 +3853,7 @@ ${videoSection}Note : ${noteSection}`;
                         children: "✅ Draf deskripsi berhasil disalin ke clipboard! Siap di-paste ke WhatsApp orang tua."
                     }, void 0, false, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 186,
+                        lineNumber: 266,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3796,30 +3861,29 @@ ${videoSection}Note : ${noteSection}`;
                         children: "Tersalin"
                     }, void 0, false, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 187,
+                        lineNumber: 267,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 185,
+                lineNumber: 265,
                 columnNumber: 9
             }, this),
-            filteredMeetings.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            filteredItems.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400 text-sm",
-                children: isAdmin ? 'Tidak ada sesi jurnal mengajar pada filter tanggal/periode ini.' : 'Belum ada sesi kelas yang Anda isi pada filter tanggal/periode ini.'
+                children: isAdmin ? 'Tidak ada sesi jurnal mengajar atau free trial pada filter tanggal/periode ini.' : 'Belum ada sesi kelas atau free trial yang Anda isi pada filter tanggal/periode ini.'
             }, void 0, false, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 193,
+                lineNumber: 273,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "grid grid-cols-1 md:grid-cols-2 gap-5",
-                children: filteredMeetings.map((m)=>{
-                    const cls = classrooms.find((c)=>c.id === m.classroomId);
-                    const broadcastText = generateBroadcastText(m, cls);
-                    const hasVideo = Boolean(m.videoUrl && m.videoUrl.trim() !== '');
+                children: filteredItems.map((item)=>{
+                    const broadcastText = generateBroadcastText(item);
+                    const hasVideo = Boolean(item.videoUrl && item.videoUrl.trim() !== '');
                     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: `bg-white rounded-3xl border transition-all p-5 shadow-sm flex flex-col justify-between space-y-4 ${m.isSentToParent ? 'border-emerald-300 bg-emerald-50/10' : 'border-slate-300 hover:border-amber-400'}`,
+                        className: `bg-white rounded-3xl border transition-all p-5 shadow-sm flex flex-col justify-between space-y-4 ${item.isSentToParent ? 'border-emerald-300 bg-emerald-50/10' : 'border-slate-300 hover:border-amber-400'}`,
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex items-start justify-between gap-3",
@@ -3830,25 +3894,22 @@ ${videoSection}Note : ${noteSection}`;
                                                 className: "flex items-center gap-2 flex-wrap",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        className: "px-2.5 py-0.5 bg-amber-500 text-white font-extrabold text-[10px] uppercase rounded-md tracking-wider",
-                                                        children: [
-                                                            "Pertemuan #",
-                                                            m.meetingNumber
-                                                        ]
-                                                    }, void 0, true, {
+                                                        className: `px-2.5 py-0.5 text-white font-extrabold text-[10px] uppercase rounded-md tracking-wider ${item.sourceType === 'free_trial' ? 'bg-purple-600' : 'bg-amber-500'}`,
+                                                        children: item.meetingBadgeText
+                                                    }, void 0, false, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 218,
+                                                        lineNumber: 297,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         className: "text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded",
                                                         children: [
                                                             "🗓️ ",
-                                                            m.date
+                                                            item.date
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 221,
+                                                        lineNumber: 304,
                                                         columnNumber: 23
                                                     }, this),
                                                     hasVideo ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3856,114 +3917,105 @@ ${videoSection}Note : ${noteSection}`;
                                                         children: "🎬 Ada Video"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 225,
+                                                        lineNumber: 308,
                                                         columnNumber: 25
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         className: "px-2 py-0.5 bg-slate-100 text-slate-500 text-[10px] rounded-full",
                                                         children: "Tanpa Video"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 229,
+                                                        lineNumber: 312,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 217,
+                                                lineNumber: 296,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                                 className: "text-base font-black text-slate-800 mt-2",
-                                                children: cls ? cls.students.join(', ') : 'Nama Siswa'
+                                                children: item.studentTitle
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 235,
+                                                lineNumber: 318,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "text-xs text-slate-500",
                                                 children: [
-                                                    "Kelas: ",
+                                                    item.classDetail,
+                                                    " • Tutor: ",
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
-                                                        children: cls ? cls.name : '-'
+                                                        children: item.tutorName
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 239,
-                                                        columnNumber: 30
-                                                    }, this),
-                                                    " (",
-                                                    cls ? cls.type : '-',
-                                                    ") • Tutor: ",
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
-                                                        children: m.tutorName
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 239,
-                                                        columnNumber: 104
+                                                        lineNumber: 322,
+                                                        columnNumber: 51
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 238,
+                                                lineNumber: 321,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 216,
+                                        lineNumber: 295,
                                         columnNumber: 19
                                     }, this),
                                     isAdmin ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                        onClick: ()=>toggleSentToParent(m.id),
-                                        className: `shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 shadow-sm ${m.isSentToParent ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'}`,
+                                        onClick: ()=>handleToggleSent(item),
+                                        className: `shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 shadow-sm ${item.isSentToParent ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'}`,
                                         title: "Klik untuk mengubah status pengiriman ke ortu",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: m.isSentToParent ? '👍' : '⚪'
+                                                children: item.isSentToParent ? '👍' : '⚪'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 254,
+                                                lineNumber: 337,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: m.isSentToParent ? 'Terkirim ke Ortu' : 'Belum Dikirim'
+                                                children: item.isSentToParent ? 'Terkirim ke Ortu' : 'Belum Dikirim'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 255,
+                                                lineNumber: 338,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 245,
+                                        lineNumber: 328,
                                         columnNumber: 21
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: `shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 cursor-default ${m.isSentToParent ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-400 border-slate-200'}`,
+                                        className: `shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 cursor-default ${item.isSentToParent ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-400 border-slate-200'}`,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: m.isSentToParent ? '👍' : '⚪'
+                                                children: item.isSentToParent ? '👍' : '⚪'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 265,
+                                                lineNumber: 348,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: m.isSentToParent ? 'Terkirim' : 'Belum Dikirim'
+                                                children: item.isSentToParent ? 'Terkirim' : 'Belum Dikirim'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 266,
+                                                lineNumber: 349,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 258,
+                                        lineNumber: 341,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 215,
+                                lineNumber: 294,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3974,45 +4026,45 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Format Teks WhatsApp:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 273,
+                                        lineNumber: 356,
                                         columnNumber: 19
                                     }, this),
                                     broadcastText
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 272,
+                                lineNumber: 355,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex items-center gap-2 pt-2 border-t border-slate-100",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                        onClick: ()=>handleCopyText(m.id, broadcastText),
-                                        className: `flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm ${copiedId === m.id ? 'bg-emerald-600 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white'}`,
+                                        onClick: ()=>handleCopyText(item.id, broadcastText),
+                                        className: `flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm ${copiedId === item.id ? 'bg-emerald-600 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white'}`,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: copiedId === m.id ? '✓' : '📋'
+                                                children: copiedId === item.id ? '✓' : '📋'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 290,
+                                                lineNumber: 373,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: copiedId === m.id ? 'Tersalin!' : 'Salin Pesan WA'
+                                                children: copiedId === item.id ? 'Tersalin!' : 'Salin Pesan WA'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 291,
+                                                lineNumber: 374,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 282,
+                                        lineNumber: 365,
                                         columnNumber: 19
                                     }, this),
                                     hasVideo && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                        href: m.videoUrl,
+                                        href: item.videoUrl,
                                         target: "_blank",
                                         rel: "noopener noreferrer",
                                         className: "py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5",
@@ -4021,42 +4073,42 @@ ${videoSection}Note : ${noteSection}`;
                                                 children: "▶️"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 302,
+                                                lineNumber: 385,
                                                 columnNumber: 23
                                             }, this),
                                             " Buka YouTube"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 296,
+                                        lineNumber: 379,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 280,
+                                lineNumber: 363,
                                 columnNumber: 17
                             }, this)
                         ]
-                    }, m.id, true, {
+                    }, `${item.sourceType}-${item.id}`, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 206,
+                        lineNumber: 285,
                         columnNumber: 15
                     }, this);
                 })
             }, void 0, false, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 199,
+                lineNumber: 279,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/DokvidKelasView.tsx",
-        lineNumber: 77,
+        lineNumber: 157,
         columnNumber: 5
     }, this);
 }
-_s(DokvidKelasView, "UitVIuHRFXVh89ZM6u7lOs2QHUI=", false, function() {
+_s(DokvidKelasView, "VCd6nHVumx38ht7jLvlkq+BU+Eg=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"]
     ];
@@ -4085,18 +4137,24 @@ var _s = __turbopack_context__.k.signature();
 ;
 function FreeTrialLog() {
     _s();
-    const { currentUser, users, freeTrials, addFreeTrial, updateFreeTrial, deleteFreeTrial, toggleFreeTrialStatus, selectedMonth, setSelectedMonth, rates } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
+    const { currentUser, users, freeTrials, addFreeTrial, updateFreeTrial, deleteFreeTrial, toggleFreeTrialStatus, selectedMonth, setSelectedMonth, rates, isJournalLocked, isMonthLocked } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"])();
+    const isAdmin = currentUser?.role === 'admin';
+    const isPeriodLocked = isMonthLocked ? isMonthLocked(selectedMonth) : false;
     // Search & Filter
     const [searchStudent, setSearchStudent] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     // Modal Tambah Sesi Free Trial
     const [showAddModal, setShowAddModal] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [studentName, setStudentName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [lesson, setLesson] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const [inputVideoUrl, setInputVideoUrl] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const [notes, setNotes] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [date, setDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(`${selectedMonth}-01`);
     // Modal Edit Sesi Free Trial (Admin)
     const [editingTrial, setEditingTrial] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [editStudentName, setEditStudentName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [editLesson, setEditLesson] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const [editVideoUrl, setEditVideoUrl] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const [editNotes, setEditNotes] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [editDate, setEditDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [editTutorId, setEditTutorId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     // Saring sesi berdasarkan bulan aktif & pencarian nama murid
@@ -4106,23 +4164,35 @@ function FreeTrialLog() {
         return matchMonth && matchSearch;
     });
     const handleOpenAddModal = ()=>{
+        if (!isAdmin && (isJournalLocked || isPeriodLocked)) {
+            alert(`Pengisian sesi Free Trial untuk periode ${selectedMonth} sedang ditutup/dikunci.`);
+            return;
+        }
         setStudentName('');
         setLesson('');
-        // Set default tanggal hari ini jika cocok bulan berjalan, atau awal bulan terpilih
+        setInputVideoUrl('');
+        setNotes('');
         const today = new Date().toISOString().split('T')[0];
         setDate(today.startsWith(selectedMonth) ? today : `${selectedMonth}-01`);
         setShowAddModal(true);
     };
-    const handleCreateTrial = (e)=>{
+    const handleCreateTrial = async (e)=>{
         e.preventDefault();
         if (!studentName.trim() || !lesson.trim()) {
-            alert('Harap lengkapi nama calon siswa dan materi ice breaking!');
+            alert('Harap lengkapi nama calon siswa dan materi pembelajaran!');
             return;
         }
-        addFreeTrial({
+        const cleanUrl = inputVideoUrl.trim();
+        if (cleanUrl !== '' && !(0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isValidYouTubeUrl"])(cleanUrl)) {
+            alert('Tautan video tidak valid! Masukkan tautan YouTube yang benar.');
+            return;
+        }
+        await addFreeTrial({
             studentName,
             lesson,
-            date
+            date,
+            notes,
+            videoUrl: cleanUrl
         });
         setShowAddModal(false);
     };
@@ -4130,19 +4200,28 @@ function FreeTrialLog() {
         setEditingTrial(ft);
         setEditStudentName(ft.studentName);
         setEditLesson(ft.lesson);
+        setEditVideoUrl(ft.videoUrl || '');
+        setEditNotes(ft.notes || '');
         setEditDate(ft.date);
         setEditTutorId(ft.tutorId);
     };
-    const handleSaveEditTrial = (e)=>{
+    const handleSaveEditTrial = async (e)=>{
         e.preventDefault();
         if (!editingTrial) return;
+        const cleanUrl = editVideoUrl.trim();
+        if (cleanUrl !== '' && !(0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isValidYouTubeUrl"])(cleanUrl)) {
+            alert('Tautan video tidak valid! Masukkan tautan YouTube yang benar.');
+            return;
+        }
         const assignedTutor = users.find((u)=>u.id === editTutorId);
-        updateFreeTrial(editingTrial.id, {
+        await updateFreeTrial(editingTrial.id, {
             studentName: editStudentName,
             lesson: editLesson,
             date: editDate,
             tutorId: editTutorId,
-            tutorName: assignedTutor ? assignedTutor.name : editingTrial.tutorName
+            tutorName: assignedTutor ? assignedTutor.name : editingTrial.tutorName,
+            notes: editNotes,
+            videoUrl: cleanUrl
         });
         setEditingTrial(null);
     };
@@ -4150,6 +4229,13 @@ function FreeTrialLog() {
         if (confirm(`Hapus sesi Free Trial untuk siswa "${name}"?`)) {
             deleteFreeTrial(id);
         }
+    };
+    // Salin template pesan WhatsApp khusus Free Trial untuk Dokvid / Broadcast
+    const handleCopyWATemplate = (ft)=>{
+        const videoText = ft.videoUrl ? `\nLink Dokumentasi: ${ft.videoUrl}` : '';
+        const text = `Halo Ayah/Bunda ${ft.studentName}, terima kasih telah mengikuti sesi *Free Trial* bersama Gumi Schooling pada ${ft.date}.\n\nMateri yang dipelajari: *${ft.lesson}*\nCatatan Perkembangan: ${ft.notes || 'Anak aktif dan antusias selama pembelajaran.'}${videoText}\n\nSalam hangat,\nTim Gumi Schooling Education Centre`;
+        navigator.clipboard.writeText(text);
+        alert('Template laporan WhatsApp berhasil disalin ke clipboard!');
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "space-y-6",
@@ -4164,7 +4250,7 @@ function FreeTrialLog() {
                                 children: "Catatan Sesi Free Trial"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 108,
+                                lineNumber: 148,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4175,7 +4261,7 @@ function FreeTrialLog() {
                                         children: selectedMonth
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 150,
                                         columnNumber: 59
                                     }, this),
                                     ". Fee: Rp",
@@ -4185,13 +4271,13 @@ function FreeTrialLog() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 109,
+                                lineNumber: 149,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                        lineNumber: 107,
+                        lineNumber: 147,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4205,54 +4291,102 @@ function FreeTrialLog() {
                                         children: "Periode:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                        lineNumber: 118,
+                                        lineNumber: 157,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                         type: "month",
                                         value: selectedMonth,
                                         onChange: (e)=>setSelectedMonth(e.target.value),
-                                        className: "px-2.5 py-1 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+                                        className: "px-2.5 py-1 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                        lineNumber: 119,
+                                        lineNumber: 158,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 117,
+                                lineNumber: 156,
                                 columnNumber: 11
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            !isAdmin && isPeriodLocked ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "px-4 py-2.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-semibold",
+                                children: "🔒 Periode Terkunci"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                lineNumber: 167,
+                                columnNumber: 13
+                            }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: handleOpenAddModal,
-                                className: "px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2",
+                                className: "px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-2",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "🎯"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                        lineNumber: 131,
-                                        columnNumber: 13
+                                        lineNumber: 175,
+                                        columnNumber: 15
                                     }, this),
                                     " + Catat Free Trial"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 127,
-                                columnNumber: 11
+                                lineNumber: 171,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                        lineNumber: 115,
+                        lineNumber: 155,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                lineNumber: 106,
+                lineNumber: 146,
                 columnNumber: 7
+            }, this),
+            !isAdmin && isPeriodLocked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2.5 text-xs text-rose-900 font-medium",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        children: "🔒"
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/FreeTrialLog.tsx",
+                        lineNumber: 184,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        children: [
+                            "Periode ",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                children: selectedMonth
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                lineNumber: 186,
+                                columnNumber: 21
+                            }, this),
+                            " telah ditutup oleh Admin. Data Free Trial bersifat ",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                children: "Read-Only"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                lineNumber: 186,
+                                columnNumber: 105
+                            }, this),
+                            "."
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/FreeTrialLog.tsx",
+                        lineNumber: 185,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/components/FreeTrialLog.tsx",
+                lineNumber: 183,
+                columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between",
@@ -4265,10 +4399,10 @@ function FreeTrialLog() {
                                 placeholder: "Cari nama calon murid atau tutor...",
                                 value: searchStudent,
                                 onChange: (e)=>setSearchStudent(e.target.value),
-                                className: "w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className: "w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 139,
+                                lineNumber: 194,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4276,7 +4410,7 @@ function FreeTrialLog() {
                                 children: "🔍"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 146,
+                                lineNumber: 201,
                                 columnNumber: 11
                             }, this),
                             searchStudent && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4285,13 +4419,13 @@ function FreeTrialLog() {
                                 children: "✕"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 148,
+                                lineNumber: 203,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                        lineNumber: 138,
+                        lineNumber: 193,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4303,20 +4437,20 @@ function FreeTrialLog() {
                                 children: filteredTrials.length
                             }, void 0, false, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 158,
+                                lineNumber: 213,
                                 columnNumber: 18
                             }, this),
                             " sesi di bulan ini"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                        lineNumber: 157,
+                        lineNumber: 212,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                lineNumber: 137,
+                lineNumber: 192,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4324,7 +4458,7 @@ function FreeTrialLog() {
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "overflow-x-auto",
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
-                        className: "w-full text-xs text-left border-collapse min-w-[650px]",
+                        className: "w-full text-xs text-left border-collapse min-w-[750px]",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -4335,7 +4469,7 @@ function FreeTrialLog() {
                                             children: "Tanggal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 168,
+                                            lineNumber: 223,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4343,7 +4477,7 @@ function FreeTrialLog() {
                                             children: "Nama Calon Siswa"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 169,
+                                            lineNumber: 224,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4351,15 +4485,15 @@ function FreeTrialLog() {
                                             children: "Tutor Pengajar"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 170,
+                                            lineNumber: 225,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                             className: "py-3.5 px-4",
-                                            children: "Materi / Ice Breaking"
+                                            children: "Materi & Catatan Perkembangan"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 171,
+                                            lineNumber: 226,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4367,33 +4501,41 @@ function FreeTrialLog() {
                                             children: "Status"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 172,
+                                            lineNumber: 227,
                                             columnNumber: 17
                                         }, this),
-                                        currentUser?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                            className: "py-3.5 px-4 text-center",
+                                            children: "Broadcast WA"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 228,
+                                            columnNumber: 17
+                                        }, this),
+                                        isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                             className: "py-3.5 px-4 text-center",
                                             children: "Aksi Admin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 173,
-                                            columnNumber: 51
+                                            lineNumber: 229,
+                                            columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 167,
+                                    lineNumber: 222,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 166,
+                                lineNumber: 221,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
                                 className: "divide-y divide-slate-100",
                                 children: filteredTrials.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                        colSpan: currentUser?.role === 'admin' ? 6 : 5,
+                                        colSpan: isAdmin ? 7 : 6,
                                         className: "py-12 text-center text-slate-400 text-sm",
                                         children: [
                                             "Belum ada catatan Free Trial untuk periode bulan ",
@@ -4402,12 +4544,12 @@ function FreeTrialLog() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                        lineNumber: 179,
+                                        lineNumber: 235,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 178,
+                                    lineNumber: 234,
                                     columnNumber: 17
                                 }, this) : filteredTrials.map((ft)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                         className: "hover:bg-slate-50/80 transition-colors",
@@ -4417,7 +4559,7 @@ function FreeTrialLog() {
                                                 children: ft.date
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                lineNumber: 189,
+                                                lineNumber: 245,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4425,7 +4567,7 @@ function FreeTrialLog() {
                                                 children: ft.studentName
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                lineNumber: 192,
+                                                lineNumber: 248,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4433,111 +4575,200 @@ function FreeTrialLog() {
                                                 children: ft.tutorName
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                lineNumber: 195,
+                                                lineNumber: 251,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                className: "py-3 px-4 text-slate-600 max-w-xs leading-relaxed",
-                                                children: ft.lesson
-                                            }, void 0, false, {
+                                                className: "py-3 px-4 text-slate-700 max-w-sm",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        className: "font-semibold text-slate-800 leading-snug",
+                                                        children: ft.lesson
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                        lineNumber: 255,
+                                                        columnNumber: 23
+                                                    }, this),
+                                                    ft.notes && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        className: "text-[10px] text-slate-500 italic mt-0.5 line-clamp-2",
+                                                        children: [
+                                                            "“",
+                                                            ft.notes,
+                                                            "”"
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                        lineNumber: 257,
+                                                        columnNumber: 25
+                                                    }, this),
+                                                    ft.videoUrl && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "mt-1",
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                                            href: ft.videoUrl,
+                                                            target: "_blank",
+                                                            rel: "noopener noreferrer",
+                                                            className: "inline-flex items-center gap-1 text-[9px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-1.5 py-0.5 rounded transition-colors",
+                                                            children: "▶️ Video YT ↗"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                            lineNumber: 263,
+                                                            columnNumber: 27
+                                                        }, this)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                        lineNumber: 262,
+                                                        columnNumber: 25
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
                                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                lineNumber: 198,
+                                                lineNumber: 254,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                 className: "py-3 px-4 text-center",
-                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                children: isAdmin ? // JIKA ADMIN: BISA KLIK UNTUK MENGUBAH STATUS (INTERAKTIF)
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                     onClick: ()=>toggleFreeTrialStatus(ft.id),
-                                                    className: `px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${ft.status === 'completed' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}`,
-                                                    title: "Klik untuk mengubah status",
+                                                    className: `px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm ${ft.status === 'completed' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}`,
+                                                    title: "Klik untuk mengubah status sesi",
                                                     children: ft.status === 'completed' ? '✓ Selesai' : '⏳ Pending'
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 202,
+                                                    lineNumber: 277,
+                                                    columnNumber: 25
+                                                }, this) : // JIKA TUTOR: HANYA LABEL/BADGE VIEW-ONLY (TIDAK BISA DIKLIK)
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: `inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider cursor-default ${ft.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`,
+                                                    children: ft.status === 'completed' ? '✓ Selesai' : '⏳ Pending'
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                    lineNumber: 290,
+                                                    columnNumber: 21
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                lineNumber: 274,
+                                                columnNumber: 21
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                className: "py-3 px-4 text-center whitespace-nowrap",
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                    onClick: ()=>handleCopyWATemplate(ft),
+                                                    className: "px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 transition-all",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            children: "📲"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                            lineNumber: 308,
+                                                            columnNumber: 25
+                                                        }, this),
+                                                        " Salin WA"
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                    lineNumber: 304,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                lineNumber: 201,
+                                                lineNumber: 303,
                                                 columnNumber: 21
                                             }, this),
-                                            currentUser?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                className: "py-3 px-4 text-center",
+                                            isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                className: "py-3 px-4 text-center whitespace-nowrap",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "flex items-center justify-center gap-2",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                             onClick: ()=>handleOpenEditModal(ft),
-                                                            className: "p-1 text-blue-600 hover:text-blue-800 rounded hover:bg-blue-50",
+                                                            className: "p-1 text-amber-600 hover:text-amber-800 rounded hover:bg-amber-50",
                                                             title: "Edit Data",
                                                             children: "✏️"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                            lineNumber: 219,
+                                                            lineNumber: 316,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                             onClick: ()=>handleDelete(ft.id, ft.studentName),
                                                             className: "p-1 text-rose-600 hover:text-rose-800 rounded hover:bg-rose-50",
                                                             title: "Hapus Trial",
-                                                            children: "🗑️️"
+                                                            children: "🗑"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                            lineNumber: 226,
+                                                            lineNumber: 323,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 218,
+                                                    lineNumber: 315,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                lineNumber: 217,
+                                                lineNumber: 314,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, ft.id, true, {
                                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                        lineNumber: 188,
+                                        lineNumber: 244,
                                         columnNumber: 19
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                lineNumber: 176,
+                                lineNumber: 232,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/FreeTrialLog.tsx",
-                        lineNumber: 165,
+                        lineNumber: 220,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                    lineNumber: 164,
+                    lineNumber: 219,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                lineNumber: 163,
+                lineNumber: 218,
                 columnNumber: 7
             }, this),
             showAddModal && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150",
+                    className: "bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex items-center justify-between border-b pb-3",
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                    className: "font-bold text-slate-800 text-base",
-                                    children: "Catat Sesi Free Trial"
-                                }, void 0, false, {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                            className: "text-[10px] font-bold uppercase tracking-wider text-amber-600",
+                                            children: "Input Jurnal Free Trial"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 347,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                            className: "font-bold text-slate-800 text-base",
+                                            children: "Catat Sesi Free Trial"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 350,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 249,
+                                    lineNumber: 346,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4546,13 +4777,13 @@ function FreeTrialLog() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 250,
+                                    lineNumber: 352,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                            lineNumber: 248,
+                            lineNumber: 345,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -4563,10 +4794,20 @@ function FreeTrialLog() {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                             className: "block text-xs font-semibold text-slate-600 mb-1",
-                                            children: "Nama Calon Siswa"
-                                        }, void 0, false, {
+                                            children: [
+                                                "Nama Calon Siswa ",
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-rose-500",
+                                                    children: "*"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                    lineNumber: 363,
+                                                    columnNumber: 36
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 260,
+                                            lineNumber: 362,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4574,17 +4815,17 @@ function FreeTrialLog() {
                                             placeholder: "Misal: Made Junior",
                                             value: studentName,
                                             onChange: (e)=>setStudentName(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 263,
+                                            lineNumber: 365,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 259,
+                                    lineNumber: 361,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4594,27 +4835,37 @@ function FreeTrialLog() {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                     className: "block text-xs font-semibold text-slate-600 mb-1",
-                                                    children: "Tanggal Pertemuan"
-                                                }, void 0, false, {
+                                                    children: [
+                                                        "Tanggal Pertemuan ",
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            className: "text-rose-500",
+                                                            children: "*"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                            lineNumber: 378,
+                                                            columnNumber: 39
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 275,
+                                                    lineNumber: 377,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                     type: "date",
                                                     value: date,
                                                     onChange: (e)=>setDate(e.target.value),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium",
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 278,
+                                                    lineNumber: 380,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 274,
+                                            lineNumber: 376,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4624,7 +4875,7 @@ function FreeTrialLog() {
                                                     children: "Tutor Pengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 288,
+                                                    lineNumber: 390,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4634,47 +4885,138 @@ function FreeTrialLog() {
                                                     className: "w-full px-3 py-2 text-xs border rounded-xl bg-slate-100 text-slate-600 font-semibold cursor-not-allowed"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 291,
+                                                    lineNumber: 393,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 287,
+                                            lineNumber: 389,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 273,
+                                    lineNumber: 375,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                             className: "block text-xs font-semibold text-slate-600 mb-1",
-                                            children: "Materi / Rincian Ice Breaking"
-                                        }, void 0, false, {
+                                            children: [
+                                                "Materi Pelajaran / Topik Bahasan (Lesson) ",
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-rose-500",
+                                                    children: "*"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                    lineNumber: 404,
+                                                    columnNumber: 61
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 301,
+                                            lineNumber: 403,
                                             columnNumber: 17
                                         }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                            rows: 3,
-                                            placeholder: "Misal: Phonics A-B-C, Alphabet Song, Assessment Level",
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            type: "text",
+                                            placeholder: "Misal: Counting Number & Alphabet Review",
                                             value: lesson,
                                             onChange: (e)=>setLesson(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 304,
+                                            lineNumber: 406,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 300,
+                                    lineNumber: 402,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "p-3 bg-rose-50/60 border border-rose-200 rounded-2xl space-y-1.5",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "block text-xs font-bold text-rose-900 flex items-center justify-between",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "flex items-center gap-1.5",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            children: "🎬"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                            lineNumber: 420,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        " Link Video Dokumentasi (YouTube)"
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                    lineNumber: 419,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-[10px] font-normal text-rose-600 bg-rose-100 px-2 py-0.5 rounded-full",
+                                                    children: "Opsional"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                                    lineNumber: 422,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 418,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            type: "url",
+                                            placeholder: "https://youtu.be/... atau https://youtube.com/watch?v=...",
+                                            value: inputVideoUrl,
+                                            onChange: (e)=>setInputVideoUrl(e.target.value),
+                                            className: "w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 426,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                    lineNumber: 417,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "block text-xs font-semibold text-slate-600 mb-1",
+                                            children: "Catatan Pembelajaran / Note Perkembangan Siswa"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 437,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                            rows: 3,
+                                            placeholder: "Tuliskan catatan kelas atau performa calon murid hari ini...",
+                                            value: notes,
+                                            onChange: (e)=>setNotes(e.target.value),
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 440,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                    lineNumber: 436,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4687,45 +5029,45 @@ function FreeTrialLog() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 315,
+                                            lineNumber: 450,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                             type: "submit",
-                                            className: "px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm",
-                                            children: "Simpan Sesi"
+                                            className: "px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm",
+                                            children: "Simpan ke Jurnal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 322,
+                                            lineNumber: 457,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 314,
+                                    lineNumber: 449,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                            lineNumber: 258,
+                            lineNumber: 360,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                    lineNumber: 247,
+                    lineNumber: 344,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                lineNumber: 246,
+                lineNumber: 343,
                 columnNumber: 9
             }, this),
             editingTrial && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150",
+                    className: "bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex items-center justify-between border-b pb-3",
@@ -4737,7 +5079,7 @@ function FreeTrialLog() {
                                             children: "Mode Admin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 340,
+                                            lineNumber: 475,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -4745,13 +5087,13 @@ function FreeTrialLog() {
                                             children: "Edit Sesi Free Trial"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 343,
+                                            lineNumber: 478,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 339,
+                                    lineNumber: 474,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4760,13 +5102,13 @@ function FreeTrialLog() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 345,
+                                    lineNumber: 480,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                            lineNumber: 338,
+                            lineNumber: 473,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -4780,24 +5122,24 @@ function FreeTrialLog() {
                                             children: "Nama Calon Siswa"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 355,
+                                            lineNumber: 490,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                             type: "text",
                                             value: editStudentName,
                                             onChange: (e)=>setEditStudentName(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 358,
+                                            lineNumber: 493,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 354,
+                                    lineNumber: 489,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4810,24 +5152,24 @@ function FreeTrialLog() {
                                                     children: "Tanggal Pertemuan"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 369,
+                                                    lineNumber: 504,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                     type: "date",
                                                     value: editDate,
                                                     onChange: (e)=>setEditDate(e.target.value),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 font-medium",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-medium",
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 372,
+                                                    lineNumber: 507,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 368,
+                                            lineNumber: 503,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4837,63 +5179,117 @@ function FreeTrialLog() {
                                                     children: "Ganti Tutor"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 382,
+                                                    lineNumber: 517,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                     value: editTutorId,
                                                     onChange: (e)=>setEditTutorId(e.target.value),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white",
                                                     children: users.filter((u)=>u.role === 'tutor').map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                             value: t.id,
                                                             children: t.name
                                                         }, t.id, false, {
                                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                            lineNumber: 393,
+                                                            lineNumber: 528,
                                                             columnNumber: 25
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                                    lineNumber: 385,
+                                                    lineNumber: 520,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 381,
+                                            lineNumber: 516,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 367,
+                                    lineNumber: 502,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                             className: "block text-xs font-semibold text-slate-600 mb-1",
-                                            children: "Materi / Rincian Ice Breaking"
+                                            children: "Materi Pelajaran / Topik Bahasan (Lesson)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 402,
+                                            lineNumber: 537,
                                             columnNumber: 17
                                         }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                            rows: 3,
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            type: "text",
                                             value: editLesson,
                                             onChange: (e)=>setEditLesson(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 405,
+                                            lineNumber: 540,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 401,
+                                    lineNumber: 536,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "p-3 bg-rose-50/60 border border-rose-200 rounded-2xl space-y-1.5",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "block text-xs font-bold text-rose-900",
+                                            children: "🎬 Tautan Video Dokumentasi (YouTube)"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 551,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            type: "url",
+                                            placeholder: "https://youtu.be/... atau https://youtube.com/watch?v=...",
+                                            value: editVideoUrl,
+                                            onChange: (e)=>setEditVideoUrl(e.target.value),
+                                            className: "w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 554,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                    lineNumber: 550,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "block text-xs font-semibold text-slate-600 mb-1",
+                                            children: "Catatan Pembelajaran / Note Perkembangan Siswa"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 564,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                            rows: 3,
+                                            value: editNotes,
+                                            onChange: (e)=>setEditNotes(e.target.value),
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                            lineNumber: 567,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/FreeTrialLog.tsx",
+                                    lineNumber: 563,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4906,49 +5302,49 @@ function FreeTrialLog() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 415,
+                                            lineNumber: 576,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                             type: "submit",
-                                            className: "px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm",
+                                            className: "px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm",
                                             children: "Simpan Perubahan"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                            lineNumber: 422,
+                                            lineNumber: 583,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                                    lineNumber: 414,
+                                    lineNumber: 575,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/FreeTrialLog.tsx",
-                            lineNumber: 353,
+                            lineNumber: 488,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/FreeTrialLog.tsx",
-                    lineNumber: 337,
+                    lineNumber: 472,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/FreeTrialLog.tsx",
-                lineNumber: 336,
+                lineNumber: 471,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/FreeTrialLog.tsx",
-        lineNumber: 104,
+        lineNumber: 144,
         columnNumber: 5
     }, this);
 }
-_s(FreeTrialLog, "bg3IVUMBT0rEQjzTSGWVrR0Oe4Y=", false, function() {
+_s(FreeTrialLog, "4HCRTQLHCBzaR5C6tbZd+gociRI=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"]
     ];
@@ -6270,34 +6666,24 @@ function MeetingJournal() {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                             className: "block text-xs font-bold text-rose-900 flex items-center justify-between",
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    className: "flex items-center gap-1.5",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                            children: "🎬"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 711,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        " Link Video Pembelajaran (YouTube)"
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 710,
-                                                    columnNumber: 19
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    className: "text-[10px] font-normal text-rose-600 bg-rose-100 px-2 py-0.5 rounded-full",
-                                                    children: "Opsional (+Rp 2.000)"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 713,
-                                                    columnNumber: 19
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "flex items-center gap-1.5",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        children: "🎬"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                        lineNumber: 711,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    " Link Video Pembelajaran (YouTube)"
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                lineNumber: 710,
+                                                columnNumber: 19
+                                            }, this)
+                                        }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
                                             lineNumber: 709,
                                             columnNumber: 17
@@ -6310,15 +6696,15 @@ function MeetingJournal() {
                                             className: "w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:rose-500 bg-white"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 717,
+                                            lineNumber: 714,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-[10px] text-rose-700/80",
-                                            children: "Sistem otomatis memberikan bonus video jika tautan YouTube valid dan bisa diakses."
+                                            children: "Silahkan cantumkan tautan YouTube valid dan bisa diakses."
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 724,
+                                            lineNumber: 721,
                                             columnNumber: 17
                                         }, this)
                                     ]
@@ -6334,7 +6720,7 @@ function MeetingJournal() {
                                             children: "Catatan Pembelajaran / Note Perkembangan Siswa"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 731,
+                                            lineNumber: 728,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -6345,13 +6731,13 @@ function MeetingJournal() {
                                             className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 734,
+                                            lineNumber: 731,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 730,
+                                    lineNumber: 727,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6364,7 +6750,7 @@ function MeetingJournal() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 744,
+                                            lineNumber: 741,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6373,13 +6759,13 @@ function MeetingJournal() {
                                             children: "Simpan ke Jurnal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 751,
+                                            lineNumber: 748,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 743,
+                                    lineNumber: 740,
                                     columnNumber: 15
                                 }, this)
                             ]
@@ -6414,7 +6800,7 @@ function MeetingJournal() {
                                             children: "Koreksi / Edit Jurnal (Mode Admin)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 769,
+                                            lineNumber: 766,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -6425,13 +6811,13 @@ function MeetingJournal() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 772,
+                                            lineNumber: 769,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 768,
+                                    lineNumber: 765,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6440,13 +6826,13 @@ function MeetingJournal() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 776,
+                                    lineNumber: 773,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 767,
+                            lineNumber: 764,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -6463,7 +6849,7 @@ function MeetingJournal() {
                                                     children: "Tanggal Mengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 787,
+                                                    lineNumber: 784,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6474,13 +6860,13 @@ function MeetingJournal() {
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 788,
+                                                    lineNumber: 785,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 786,
+                                            lineNumber: 783,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6490,7 +6876,7 @@ function MeetingJournal() {
                                                     children: "Ganti Tutor Pengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 798,
+                                                    lineNumber: 795,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -6502,24 +6888,24 @@ function MeetingJournal() {
                                                             children: t.name
                                                         }, t.id, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 807,
+                                                            lineNumber: 804,
                                                             columnNumber: 25
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 799,
+                                                    lineNumber: 796,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 797,
+                                            lineNumber: 794,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 785,
+                                    lineNumber: 782,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6529,7 +6915,7 @@ function MeetingJournal() {
                                             children: "Zona LDR Pertemuan Ini"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 817,
+                                            lineNumber: 814,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -6542,7 +6928,7 @@ function MeetingJournal() {
                                                     children: "Tidak Ada LDR (None)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 823,
+                                                    lineNumber: 820,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6550,7 +6936,7 @@ function MeetingJournal() {
                                                     children: "LDR > 10 KM (Zona 10)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 824,
+                                                    lineNumber: 821,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6558,7 +6944,7 @@ function MeetingJournal() {
                                                     children: "LDR > 15 KM (Zona 15)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 825,
+                                                    lineNumber: 822,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6566,7 +6952,7 @@ function MeetingJournal() {
                                                     children: "LDR > 20 KM (Zona 20)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 826,
+                                                    lineNumber: 823,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6574,19 +6960,19 @@ function MeetingJournal() {
                                                     children: "Panti Klungkung"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 827,
+                                                    lineNumber: 824,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 818,
+                                            lineNumber: 815,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 816,
+                                    lineNumber: 813,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6600,13 +6986,13 @@ function MeetingJournal() {
                                                     children: "*"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 833,
+                                                    lineNumber: 830,
                                                     columnNumber: 61
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 832,
+                                            lineNumber: 829,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6617,13 +7003,13 @@ function MeetingJournal() {
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 835,
+                                            lineNumber: 832,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 831,
+                                    lineNumber: 828,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6634,7 +7020,7 @@ function MeetingJournal() {
                                             children: "🎬 Tautan Video Pembelajaran (YouTube)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 846,
+                                            lineNumber: 843,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6645,13 +7031,13 @@ function MeetingJournal() {
                                             className: "w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-500 bg-white"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 849,
+                                            lineNumber: 846,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 845,
+                                    lineNumber: 842,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6661,7 +7047,7 @@ function MeetingJournal() {
                                             children: "Catatan Pembelajaran / Note Siswa"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 859,
+                                            lineNumber: 856,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -6671,13 +7057,13 @@ function MeetingJournal() {
                                             className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 862,
+                                            lineNumber: 859,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 858,
+                                    lineNumber: 855,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6690,7 +7076,7 @@ function MeetingJournal() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 871,
+                                            lineNumber: 868,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6699,30 +7085,30 @@ function MeetingJournal() {
                                             children: "Simpan Perubahan"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 878,
+                                            lineNumber: 875,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 870,
+                                    lineNumber: 867,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 784,
+                            lineNumber: 781,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                    lineNumber: 766,
+                    lineNumber: 763,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 765,
+                lineNumber: 762,
                 columnNumber: 9
             }, this)
         ]
@@ -7934,10 +8320,13 @@ function PayslipView() {
         const tTrials = freeTrials.filter((ft)=>ft.tutorId === tutorId && ft.status === 'completed' && ft.date && ft.date.startsWith(selectedMonth));
         const trialTotal = tTrials.length * (rates.baseFees['Free Trial'] || 25000);
         const adj = getAdjustmentForTutor ? getAdjustmentForTutor(tutorId, selectedMonth) : null;
-        // OTOMATIS: Hitung video dari link YouTube di jurnal + tambahan manual jika ada
-        const autoVideoCount = tMeetings.filter((m)=>Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
-        const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
-        const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
+        /*
+     * FITUR BONUS VIDEO: Dinonaktifkan sementara sesuai penyesuaian SOP Gumi
+     * const autoVideoCount = tMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
+     * const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
+     * const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
+     */ const totalVideoCount = 0;
+        const videoTotal = 0;
         const reportTotal = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
         const fnmTotal = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
         const customBonus = Number(adj?.customBonusNominal || 0);
@@ -8012,7 +8401,7 @@ function PayslipView() {
                                     children: "Rekap Slip Gaji Tutor"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 125,
+                                    lineNumber: 129,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8024,13 +8413,13 @@ function PayslipView() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 126,
+                                    lineNumber: 130,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 124,
+                            lineNumber: 128,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8046,7 +8435,7 @@ function PayslipView() {
                                             children: "👥 Semua Tutor (Tabel Ringkasan)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 137,
+                                            lineNumber: 141,
                                             columnNumber: 15
                                         }, this),
                                         tutors.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -8057,13 +8446,13 @@ function PayslipView() {
                                                 ]
                                             }, t.id, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 139,
+                                                lineNumber: 143,
                                                 columnNumber: 17
                                             }, this))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 132,
+                                    lineNumber: 136,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -8074,26 +8463,26 @@ function PayslipView() {
                                             children: "🖨️"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 149,
+                                            lineNumber: 153,
                                             columnNumber: 15
                                         }, this),
                                         " Cetak / Simpan PDF"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 145,
+                                    lineNumber: 149,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 131,
+                            lineNumber: 135,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/PayslipView.tsx",
-                    lineNumber: 123,
+                    lineNumber: 127,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8113,7 +8502,7 @@ function PayslipView() {
                                                     className: "h-10 w-auto object-contain"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 159,
+                                                    lineNumber: 163,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -8121,13 +8510,13 @@ function PayslipView() {
                                                     children: "GUMI SCHOOLING"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 164,
+                                                    lineNumber: 168,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 158,
+                                            lineNumber: 162,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8135,13 +8524,13 @@ function PayslipView() {
                                             children: "Ringkasan Pengeluaran Gaji Tutor"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 166,
+                                            lineNumber: 170,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 157,
+                                    lineNumber: 161,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8154,18 +8543,18 @@ function PayslipView() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 169,
+                                        lineNumber: 173,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 168,
+                                    lineNumber: 172,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 156,
+                            lineNumber: 160,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8182,7 +8571,7 @@ function PayslipView() {
                                                     children: "No"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 179,
+                                                    lineNumber: 183,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -8190,7 +8579,7 @@ function PayslipView() {
                                                     children: "Nama Tutor"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 180,
+                                                    lineNumber: 184,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -8198,18 +8587,18 @@ function PayslipView() {
                                                     children: "Total Gaji"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 181,
+                                                    lineNumber: 185,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 178,
+                                            lineNumber: 182,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 177,
+                                        lineNumber: 181,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -8221,12 +8610,12 @@ function PayslipView() {
                                                 children: "Tidak ada data tutor terdaftar."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 187,
+                                                lineNumber: 191,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 186,
+                                            lineNumber: 190,
                                             columnNumber: 19
                                         }, this) : summaryList.map((item, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 className: "hover:bg-slate-50/70 transition-colors cursor-pointer",
@@ -8238,7 +8627,7 @@ function PayslipView() {
                                                         children: index + 1
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 199,
+                                                        lineNumber: 203,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8250,13 +8639,13 @@ function PayslipView() {
                                                                 children: "(Lihat Detail ↗)"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 202,
+                                                                lineNumber: 206,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 200,
+                                                        lineNumber: 204,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8267,18 +8656,18 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 206,
+                                                        lineNumber: 210,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, item.id, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 193,
+                                                lineNumber: 197,
                                                 columnNumber: 21
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 184,
+                                        lineNumber: 188,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tfoot", {
@@ -8291,7 +8680,7 @@ function PayslipView() {
                                                     children: "Keseluruhan Gaji Tutor"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 215,
+                                                    lineNumber: 219,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8302,29 +8691,29 @@ function PayslipView() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 218,
+                                                    lineNumber: 222,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 214,
+                                            lineNumber: 218,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 213,
+                                        lineNumber: 217,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 176,
+                                lineNumber: 180,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 175,
+                            lineNumber: 179,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8332,19 +8721,19 @@ function PayslipView() {
                             children: "* Klik nama tutor untuk membuka rincian slip gaji satuan."
                         }, void 0, false, {
                             fileName: "[project]/src/components/PayslipView.tsx",
-                            lineNumber: 226,
+                            lineNumber: 230,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/PayslipView.tsx",
-                    lineNumber: 155,
+                    lineNumber: 159,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/PayslipView.tsx",
-            lineNumber: 121,
+            lineNumber: 125,
             columnNumber: 7
         }, this);
     }
@@ -8359,7 +8748,7 @@ function PayslipView() {
             children: "Data tutor tidak ditemukan."
         }, void 0, false, {
             fileName: "[project]/src/components/PayslipView.tsx",
-            lineNumber: 241,
+            lineNumber: 245,
             columnNumber: 12
         }, this);
     }
@@ -8405,10 +8794,14 @@ function PayslipView() {
     const trialTotal = tutorTrials.length * trialRate;
     // 4. Penyesuaian Bonus & Potongan
     const adj = getAdjustmentForTutor ? getAdjustmentForTutor(activeTutor.id, selectedMonth) : null;
-    // OTOMATIS: Hitung video dari link YouTube di jurnal + tambahan manual
-    const autoVideoCount = tutorMeetings.filter((m)=>Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
-    const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
-    const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
+    /*
+   * FITUR BONUS VIDEO: Dinonaktifkan sementara sesuai penyesuaian SOP Gumi
+   * const autoVideoCount = tutorMeetings.filter((m) => Boolean(m.videoUrl && m.videoUrl.trim() !== '')).length;
+   * const totalVideoCount = autoVideoCount + (adj?.videoCount || 0);
+   * const videoTotal = totalVideoCount * rates.standardBonus.videoPerItem;
+   */ const autoVideoCount = 0;
+    const totalVideoCount = 0;
+    const videoTotal = 0;
     const reportTotal = (adj?.reportCount || 0) * rates.standardBonus.reportPerStudent;
     const fnmTotal = (adj?.fnmCount || 0) * rates.standardBonus.fnmPerClosing;
     const customBonusNominal = Number(adj?.customBonusNominal || 0);
@@ -8434,7 +8827,7 @@ function PayslipView() {
                                 children: "Slip Gaji Tutor"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 335,
+                                lineNumber: 344,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8446,13 +8839,13 @@ function PayslipView() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 336,
+                                lineNumber: 345,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 334,
+                        lineNumber: 343,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8468,7 +8861,7 @@ function PayslipView() {
                                         children: "👥 Semua Tutor (Tabel Ringkasan)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 348,
+                                        lineNumber: 357,
                                         columnNumber: 15
                                     }, this),
                                     tutors.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -8479,13 +8872,13 @@ function PayslipView() {
                                             ]
                                         }, t.id, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 350,
+                                            lineNumber: 359,
                                             columnNumber: 17
                                         }, this))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 343,
+                                lineNumber: 352,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -8496,26 +8889,26 @@ function PayslipView() {
                                         children: "🖨️"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 361,
+                                        lineNumber: 370,
                                         columnNumber: 13
                                     }, this),
                                     " Cetak / Simpan PDF"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 357,
+                                lineNumber: 366,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 341,
+                        lineNumber: 350,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/PayslipView.tsx",
-                lineNumber: 333,
+                lineNumber: 342,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8535,7 +8928,7 @@ function PayslipView() {
                                                 className: "h-10 w-auto object-contain"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 371,
+                                                lineNumber: 380,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -8543,13 +8936,13 @@ function PayslipView() {
                                                 children: "GUMI SCHOOLING"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 376,
+                                                lineNumber: 385,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 370,
+                                        lineNumber: 379,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8557,13 +8950,13 @@ function PayslipView() {
                                         children: "Tutor Salary & Activity Statement"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 378,
+                                        lineNumber: 387,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 369,
+                                lineNumber: 378,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8576,18 +8969,18 @@ function PayslipView() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 381,
+                                    lineNumber: 390,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 380,
+                                lineNumber: 389,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 368,
+                        lineNumber: 377,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8600,7 +8993,7 @@ function PayslipView() {
                                         children: "Nama Tutor:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 390,
+                                        lineNumber: 399,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
@@ -8608,13 +9001,13 @@ function PayslipView() {
                                         children: activeTutor.name
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 391,
+                                        lineNumber: 400,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 389,
+                                lineNumber: 398,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8624,7 +9017,7 @@ function PayslipView() {
                                         children: "Role / Posisi:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 394,
+                                        lineNumber: 403,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8632,19 +9025,19 @@ function PayslipView() {
                                         children: "Tutor Pengajar"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 395,
+                                        lineNumber: 404,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 393,
+                                lineNumber: 402,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 388,
+                        lineNumber: 397,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8655,7 +9048,7 @@ function PayslipView() {
                                 children: "Rincian Pendapatan (Earnings & Bonuses)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 401,
+                                lineNumber: 410,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8672,7 +9065,7 @@ function PayslipView() {
                                                         children: "Details (Kategori)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 409,
+                                                        lineNumber: 418,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -8680,7 +9073,7 @@ function PayslipView() {
                                                         children: "Durations"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 410,
+                                                        lineNumber: 419,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -8688,7 +9081,7 @@ function PayslipView() {
                                                         children: "Balance (Tarif)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 411,
+                                                        lineNumber: 420,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -8696,7 +9089,7 @@ function PayslipView() {
                                                         children: "Qty"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 412,
+                                                        lineNumber: 421,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -8704,18 +9097,18 @@ function PayslipView() {
                                                         children: "Amount (Rp)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 413,
+                                                        lineNumber: 422,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 408,
+                                                lineNumber: 417,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 407,
+                                            lineNumber: 416,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -8728,12 +9121,12 @@ function PayslipView() {
                                                         children: "Tidak ada aktivitas mengajar pada periode ini."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 419,
+                                                        lineNumber: 428,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 418,
+                                                    lineNumber: 427,
                                                     columnNumber: 19
                                                 }, this) : Object.entries(classroomBreakdown).map(([type, data])=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                         children: [
@@ -8745,7 +9138,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 426,
+                                                                lineNumber: 435,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8753,7 +9146,7 @@ function PayslipView() {
                                                                 children: "60 - 90 Menit"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 427,
+                                                                lineNumber: 436,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8764,7 +9157,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 428,
+                                                                lineNumber: 437,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8775,7 +9168,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 429,
+                                                                lineNumber: 438,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8786,13 +9179,13 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 430,
+                                                                lineNumber: 439,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, type, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 425,
+                                                        lineNumber: 434,
                                                         columnNumber: 21
                                                     }, this)),
                                                 tutorTrials.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -8802,7 +9195,7 @@ function PayslipView() {
                                                             children: "Free Trial Class"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 437,
+                                                            lineNumber: 446,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8810,7 +9203,7 @@ function PayslipView() {
                                                             children: "60 Menit"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 438,
+                                                            lineNumber: 447,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8821,7 +9214,7 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 439,
+                                                            lineNumber: 448,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8832,7 +9225,7 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 440,
+                                                            lineNumber: 449,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8843,13 +9236,13 @@ function PayslipView() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 441,
+                                                            lineNumber: 450,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 436,
+                                                    lineNumber: 445,
                                                     columnNumber: 19
                                                 }, this),
                                                 Object.entries(ldrBreakdown).map(([zone, data])=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -8863,7 +9256,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 447,
+                                                                lineNumber: 456,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8871,7 +9264,7 @@ function PayslipView() {
                                                                 children: "-"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 450,
+                                                                lineNumber: 459,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8882,7 +9275,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 451,
+                                                                lineNumber: 460,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8893,7 +9286,7 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 452,
+                                                                lineNumber: 461,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -8904,148 +9297,20 @@ function PayslipView() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                                lineNumber: 453,
+                                                                lineNumber: 462,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, zone, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 446,
+                                                        lineNumber: 455,
                                                         columnNumber: 19
                                                     }, this)),
-                                                totalVideoCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-emerald-700",
-                                                            children: [
-                                                                "Bonus Konten Video Siswa",
-                                                                autoVideoCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                    className: "text-[10px] text-slate-400 block",
-                                                                    children: [
-                                                                        "(",
-                                                                        autoVideoCount,
-                                                                        " video otomatis dari link YouTube terverifikasi)"
-                                                                    ]
-                                                                }, void 0, true, {
-                                                                    fileName: "[project]/src/components/PayslipView.tsx",
-                                                                    lineNumber: 463,
-                                                                    columnNumber: 25
-                                                                }, this)
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 460,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-center text-slate-400",
-                                                            children: "-"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 468,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-right",
-                                                            children: [
-                                                                "Rp ",
-                                                                rates.standardBonus.videoPerItem.toLocaleString('id-ID')
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 469,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-center font-bold",
-                                                            children: [
-                                                                totalVideoCount,
-                                                                " video"
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 470,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-right font-semibold text-emerald-700",
-                                                            children: [
-                                                                "Rp ",
-                                                                videoTotal.toLocaleString('id-ID')
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 471,
-                                                            columnNumber: 21
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 459,
-                                                    columnNumber: 19
-                                                }, this),
                                                 (adj?.reportCount || 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-emerald-700",
                                                             children: "Bonus Laporan Progres Siswa"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 477,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-center text-slate-400",
-                                                            children: "-"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 478,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-right",
-                                                            children: [
-                                                                "Rp ",
-                                                                rates.standardBonus.reportPerStudent.toLocaleString('id-ID')
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 479,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-center font-bold",
-                                                            children: [
-                                                                adj?.reportCount,
-                                                                " murid"
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 480,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-right font-semibold text-emerald-700",
-                                                            children: [
-                                                                "Rp ",
-                                                                reportTotal.toLocaleString('id-ID')
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/components/PayslipView.tsx",
-                                                            lineNumber: 481,
-                                                            columnNumber: 21
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/components/PayslipView.tsx",
-                                                    lineNumber: 476,
-                                                    columnNumber: 19
-                                                }, this),
-                                                (adj?.fnmCount || 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2 px-3 text-emerald-700",
-                                                            children: "Fee New Member (Closing FNM)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
                                                             lineNumber: 487,
@@ -9063,7 +9328,7 @@ function PayslipView() {
                                                             className: "py-2 px-3 text-right",
                                                             children: [
                                                                 "Rp ",
-                                                                rates.standardBonus.fnmPerClosing.toLocaleString('id-ID')
+                                                                rates.standardBonus.reportPerStudent.toLocaleString('id-ID')
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
@@ -9073,8 +9338,8 @@ function PayslipView() {
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-center font-bold",
                                                             children: [
-                                                                adj?.fnmCount,
-                                                                " closing"
+                                                                adj?.reportCount,
+                                                                " murid"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
@@ -9085,7 +9350,7 @@ function PayslipView() {
                                                             className: "py-2 px-3 text-right font-semibold text-emerald-700",
                                                             children: [
                                                                 "Rp ",
-                                                                fnmTotal.toLocaleString('id-ID')
+                                                                reportTotal.toLocaleString('id-ID')
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
@@ -9098,15 +9363,12 @@ function PayslipView() {
                                                     lineNumber: 486,
                                                     columnNumber: 19
                                                 }, this),
-                                                customBonusNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                (adj?.fnmCount || 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-emerald-700",
-                                                            children: [
-                                                                "Bonus Lainnya: ",
-                                                                adj?.customBonusNote || 'Apresiasi'
-                                                            ]
-                                                        }, void 0, true, {
+                                                            children: "Fee New Member (Closing FNM)"
+                                                        }, void 0, false, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
                                                             lineNumber: 497,
                                                             columnNumber: 21
@@ -9123,7 +9385,7 @@ function PayslipView() {
                                                             className: "py-2 px-3 text-right",
                                                             children: [
                                                                 "Rp ",
-                                                                customBonusNominal.toLocaleString('id-ID')
+                                                                rates.standardBonus.fnmPerClosing.toLocaleString('id-ID')
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
@@ -9132,8 +9394,11 @@ function PayslipView() {
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2 px-3 text-center font-bold",
-                                                            children: "1"
-                                                        }, void 0, false, {
+                                                            children: [
+                                                                adj?.fnmCount,
+                                                                " closing"
+                                                            ]
+                                                        }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
                                                             lineNumber: 500,
                                                             columnNumber: 21
@@ -9142,7 +9407,7 @@ function PayslipView() {
                                                             className: "py-2 px-3 text-right font-semibold text-emerald-700",
                                                             children: [
                                                                 "Rp ",
-                                                                customBonusNominal.toLocaleString('id-ID')
+                                                                fnmTotal.toLocaleString('id-ID')
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/PayslipView.tsx",
@@ -9154,28 +9419,85 @@ function PayslipView() {
                                                     fileName: "[project]/src/components/PayslipView.tsx",
                                                     lineNumber: 496,
                                                     columnNumber: 19
+                                                }, this),
+                                                customBonusNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "py-2 px-3 text-emerald-700",
+                                                            children: [
+                                                                "Bonus Lainnya: ",
+                                                                adj?.customBonusNote || 'Apresiasi'
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/components/PayslipView.tsx",
+                                                            lineNumber: 507,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "py-2 px-3 text-center text-slate-400",
+                                                            children: "-"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/PayslipView.tsx",
+                                                            lineNumber: 508,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "py-2 px-3 text-right",
+                                                            children: [
+                                                                "Rp ",
+                                                                customBonusNominal.toLocaleString('id-ID')
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/components/PayslipView.tsx",
+                                                            lineNumber: 509,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "py-2 px-3 text-center font-bold",
+                                                            children: "1"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/PayslipView.tsx",
+                                                            lineNumber: 510,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "py-2 px-3 text-right font-semibold text-emerald-700",
+                                                            children: [
+                                                                "Rp ",
+                                                                customBonusNominal.toLocaleString('id-ID')
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/components/PayslipView.tsx",
+                                                            lineNumber: 511,
+                                                            columnNumber: 21
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/PayslipView.tsx",
+                                                    lineNumber: 506,
+                                                    columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/PayslipView.tsx",
-                                            lineNumber: 416,
+                                            lineNumber: 425,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 406,
+                                    lineNumber: 415,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 405,
+                                lineNumber: 414,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 400,
+                        lineNumber: 409,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9186,7 +9508,7 @@ function PayslipView() {
                                 children: "Potongan & Denda (Deductions)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 511,
+                                lineNumber: 521,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9203,7 +9525,7 @@ function PayslipView() {
                                                         children: "Iuran Wajib Suka Duka Bulanan"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 520,
+                                                        lineNumber: 530,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -9214,13 +9536,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 521,
+                                                        lineNumber: 531,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 519,
+                                                lineNumber: 529,
                                                 columnNumber: 19
                                             }, this),
                                             lateAttendanceNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -9234,7 +9556,7 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 526,
+                                                        lineNumber: 536,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -9245,13 +9567,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 527,
+                                                        lineNumber: 537,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 525,
+                                                lineNumber: 535,
                                                 columnNumber: 19
                                             }, this),
                                             violationNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -9265,7 +9587,7 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 532,
+                                                        lineNumber: 542,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -9276,13 +9598,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 533,
+                                                        lineNumber: 543,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 531,
+                                                lineNumber: 541,
                                                 columnNumber: 19
                                             }, this),
                                             lateVideoNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -9296,7 +9618,7 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 538,
+                                                        lineNumber: 548,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -9307,13 +9629,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 539,
+                                                        lineNumber: 549,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 537,
+                                                lineNumber: 547,
                                                 columnNumber: 19
                                             }, this),
                                             suddenLeaveNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -9327,7 +9649,7 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 544,
+                                                        lineNumber: 554,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -9338,13 +9660,13 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 545,
+                                                        lineNumber: 555,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 543,
+                                                lineNumber: 553,
                                                 columnNumber: 19
                                             }, this),
                                             customDeductionNominal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -9357,7 +9679,7 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 550,
+                                                        lineNumber: 560,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -9368,35 +9690,35 @@ function PayslipView() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                                        lineNumber: 551,
+                                                        lineNumber: 561,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                                lineNumber: 549,
+                                                lineNumber: 559,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 517,
+                                        lineNumber: 527,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/PayslipView.tsx",
-                                    lineNumber: 516,
+                                    lineNumber: 526,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 515,
+                                lineNumber: 525,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 510,
+                        lineNumber: 520,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9409,7 +9731,7 @@ function PayslipView() {
                                         children: "Total Gaji Diterima (Take-Home Pay)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 562,
+                                        lineNumber: 572,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -9417,13 +9739,13 @@ function PayslipView() {
                                         children: "(Total Pendapatan - Total Pemotongan)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/PayslipView.tsx",
-                                        lineNumber: 565,
+                                        lineNumber: 575,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 561,
+                                lineNumber: 571,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9434,25 +9756,25 @@ function PayslipView() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PayslipView.tsx",
-                                lineNumber: 569,
+                                lineNumber: 579,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PayslipView.tsx",
-                        lineNumber: 560,
+                        lineNumber: 570,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/PayslipView.tsx",
-                lineNumber: 367,
+                lineNumber: 376,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/PayslipView.tsx",
-        lineNumber: 331,
+        lineNumber: 340,
         columnNumber: 5
     }, this);
 }

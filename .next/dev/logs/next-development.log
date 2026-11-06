@@ -1,36 +1,20 @@
-{"timestamp":"00:00:06.664","source":"Server","level":"LOG","message":""}
-{"timestamp":"00:00:09.220","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"00:00:23.375","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"00:00:57.894","source":"Server","level":"LOG","message":"✓ Compiled in 117ms"}
-{"timestamp":"00:01:22.623","source":"Server","level":"LOG","message":"✓ Compiled in 48ms"}
-{"timestamp":"00:01:47.864","source":"Server","level":"LOG","message":"✓ Compiled in 53ms"}
-{"timestamp":"00:05:21.470","source":"Server","level":"LOG","message":"✓ Compiled in 36ms"}
-{"timestamp":"00:06:13.238","source":"Server","level":"LOG","message":"✓ Compiled in 45ms"}
-{"timestamp":"00:06:48.583","source":"Server","level":"LOG","message":"✓ Compiled in 45ms"}
-{"timestamp":"00:06:57.593","source":"Server","level":"LOG","message":"✓ Compiled in 27ms"}
-{"timestamp":"00:07:21.879","source":"Server","level":"LOG","message":"✓ Compiled in 33ms"}
-{"timestamp":"01:15:23.381","source":"Server","level":"LOG","message":"✓ Compiled in 63ms"}
-{"timestamp":"01:27:16.188","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
-{"timestamp":"01:27:16.730","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"01:29:46.576","source":"Server","level":"LOG","message":"✓ Compiled in 180ms"}
-{"timestamp":"01:33:11.759","source":"Server","level":"LOG","message":"✓ Compiled in 136ms"}
-{"timestamp":"01:39:20.223","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"01:45:52.311","source":"Server","level":"LOG","message":"✓ Compiled in 47ms"}
-{"timestamp":"01:46:12.295","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"01:53:37.430","source":"Server","level":"LOG","message":"✓ Compiled in 47ms"}
-{"timestamp":"02:02:45.296","source":"Server","level":"LOG","message":"✓ Compiled in 83ms"}
-{"timestamp":"02:03:19.986","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"02:07:28.119","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"02:19:46.870","source":"Server","level":"LOG","message":"✓ Compiled in 135ms"}
-{"timestamp":"02:19:46.873","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
-{"timestamp":"02:19:46.956","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
-{"timestamp":"02:19:47.831","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"02:19:47.855","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"02:20:23.636","source":"Server","level":"LOG","message":"✓ Compiled in 63ms"}
-{"timestamp":"02:20:34.269","source":"Server","level":"LOG","message":"✓ Compiled in 44ms"}
-{"timestamp":"02:20:47.669","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
-{"timestamp":"02:20:47.673","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
-{"timestamp":"02:20:47.728","source":"Server","level":"LOG","message":"✓ Compiled in 65ms"}
-{"timestamp":"02:20:48.788","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"02:20:49.038","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"02:21:09.246","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:05.907","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:12.454","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:19:25.551","source":"Server","level":"LOG","message":"✓ Compiled in 117ms"}
+{"timestamp":"00:20:09.005","source":"Server","level":"LOG","message":"✓ Compiled in 41ms"}
+{"timestamp":"00:21:53.359","source":"Server","level":"LOG","message":"✓ Compiled in 119ms"}
+{"timestamp":"00:21:53.580","source":"Browser","level":"ERROR","message":"./src/components/PayslipView.tsx:576:2\nError: Expected '}', got '<eof>'\n  574 |     </div>\n  575 |   );\n> 576 | }\n      |  ^\n\nParsing ecmascript source code failed\n\nImport traces:\n  Client Component Browser:\n    ./src/components/PayslipView.tsx [Client Component Browser]\n    ./src/app/page.tsx [Client Component Browser]\n    ./src/app/page.tsx [Server Component]\n\n  Client Component SSR:\n    ./src/components/PayslipView.tsx [Client Component SSR]\n    ./src/app/page.tsx [Client Component SSR]\n    ./src/app/page.tsx [Server Component] "}
+{"timestamp":"00:21:53.588","source":"Server","level":"ERROR","message":"[browser] \"./src/components/PayslipView.tsx:576:2\\nError: Expected '}', got '<eof>'\\n  574 |     </div>\\n  575 |   );\\n> 576 | }\\n      |  ^\\n\\nParsing ecmascript source code failed\\n\\nImport traces:\\n  Client Component Browser:\\n    ./src/components/PayslipView.tsx [Client Component Browser]\\n    ./src/app/page.tsx [Client Component Browser]\\n    ./src/app/page.tsx [Server Component]\\n\\n  Client Component SSR:\\n    ./src/components/PayslipView.tsx [Client Component SSR]\\n    ./src/app/page.tsx [Client Component SSR]\\n    ./src/app/page.tsx [Server Component]\" \"\""}
+{"timestamp":"00:21:53.785","source":"Browser","level":"ERROR","message":"./src/components/PayslipView.tsx:576:2\nError: Expected '}', got '<eof>'\n  574 |     </div>\n  575 |   );\n> 576 | }\n      |  ^\n\nParsing ecmascript source code failed\n\nImport traces:\n  Client Component Browser:\n    ./src/components/PayslipView.tsx [Client Component Browser]\n    ./src/app/page.tsx [Client Component Browser]\n    ./src/app/page.tsx [Server Component]\n\n  Client Component SSR:\n    ./src/components/PayslipView.tsx [Client Component SSR]\n    ./src/app/page.tsx [Client Component SSR]\n    ./src/app/page.tsx [Server Component] "}
+{"timestamp":"00:21:53.791","source":"Server","level":"ERROR","message":"[browser] \"./src/components/PayslipView.tsx:576:2\\nError: Expected '}', got '<eof>'\\n  574 |     </div>\\n  575 |   );\\n> 576 | }\\n      |  ^\\n\\nParsing ecmascript source code failed\\n\\nImport traces:\\n  Client Component Browser:\\n    ./src/components/PayslipView.tsx [Client Component Browser]\\n    ./src/app/page.tsx [Client Component Browser]\\n    ./src/app/page.tsx [Server Component]\\n\\n  Client Component SSR:\\n    ./src/components/PayslipView.tsx [Client Component SSR]\\n    ./src/app/page.tsx [Client Component SSR]\\n    ./src/app/page.tsx [Server Component]\" \"\""}
+{"timestamp":"00:27:27.211","source":"Server","level":"LOG","message":"✓ Compiled in 45ms"}
+{"timestamp":"00:38:28.061","source":"Server","level":"LOG","message":"✓ Compiled in 53ms"}
+{"timestamp":"00:49:00.148","source":"Server","level":"LOG","message":"✓ Compiled in 121ms"}
+{"timestamp":"00:58:27.827","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:58:27.936","source":"Server","level":"LOG","message":"✓ Compiled in 123ms"}
+{"timestamp":"00:58:28.847","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"01:02:00.628","source":"Server","level":"LOG","message":"✓ Compiled in 50ms"}
+{"timestamp":"01:05:02.082","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"01:07:35.745","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"01:12:45.332","source":"Server","level":"LOG","message":"✓ Compiled in 65ms"}
+{"timestamp":"01:15:13.345","source":"Server","level":"LOG","message":"✓ Compiled in 49ms"}
