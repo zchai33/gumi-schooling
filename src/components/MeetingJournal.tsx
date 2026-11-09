@@ -139,8 +139,9 @@ export default function MeetingJournal() {
     }
 
     const cleanUrl = inputVideoUrl.trim();
+    // Hanya validasi URL jika kolom memang diisi (karena sifatnya opsional)
     if (cleanUrl !== '' && !isValidYouTubeUrl(cleanUrl)) {
-      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...)');
+      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...) atau kosongkan jika tidak ada video.');
       return;
     }
 
@@ -150,8 +151,8 @@ export default function MeetingJournal() {
       classroomId: activeSlot.classId,
       meetingNumber: activeSlot.meetingNumber,
       date: inputDate,
-      lesson: inputLesson,
-      notes: inputNotes,
+      lesson: inputLesson.trim(),
+      notes: inputNotes.trim(),
       videoUrl: cleanUrl,
       ldrZone: currentClass?.ldrZone || 'none',
       ldrZoneSnapshot: currentClass?.ldrZone || 'none',
@@ -176,7 +177,7 @@ export default function MeetingJournal() {
 
     const cleanUrl = editVideoUrl.trim();
     if (cleanUrl !== '' && !isValidYouTubeUrl(cleanUrl)) {
-      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...)');
+      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar atau kosongkan.');
       return;
     }
 
@@ -184,8 +185,8 @@ export default function MeetingJournal() {
 
     await updateMeeting(editingMeeting.id, {
       date: editDate,
-      lesson: editLesson,
-      notes: editNotes,
+      lesson: editLesson.trim(),
+      notes: editNotes.trim(),
       videoUrl: cleanUrl,
       ldrZone: editLdrZone,
       ldrZoneSnapshot: editLdrZone,
@@ -704,22 +705,22 @@ export default function MeetingJournal() {
                 />
               </div>
 
-              {/* KOLOM INPUT LINK YOUTUBE */}
-              <div className="p-3 bg-rose-50/60 border border-rose-200 rounded-2xl space-y-1.5">
-                <label className="block text-xs font-bold text-rose-900 flex items-center justify-between">
+              {/* KOLOM INPUT LINK YOUTUBE (OPSIONAL) */}
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700 flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
-                    <span>🎬</span> Link Video Pembelajaran (YouTube)
+                    <span>🎬</span> Link Video Pembelajaran (YouTube) <span className="text-[10px] font-normal text-slate-400">(Opsional)</span>
                   </span>
                 </label>
                 <input
                   type="url"
-                  placeholder="https://youtu.be/... atau https://youtube.com/watch?v=..."
+                  placeholder="https://youtu.be/... atau kosongkan jika tidak ada"
                   value={inputVideoUrl}
                   onChange={(e) => setInputVideoUrl(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:rose-500 bg-white"
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                 />
-                <p className="text-[10px] text-rose-700/80">
-                  Silahkan cantumkan tautan YouTube valid dan bisa diakses.
+                <p className="text-[10px] text-slate-400">
+                  Opsional — kosongkan jika sesi pertemuan ini belum atau tidak disertai rekaman video.
                 </p>
               </div>
 
@@ -838,18 +839,21 @@ export default function MeetingJournal() {
                 />
               </div>
 
-              {/* EDIT LINK YOUTUBE */}
-              <div className="p-3 bg-rose-50/60 border border-rose-200 rounded-2xl space-y-1.5">
-                <label className="block text-xs font-bold text-rose-900">
-                  🎬 Tautan Video Pembelajaran (YouTube)
+              {/* EDIT LINK YOUTUBE (OPSIONAL) */}
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700">
+                  🎬 Tautan Video Pembelajaran (YouTube) <span className="text-[10px] font-normal text-slate-400">(Opsional)</span>
                 </label>
                 <input
                   type="url"
-                  placeholder="https://youtu.be/... atau https://youtube.com/watch?v=..."
+                  placeholder="https://youtu.be/... atau kosongkan jika tidak ada"
                   value={editVideoUrl}
                   onChange={(e) => setEditVideoUrl(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-rose-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                 />
+                <p className="text-[10px] text-slate-400">
+                  Opsional — kosongkan jika tidak ada video untuk sesi ini.
+                </p>
               </div>
 
               <div>

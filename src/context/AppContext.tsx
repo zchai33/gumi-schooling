@@ -36,7 +36,7 @@ async function verifyPassword(plainInput: string, storedPassword: string): Promi
   return inputHash === storedPassword;
 }
 
-// Validator tautan YouTube
+// Validator tautan YouTube (hanya me-return true jika URL valid; string kosong dianggap bukan YouTube tapi tidak memblokir simpan)
 export const isValidYouTubeUrl = (url?: string): boolean => {
   if (!url || !url.trim()) return false;
   const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
@@ -335,7 +335,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       const { data: ratesData } = await supabase.from('rate_configs').select('*').eq('id', 'default_rates').single();
       if (ratesData) {
-        // Cek apakah Supabase menyimpan format bertingkat baru atau format tunggal lama
         const contractBase = ratesData.contract?.baseFees || ratesData.base_fees || defaultRates.contract.baseFees;
         const contractLdr = ratesData.contract?.ldrBonus || ratesData.ldr_bonus || defaultRates.contract.ldrBonus;
 
@@ -619,7 +618,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       id: 'default_rates',
       contract: newRates.contract,
       intern: newRates.intern,
-      // Tetap simpan fallback field lama agar tidak merusak kueri lain
       base_fees: newRates.contract.baseFees,
       ldr_bonus: newRates.contract.ldrBonus,
       standard_bonus: newRates.standardBonus,

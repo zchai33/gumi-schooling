@@ -247,7 +247,6 @@ const AppProvider = ({ children })=>{
             }
             const { data: ratesData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('rate_configs').select('*').eq('id', 'default_rates').single();
             if (ratesData) {
-                // Cek apakah Supabase menyimpan format bertingkat baru atau format tunggal lama
                 const contractBase = ratesData.contract?.baseFees || ratesData.base_fees || defaultRates.contract.baseFees;
                 const contractLdr = ratesData.contract?.ldrBonus || ratesData.ldr_bonus || defaultRates.contract.ldrBonus;
                 const internBase = ratesData.intern?.baseFees || defaultRates.intern.baseFees;
@@ -521,7 +520,6 @@ const AppProvider = ({ children })=>{
             id: 'default_rates',
             contract: newRates.contract,
             intern: newRates.intern,
-            // Tetap simpan fallback field lama agar tidak merusak kueri lain
             base_fees: newRates.contract.baseFees,
             ldr_bonus: newRates.contract.ldrBonus,
             standard_bonus: newRates.standardBonus,
@@ -985,7 +983,7 @@ const AppProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AppContext.tsx",
-        lineNumber: 1133,
+        lineNumber: 1131,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
