@@ -1,7 +1,26 @@
-{"timestamp":"00:00:08.814","source":"Server","level":"LOG","message":""}
-{"timestamp":"00:00:22.758","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"00:01:17.363","source":"Server","level":"LOG","message":"✓ Compiled in 169ms"}
-{"timestamp":"00:04:04.738","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
-{"timestamp":"00:04:04.820","source":"Server","level":"LOG","message":"✓ Compiled in 55ms"}
-{"timestamp":"00:04:05.497","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
-{"timestamp":"00:04:09.737","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:04.115","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:02:50.607","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:15:53.175","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:15:53.234","source":"Server","level":"LOG","message":"✓ Compiled in 141ms"}
+{"timestamp":"00:15:53.951","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:16:55.514","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:16:55.581","source":"Server","level":"LOG","message":"✓ Compiled in 41ms"}
+{"timestamp":"00:16:56.105","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:26:40.463","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./src/context/AppContext.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:26:40.550","source":"Server","level":"LOG","message":"✓ Compiled in 54ms"}
+{"timestamp":"00:26:40.996","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:29:11.735","source":"Server","level":"LOG","message":"✓ Compiled in 75ms"}
+{"timestamp":"00:31:52.843","source":"Server","level":"LOG","message":"✓ Compiled in 55ms"}
+{"timestamp":"00:39:39.113","source":"Server","level":"LOG","message":"✓ Compiled in 51ms"}
+{"timestamp":"02:15:53.118","source":"Server","level":"LOG","message":"✓ Compiled in 198ms"}
+{"timestamp":"02:26:51.482","source":"Server","level":"LOG","message":"✓ Compiled in 74ms"}
+{"timestamp":"02:35:00.729","source":"Server","level":"LOG","message":"✓ Compiled in 85ms"}
+{"timestamp":"02:39:36.733","source":"Server","level":"LOG","message":"✓ Compiled in 60ms"}
+{"timestamp":"02:41:02.342","source":"Server","level":"LOG","message":"✓ Compiled in 59ms"}
+{"timestamp":"02:41:07.649","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"02:47:52.896","source":"Server","level":"LOG","message":"✓ Compiled in 72ms"}
+{"timestamp":"02:49:07.496","source":"Server","level":"LOG","message":"✓ Compiled in 49ms"}
+{"timestamp":"02:49:38.520","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"02:55:59.864","source":"Server","level":"LOG","message":"✓ Compiled in 95ms"}
+{"timestamp":"02:56:40.479","source":"Server","level":"LOG","message":"✓ Compiled in 54ms"}
+{"timestamp":"02:56:57.287","source":"Server","level":"LOG","message":"✓ Compiled in 96ms"}

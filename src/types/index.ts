@@ -34,7 +34,8 @@ export type ClassType =
   | 'Test Prep-A'
   | 'Test Prep-B'
   | 'Social Banjar/Panti'
-  | 'Free Trial';
+  | 'Free Trial'
+  | 'Assist';
 
 export type LDRZone = 'none' | 'ldr_10' | 'ldr_15' | 'ldr_20' | 'panti_klungkung';
 

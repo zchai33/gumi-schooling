@@ -1374,6 +1374,10 @@ function ClassroomManager() {
         {
             value: 'Free Trial',
             label: 'Free Trial'
+        },
+        {
+            value: 'Assist',
+            label: 'Fee Assist'
         }
     ];
     // Filter Kelas Berdasarkan Search & Tipe
@@ -1395,7 +1399,7 @@ function ClassroomManager() {
                                 children: "Manajemen Kelas & Siswa"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 127,
+                                lineNumber: 128,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1403,37 +1407,37 @@ function ClassroomManager() {
                                 children: "Daftar kelompok belajar aktif, kuota paket sesi, dan zona jarak LDR."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 128,
+                                lineNumber: 129,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                        lineNumber: 126,
+                        lineNumber: 127,
                         columnNumber: 9
                     }, this),
                     currentUser?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: ()=>setShowAddModal(true),
-                        className: "px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto",
+                        className: "px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-2 self-start md:self-auto",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 children: "+"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 137,
+                                lineNumber: 138,
                                 columnNumber: 13
                             }, this),
                             " Tambah Kelas Baru"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                        lineNumber: 133,
+                        lineNumber: 134,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                lineNumber: 125,
+                lineNumber: 126,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1447,10 +1451,10 @@ function ClassroomManager() {
                                 placeholder: "Cari nama kelas atau murid...",
                                 value: searchQuery,
                                 onChange: (e)=>setSearchQuery(e.target.value),
-                                className: "w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className: "w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 145,
+                                lineNumber: 146,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1458,13 +1462,13 @@ function ClassroomManager() {
                                 children: "🔍"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 152,
+                                lineNumber: 153,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                        lineNumber: 144,
+                        lineNumber: 145,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1475,7 +1479,7 @@ function ClassroomManager() {
                                 children: "Filter Tipe:"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 156,
+                                lineNumber: 157,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1484,7 +1488,7 @@ function ClassroomManager() {
                                 children: "Semua"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 157,
+                                lineNumber: 158,
                                 columnNumber: 11
                             }, this),
                             classTypeOptions.map((t)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1493,19 +1497,19 @@ function ClassroomManager() {
                                     children: t.label
                                 }, t.value, false, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 168,
+                                    lineNumber: 169,
                                     columnNumber: 13
                                 }, this))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                        lineNumber: 155,
+                        lineNumber: 156,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                lineNumber: 143,
+                lineNumber: 144,
                 columnNumber: 7
             }, this),
             filteredClassrooms.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1513,7 +1517,7 @@ function ClassroomManager() {
                 children: "Tidak ada kelas yang sesuai dengan filter atau pencarian Anda."
             }, void 0, false, {
                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                lineNumber: 185,
+                lineNumber: 186,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5",
@@ -1528,11 +1532,11 @@ function ClassroomManager() {
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        className: "inline-block text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md",
+                                                        className: "inline-block text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200",
                                                         children: cls.type
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                        lineNumber: 198,
+                                                        lineNumber: 199,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -1540,13 +1544,13 @@ function ClassroomManager() {
                                                         children: cls.name
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                        lineNumber: 201,
+                                                        lineNumber: 202,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                lineNumber: 197,
+                                                lineNumber: 198,
                                                 columnNumber: 19
                                             }, this),
                                             currentUser?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1554,12 +1558,12 @@ function ClassroomManager() {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                         onClick: ()=>handleOpenEdit(cls),
-                                                        className: "text-slate-400 hover:text-blue-600 p-1.5 hover:bg-blue-50 rounded-lg transition-colors text-sm",
+                                                        className: "text-slate-400 hover:text-amber-600 p-1.5 hover:bg-amber-50 rounded-lg transition-colors text-sm",
                                                         title: "Edit Kelas",
                                                         children: "✏️"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                        lineNumber: 205,
+                                                        lineNumber: 206,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1571,19 +1575,19 @@ function ClassroomManager() {
                                                         children: "🗑️"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                        lineNumber: 212,
+                                                        lineNumber: 213,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                lineNumber: 204,
+                                                lineNumber: 205,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                        lineNumber: 196,
+                                        lineNumber: 197,
                                         columnNumber: 17
                                     }, this),
                                     cls.ldrZone !== 'none' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1595,7 +1599,7 @@ function ClassroomManager() {
                                                     children: "📍"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 228,
+                                                    lineNumber: 229,
                                                     columnNumber: 23
                                                 }, this),
                                                 " ",
@@ -1604,12 +1608,12 @@ function ClassroomManager() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 227,
+                                            lineNumber: 228,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                        lineNumber: 226,
+                                        lineNumber: 227,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1624,7 +1628,7 @@ function ClassroomManager() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                lineNumber: 234,
+                                                lineNumber: 235,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1634,24 +1638,24 @@ function ClassroomManager() {
                                                         children: st
                                                     }, i, false, {
                                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                        lineNumber: 239,
+                                                        lineNumber: 240,
                                                         columnNumber: 23
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                lineNumber: 237,
+                                                lineNumber: 238,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                        lineNumber: 233,
+                                        lineNumber: 234,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 195,
+                                lineNumber: 196,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1661,7 +1665,7 @@ function ClassroomManager() {
                                         children: "Kuota Paket:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                        lineNumber: 251,
+                                        lineNumber: 252,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1672,24 +1676,24 @@ function ClassroomManager() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                                        lineNumber: 252,
+                                        lineNumber: 253,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                                lineNumber: 250,
+                                lineNumber: 251,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, cls.id, true, {
                         fileName: "[project]/src/components/ClassroomManager.tsx",
-                        lineNumber: 191,
+                        lineNumber: 192,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                lineNumber: 189,
+                lineNumber: 190,
                 columnNumber: 9
             }, this),
             showAddModal && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1705,7 +1709,7 @@ function ClassroomManager() {
                                     children: "Buat Kelas Belajar Baru"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 266,
+                                    lineNumber: 267,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1714,13 +1718,13 @@ function ClassroomManager() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 267,
+                                    lineNumber: 268,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                            lineNumber: 265,
+                            lineNumber: 266,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1734,7 +1738,7 @@ function ClassroomManager() {
                                             children: "Nama Kelompok / Kelas"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 277,
+                                            lineNumber: 278,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1742,17 +1746,17 @@ function ClassroomManager() {
                                             placeholder: "Misal: Kids A - Morning Group",
                                             value: name,
                                             onChange: (e)=>setName(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 278,
+                                            lineNumber: 279,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 276,
+                                    lineNumber: 277,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1765,30 +1769,30 @@ function ClassroomManager() {
                                                     children: "Tipe / Kategori Kelas"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 290,
+                                                    lineNumber: 291,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                     value: type,
                                                     onChange: (e)=>setType(e.target.value),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white",
                                                     children: classTypeOptions.map((opt)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                             value: opt.value,
                                                             children: opt.label
                                                         }, opt.value, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 297,
+                                                            lineNumber: 298,
                                                             columnNumber: 23
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 291,
+                                                    lineNumber: 292,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 289,
+                                            lineNumber: 290,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1798,20 +1802,20 @@ function ClassroomManager() {
                                                     children: "Total Pertemuan Paket"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 305,
+                                                    lineNumber: 306,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                     value: totalMeetings,
                                                     onChange: (e)=>setTotalMeetings(Number(e.target.value)),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                             value: 4,
                                                             children: "4 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 311,
+                                                            lineNumber: 312,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1819,7 +1823,7 @@ function ClassroomManager() {
                                                             children: "6 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 312,
+                                                            lineNumber: 313,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1827,7 +1831,7 @@ function ClassroomManager() {
                                                             children: "8 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 313,
+                                                            lineNumber: 314,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1835,7 +1839,7 @@ function ClassroomManager() {
                                                             children: "10 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 314,
+                                                            lineNumber: 315,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1843,25 +1847,25 @@ function ClassroomManager() {
                                                             children: "12 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 315,
+                                                            lineNumber: 316,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 306,
+                                                    lineNumber: 307,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 304,
+                                            lineNumber: 305,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 288,
+                                    lineNumber: 289,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1871,7 +1875,7 @@ function ClassroomManager() {
                                             children: "Daftar Nama Murid (Pisahkan dengan koma)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 321,
+                                            lineNumber: 322,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1879,11 +1883,11 @@ function ClassroomManager() {
                                             placeholder: "Selina, Wayan Sinta, Budi (1 s/d 10 anak)",
                                             value: studentsInput,
                                             onChange: (e)=>setStudentsInput(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 324,
+                                            lineNumber: 325,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1891,13 +1895,13 @@ function ClassroomManager() {
                                             children: "Tutor yang mengajar tidak dikunci di sini, melainkan fleksibel dicatat saat sesi jurnal diisi."
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 332,
+                                            lineNumber: 333,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 320,
+                                    lineNumber: 321,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1907,20 +1911,20 @@ function ClassroomManager() {
                                             children: "Zona Bonus Jarak (LDR)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 338,
+                                            lineNumber: 339,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                             value: ldrZone,
                                             onChange: (e)=>setLdrZone(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                     value: "none",
                                                     children: "Tidak Ada Jarak Ekstra (None)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 344,
+                                                    lineNumber: 345,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1928,7 +1932,7 @@ function ClassroomManager() {
                                                     children: "LDR > 10 KM (+Rp 10.000/sesi)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 345,
+                                                    lineNumber: 346,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1936,7 +1940,7 @@ function ClassroomManager() {
                                                     children: "LDR > 15 KM (+Rp 15.000/sesi)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 346,
+                                                    lineNumber: 347,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1944,7 +1948,7 @@ function ClassroomManager() {
                                                     children: "LDR > 20 KM (+Rp 20.000/sesi)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 347,
+                                                    lineNumber: 348,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1952,19 +1956,19 @@ function ClassroomManager() {
                                                     children: "Panti Klungkung (+Rp 50.000/sesi)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 348,
+                                                    lineNumber: 349,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 339,
+                                            lineNumber: 340,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 337,
+                                    lineNumber: 338,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1977,39 +1981,39 @@ function ClassroomManager() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 353,
+                                            lineNumber: 354,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                             type: "submit",
-                                            className: "px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm",
+                                            className: "px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm",
                                             children: "Simpan Kelas"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 360,
+                                            lineNumber: 361,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 352,
+                                    lineNumber: 353,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                            lineNumber: 275,
+                            lineNumber: 276,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                    lineNumber: 264,
+                    lineNumber: 265,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                lineNumber: 263,
+                lineNumber: 264,
                 columnNumber: 9
             }, this),
             editingClass && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2025,7 +2029,7 @@ function ClassroomManager() {
                                     children: "Edit Data Kelas"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 377,
+                                    lineNumber: 378,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2034,13 +2038,13 @@ function ClassroomManager() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 378,
+                                    lineNumber: 379,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                            lineNumber: 376,
+                            lineNumber: 377,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -2054,24 +2058,24 @@ function ClassroomManager() {
                                             children: "Nama Kelompok / Kelas"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 388,
+                                            lineNumber: 389,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                             type: "text",
                                             value: editName,
                                             onChange: (e)=>setEditName(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 389,
+                                            lineNumber: 390,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 387,
+                                    lineNumber: 388,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2084,30 +2088,30 @@ function ClassroomManager() {
                                                     children: "Tipe / Kategori Kelas"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 400,
+                                                    lineNumber: 401,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                     value: editType,
                                                     onChange: (e)=>setEditType(e.target.value),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white",
                                                     children: classTypeOptions.map((opt)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                             value: opt.value,
                                                             children: opt.label
                                                         }, opt.value, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 407,
+                                                            lineNumber: 408,
                                                             columnNumber: 23
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 401,
+                                                    lineNumber: 402,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 399,
+                                            lineNumber: 400,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2117,20 +2121,20 @@ function ClassroomManager() {
                                                     children: "Total Pertemuan Paket"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 415,
+                                                    lineNumber: 416,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                     value: editTotalMeetings,
                                                     onChange: (e)=>setEditTotalMeetings(Number(e.target.value)),
-                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                                                    className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                             value: 4,
                                                             children: "4 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 421,
+                                                            lineNumber: 422,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2138,7 +2142,7 @@ function ClassroomManager() {
                                                             children: "6 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 422,
+                                                            lineNumber: 423,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2146,7 +2150,7 @@ function ClassroomManager() {
                                                             children: "8 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 423,
+                                                            lineNumber: 424,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2154,7 +2158,7 @@ function ClassroomManager() {
                                                             children: "10 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 424,
+                                                            lineNumber: 425,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2162,25 +2166,25 @@ function ClassroomManager() {
                                                             children: "12 Pertemuan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                            lineNumber: 425,
+                                                            lineNumber: 426,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 416,
+                                                    lineNumber: 417,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 414,
+                                            lineNumber: 415,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 398,
+                                    lineNumber: 399,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2190,24 +2194,24 @@ function ClassroomManager() {
                                             children: "Daftar Nama Murid (Pisahkan dengan koma)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 431,
+                                            lineNumber: 432,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                             type: "text",
                                             value: editStudentsInput,
                                             onChange: (e)=>setEditStudentsInput(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 434,
+                                            lineNumber: 435,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 430,
+                                    lineNumber: 431,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2217,20 +2221,20 @@ function ClassroomManager() {
                                             children: "Zona Bonus Jarak (LDR)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 444,
+                                            lineNumber: 445,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                             value: editLdrZone,
                                             onChange: (e)=>setEditLdrZone(e.target.value),
-                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                                            className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                     value: "none",
                                                     children: "Tidak Ada Jarak Ekstra (None)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 450,
+                                                    lineNumber: 451,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2238,7 +2242,7 @@ function ClassroomManager() {
                                                     children: "LDR > 10 KM (+Rp 10.000/sesi)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 451,
+                                                    lineNumber: 452,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2246,7 +2250,7 @@ function ClassroomManager() {
                                                     children: "LDR > 15 KM (+Rp 15.000/sesi)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 452,
+                                                    lineNumber: 453,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2254,7 +2258,7 @@ function ClassroomManager() {
                                                     children: "LDR > 20 KM (+Rp 20.000/sesi)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 453,
+                                                    lineNumber: 454,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2262,19 +2266,19 @@ function ClassroomManager() {
                                                     children: "Panti Klungkung (+Rp 50.000/sesi)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                                    lineNumber: 454,
+                                                    lineNumber: 455,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 445,
+                                            lineNumber: 446,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 443,
+                                    lineNumber: 444,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2287,45 +2291,45 @@ function ClassroomManager() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 459,
+                                            lineNumber: 460,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                             type: "submit",
-                                            className: "px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm",
+                                            className: "px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm",
                                             children: "Perbarui Kelas"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                                            lineNumber: 466,
+                                            lineNumber: 467,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                                    lineNumber: 458,
+                                    lineNumber: 459,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/ClassroomManager.tsx",
-                            lineNumber: 386,
+                            lineNumber: 387,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/ClassroomManager.tsx",
-                    lineNumber: 375,
+                    lineNumber: 376,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/ClassroomManager.tsx",
-                lineNumber: 374,
+                lineNumber: 375,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/ClassroomManager.tsx",
-        lineNumber: 123,
+        lineNumber: 124,
         columnNumber: 5
     }, this);
 }
@@ -3418,7 +3422,7 @@ function DokvidKelasView() {
     // 1. Gabungkan sesi Jurnal Reguler + Sesi Free Trial di bulan terpilih
     const monthlyItems = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
         "DokvidKelasView.useMemo[monthlyItems]": ()=>{
-            // A. Sesi Jurnal Reguler
+            // A. Sesi Jurnal Reguler (Dengan Baseline Mulai November 2026)
             const regularList = meetings.filter({
                 "DokvidKelasView.useMemo[monthlyItems].regularList": (m)=>{
                     const matchMonth = m.date && m.date.startsWith(selectedMonth) && !m.isLocked;
@@ -3430,6 +3434,21 @@ function DokvidKelasView() {
                     const cls = classrooms.find({
                         "DokvidKelasView.useMemo[monthlyItems].regularList.cls": (c)=>c.id === m.classroomId
                     }["DokvidKelasView.useMemo[monthlyItems].regularList.cls"]);
+                    // Menghitung riwayat sesi kelas ini sebelum bulan sesi berjalan
+                    const meetingMonth = m.date ? m.date.substring(0, 7) : selectedMonth;
+                    let baseCumulativeCount = 0;
+                    // Logika kumulatif HANYA berjalan jika bulan sesi di atas November 2026 (yaitu mulai 2026-12 ke atas)
+                    if (meetingMonth > '2026-11') {
+                        const pastMeetings = meetings.filter({
+                            "DokvidKelasView.useMemo[monthlyItems].regularList.pastMeetings": (pm)=>pm.classroomId === m.classroomId && pm.date && pm.date >= '2026-11-01' && // Hanya hitung sesi mulai dari November 2026
+                                pm.date < `${meetingMonth}-01` && !pm.isLocked && pm.lesson && pm.lesson !== 'Sesi Dikosongkan / Hangus oleh Admin'
+                        }["DokvidKelasView.useMemo[monthlyItems].regularList.pastMeetings"]);
+                        const maxPastMeetingNumber = pastMeetings.length > 0 ? Math.max(...pastMeetings.map({
+                            "DokvidKelasView.useMemo[monthlyItems].regularList": (pm)=>pm.meetingNumber
+                        }["DokvidKelasView.useMemo[monthlyItems].regularList"])) : 0;
+                        baseCumulativeCount = Math.max(pastMeetings.length, maxPastMeetingNumber);
+                    }
+                    const cumulativeMeetingNumber = baseCumulativeCount + m.meetingNumber;
                     return {
                         id: m.id,
                         sourceType: 'regular',
@@ -3438,7 +3457,8 @@ function DokvidKelasView() {
                         tutorName: m.tutorName,
                         studentTitle: cls ? cls.students.join(', ') : 'Nama Siswa',
                         classDetail: `Kelas: ${cls ? cls.name : '-'} (${cls ? cls.type : '-'})`,
-                        meetingBadgeText: `Pertemuan #${m.meetingNumber}`,
+                        meetingBadgeText: `PERTEMUAN #${cumulativeMeetingNumber}`,
+                        meetingNumberFormatted: cumulativeMeetingNumber,
                         lesson: m.lesson,
                         notes: m.notes,
                         videoUrl: m.videoUrl,
@@ -3463,6 +3483,7 @@ function DokvidKelasView() {
                         studentTitle: ft.studentName,
                         classDetail: 'Sesi Uji Coba Calon Siswa Baru (Free Trial)',
                         meetingBadgeText: '🎯 Free Trial',
+                        meetingNumberFormatted: 'Free Trial',
                         lesson: ft.lesson,
                         notes: ft.notes,
                         videoUrl: ft.videoUrl,
@@ -3518,7 +3539,7 @@ ${videoSection}Note : ${noteSection}`;
         return `👋 Hello! Here's the class for today
 
 Class : ${item.studentTitle} (${item.classDetail.replace('Kelas: ', '')})
-Meeting : ${item.meetingBadgeText.replace('Pertemuan #', '')}
+Meeting : ${item.meetingNumberFormatted}
 Date : ${item.date}
 Tutor : ${item.tutorName}
 Lesson : ${item.lesson}
@@ -3558,7 +3579,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "📹"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 162,
+                                        lineNumber: 193,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -3566,13 +3587,13 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Dokvid Kelas & Laporan Ortu"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 163,
+                                        lineNumber: 194,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 161,
+                                lineNumber: 192,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3580,13 +3601,13 @@ ${videoSection}Note : ${noteSection}`;
                                 children: isAdmin ? 'Pusat tinjauan materi, video pembelajaran murid (Reguler & Free Trial), dan salin draf format broadcast WhatsApp ke orang tua.' : 'Daftar riwayat materi dan video pembelajaran murid yang Anda ajar.'
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 165,
+                                lineNumber: 196,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 160,
+                        lineNumber: 191,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3600,7 +3621,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Bulan:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 175,
+                                        lineNumber: 206,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3610,13 +3631,13 @@ ${videoSection}Note : ${noteSection}`;
                                         className: "px-2.5 py-1 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 176,
+                                        lineNumber: 207,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 174,
+                                lineNumber: 205,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3627,7 +3648,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Tanggal:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 186,
+                                        lineNumber: 217,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3637,7 +3658,7 @@ ${videoSection}Note : ${noteSection}`;
                                         className: "px-2.5 py-1 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 187,
+                                        lineNumber: 218,
                                         columnNumber: 13
                                     }, this),
                                     selectedDate && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3647,25 +3668,25 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "✕"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 194,
+                                        lineNumber: 225,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 185,
+                                lineNumber: 216,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 172,
+                        lineNumber: 203,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 159,
+                lineNumber: 190,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3681,7 +3702,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: isAdmin ? 'Total Sesi Masuk' : 'Total Sesi Saya'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 210,
+                                        lineNumber: 241,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3692,13 +3713,13 @@ ${videoSection}Note : ${noteSection}`;
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 213,
+                                        lineNumber: 244,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 209,
+                                lineNumber: 240,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3706,13 +3727,13 @@ ${videoSection}Note : ${noteSection}`;
                                 children: "📚"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 215,
+                                lineNumber: 246,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 208,
+                        lineNumber: 239,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3725,7 +3746,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Dengan Video YouTube"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 220,
+                                        lineNumber: 251,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3736,13 +3757,13 @@ ${videoSection}Note : ${noteSection}`;
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 221,
+                                        lineNumber: 252,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 219,
+                                lineNumber: 250,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3750,13 +3771,13 @@ ${videoSection}Note : ${noteSection}`;
                                 children: "🎬"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 223,
+                                lineNumber: 254,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 218,
+                        lineNumber: 249,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3769,7 +3790,7 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Terkirim ke Ortu"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 228,
+                                        lineNumber: 259,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3781,13 +3802,13 @@ ${videoSection}Note : ${noteSection}`;
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 229,
+                                        lineNumber: 260,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 227,
+                                lineNumber: 258,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3795,19 +3816,19 @@ ${videoSection}Note : ${noteSection}`;
                                 children: "👍"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 233,
+                                lineNumber: 264,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 226,
+                        lineNumber: 257,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 207,
+                lineNumber: 238,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3823,7 +3844,7 @@ ${videoSection}Note : ${noteSection}`;
                             className: "w-full pl-9 pr-8 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                         }, void 0, false, {
                             fileName: "[project]/src/components/DokvidKelasView.tsx",
-                            lineNumber: 240,
+                            lineNumber: 271,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3831,7 +3852,7 @@ ${videoSection}Note : ${noteSection}`;
                             children: "🔍"
                         }, void 0, false, {
                             fileName: "[project]/src/components/DokvidKelasView.tsx",
-                            lineNumber: 251,
+                            lineNumber: 282,
                             columnNumber: 11
                         }, this),
                         searchQuery && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3840,18 +3861,18 @@ ${videoSection}Note : ${noteSection}`;
                             children: "✕"
                         }, void 0, false, {
                             fileName: "[project]/src/components/DokvidKelasView.tsx",
-                            lineNumber: 253,
+                            lineNumber: 284,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/DokvidKelasView.tsx",
-                    lineNumber: 239,
+                    lineNumber: 270,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 238,
+                lineNumber: 269,
                 columnNumber: 7
             }, this),
             copiedId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3861,7 +3882,7 @@ ${videoSection}Note : ${noteSection}`;
                         children: "✅ Draf deskripsi berhasil disalin ke clipboard! Siap di-paste ke WhatsApp orang tua."
                     }, void 0, false, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 266,
+                        lineNumber: 297,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3869,13 +3890,13 @@ ${videoSection}Note : ${noteSection}`;
                         children: "Tersalin"
                     }, void 0, false, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 267,
+                        lineNumber: 298,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 265,
+                lineNumber: 296,
                 columnNumber: 9
             }, this),
             filteredItems.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3883,7 +3904,7 @@ ${videoSection}Note : ${noteSection}`;
                 children: isAdmin ? 'Tidak ada sesi jurnal mengajar atau free trial pada filter tanggal/periode ini.' : 'Belum ada sesi kelas atau free trial yang Anda isi pada filter tanggal/periode ini.'
             }, void 0, false, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 273,
+                lineNumber: 304,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "grid grid-cols-1 md:grid-cols-2 gap-5",
@@ -3906,7 +3927,7 @@ ${videoSection}Note : ${noteSection}`;
                                                         children: item.meetingBadgeText
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 297,
+                                                        lineNumber: 328,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3917,7 +3938,7 @@ ${videoSection}Note : ${noteSection}`;
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 304,
+                                                        lineNumber: 335,
                                                         columnNumber: 23
                                                     }, this),
                                                     hasVideo ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3925,20 +3946,20 @@ ${videoSection}Note : ${noteSection}`;
                                                         children: "🎬 Ada Video"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 308,
+                                                        lineNumber: 339,
                                                         columnNumber: 25
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         className: "px-2 py-0.5 bg-slate-100 text-slate-500 text-[10px] rounded-full",
                                                         children: "Tanpa Video"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 312,
+                                                        lineNumber: 343,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 296,
+                                                lineNumber: 327,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -3946,7 +3967,7 @@ ${videoSection}Note : ${noteSection}`;
                                                 children: item.studentTitle
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 318,
+                                                lineNumber: 349,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3958,19 +3979,19 @@ ${videoSection}Note : ${noteSection}`;
                                                         children: item.tutorName
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                        lineNumber: 322,
+                                                        lineNumber: 353,
                                                         columnNumber: 51
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 321,
+                                                lineNumber: 352,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 295,
+                                        lineNumber: 326,
                                         columnNumber: 19
                                     }, this),
                                     isAdmin ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3982,20 +4003,20 @@ ${videoSection}Note : ${noteSection}`;
                                                 children: item.isSentToParent ? '👍' : '⚪'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 337,
+                                                lineNumber: 368,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: item.isSentToParent ? 'Terkirim ke Ortu' : 'Belum Dikirim'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 338,
+                                                lineNumber: 369,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 328,
+                                        lineNumber: 359,
                                         columnNumber: 21
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: `shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 cursor-default ${item.isSentToParent ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-400 border-slate-200'}`,
@@ -4004,26 +4025,26 @@ ${videoSection}Note : ${noteSection}`;
                                                 children: item.isSentToParent ? '👍' : '⚪'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 348,
+                                                lineNumber: 379,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: item.isSentToParent ? 'Terkirim' : 'Belum Dikirim'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 349,
+                                                lineNumber: 380,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 341,
+                                        lineNumber: 372,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 294,
+                                lineNumber: 325,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4034,14 +4055,14 @@ ${videoSection}Note : ${noteSection}`;
                                         children: "Format Teks WhatsApp:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 356,
+                                        lineNumber: 387,
                                         columnNumber: 19
                                     }, this),
                                     broadcastText
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 355,
+                                lineNumber: 386,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4055,20 +4076,20 @@ ${videoSection}Note : ${noteSection}`;
                                                 children: copiedId === item.id ? '✓' : '📋'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 373,
+                                                lineNumber: 404,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: copiedId === item.id ? 'Tersalin!' : 'Salin Pesan WA'
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 374,
+                                                lineNumber: 405,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 365,
+                                        lineNumber: 396,
                                         columnNumber: 19
                                     }, this),
                                     hasVideo && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -4081,38 +4102,38 @@ ${videoSection}Note : ${noteSection}`;
                                                 children: "▶️"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                                lineNumber: 385,
+                                                lineNumber: 416,
                                                 columnNumber: 23
                                             }, this),
                                             " Buka YouTube"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                        lineNumber: 379,
+                                        lineNumber: 410,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                                lineNumber: 363,
+                                lineNumber: 394,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, `${item.sourceType}-${item.id}`, true, {
                         fileName: "[project]/src/components/DokvidKelasView.tsx",
-                        lineNumber: 285,
+                        lineNumber: 316,
                         columnNumber: 15
                     }, this);
                 })
             }, void 0, false, {
                 fileName: "[project]/src/components/DokvidKelasView.tsx",
-                lineNumber: 279,
+                lineNumber: 310,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/DokvidKelasView.tsx",
-        lineNumber: 157,
+        lineNumber: 188,
         columnNumber: 5
     }, this);
 }
@@ -5282,7 +5303,7 @@ function MeetingJournal() {
     const isAdmin = currentUser?.role === 'admin';
     // Periksa apakah bulan yang sedang dibuka ini berstatus terkunci
     const isPeriodLocked = isMonthLocked(selectedMonth);
-    // 1. Tab Kategori Program
+    // 1. Tab Kategori Program (Termasuk Fee Assist)
     const tabTypes = [
         {
             id: 'all',
@@ -5319,6 +5340,10 @@ function MeetingJournal() {
         {
             id: 'Social Banjar/Panti',
             label: 'Social/Panti'
+        },
+        {
+            id: 'Assist',
+            label: 'Fee Assist'
         }
     ];
     const [activeTabType, setActiveTabType] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('all');
@@ -5340,6 +5365,8 @@ function MeetingJournal() {
     const [editTutorId, setEditTutorId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [editVideoUrl, setEditVideoUrl] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [editLdrZone, setEditLdrZone] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('none');
+    // 6. State Modal Baca Selengkapnya untuk Catatan/Note Siswa
+    const [viewingNote, setViewingNote] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     // Daftar tutor untuk pilihan filter dropdown
     const tutorList = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
         "MeetingJournal.useMemo[tutorList]": ()=>{
@@ -5431,9 +5458,8 @@ function MeetingJournal() {
             return;
         }
         const cleanUrl = inputVideoUrl.trim();
-        // Hanya validasi URL jika kolom memang diisi (karena sifatnya opsional)
         if (cleanUrl !== '' && !(0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isValidYouTubeUrl"])(cleanUrl)) {
-            alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...) atau kosongkan jika tidak ada video.');
+            alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...) atau kosongkan jika tidak ada.');
             return;
         }
         const currentClass = classrooms.find((c)=>c.id === activeSlot.classId);
@@ -5461,9 +5487,13 @@ function MeetingJournal() {
     const handleSaveEditMeeting = async (e)=>{
         e.preventDefault();
         if (!editingMeeting) return;
+        if (!editLesson.trim()) {
+            alert('Harap masukkan materi pelajaran (lesson)!');
+            return;
+        }
         const cleanUrl = editVideoUrl.trim();
         if (cleanUrl !== '' && !(0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isValidYouTubeUrl"])(cleanUrl)) {
-            alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar atau kosongkan.');
+            alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...) atau kosongkan jika tidak ada.');
             return;
         }
         const assignedTutor = users.find((u)=>u.id === editTutorId);
@@ -5497,7 +5527,7 @@ function MeetingJournal() {
                                 children: "Lembar Jurnal Mengajar"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 211,
+                                lineNumber: 227,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5508,20 +5538,20 @@ function MeetingJournal() {
                                         children: selectedMonth
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 213,
+                                        lineNumber: 229,
                                         columnNumber: 79
                                     }, this),
                                     " secara default."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 212,
+                                lineNumber: 228,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 210,
+                        lineNumber: 226,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5536,20 +5566,20 @@ function MeetingJournal() {
                                         children: isPeriodLocked ? '🔒' : '🔓'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 229,
+                                        lineNumber: 245,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: isPeriodLocked ? `Bulan ${selectedMonth}: TERKUNCI` : `Bulan ${selectedMonth}: TERBUKA`
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 230,
+                                        lineNumber: 246,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 220,
+                                lineNumber: 236,
                                 columnNumber: 13
                             }, this),
                             isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5559,7 +5589,7 @@ function MeetingJournal() {
                                 children: isJournalLocked ? '⚠️ Audit Global: AKTIF' : 'Audit Global: Non-aktif'
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 236,
+                                lineNumber: 252,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5570,7 +5600,7 @@ function MeetingJournal() {
                                         children: "Periode:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 251,
+                                        lineNumber: 267,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5580,25 +5610,25 @@ function MeetingJournal() {
                                         className: "px-3 py-1.5 text-xs border rounded-lg bg-white font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-amber-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 252,
+                                        lineNumber: 268,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 250,
+                                lineNumber: 266,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 217,
+                        lineNumber: 233,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 209,
+                lineNumber: 225,
                 columnNumber: 7
             }, this),
             !isAdmin && isPeriodLocked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5609,7 +5639,7 @@ function MeetingJournal() {
                         children: "🔒"
                     }, void 0, false, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 265,
+                        lineNumber: 281,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5619,7 +5649,7 @@ function MeetingJournal() {
                                 children: "Periode Bulan Ini Telah Ditutup (Read-Only)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 267,
+                                lineNumber: 283,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5630,26 +5660,26 @@ function MeetingJournal() {
                                         children: selectedMonth
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 269,
+                                        lineNumber: 285,
                                         columnNumber: 68
                                     }, this),
                                     ". Data pada bulan ini hanya dapat dilihat untuk arsip dan tidak dapat ditambah atau diubah oleh tutor."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 268,
+                                lineNumber: 284,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 266,
+                        lineNumber: 282,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 264,
+                lineNumber: 280,
                 columnNumber: 9
             }, this),
             !isAdmin && !isPeriodLocked && isJournalLocked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5660,7 +5690,7 @@ function MeetingJournal() {
                         children: "🔒"
                     }, void 0, false, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 278,
+                        lineNumber: 294,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5670,7 +5700,7 @@ function MeetingJournal() {
                                 children: "Akses Pengisian Jurnal Sedang Ditutup (Audit Mode)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 280,
+                                lineNumber: 296,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5678,19 +5708,19 @@ function MeetingJournal() {
                                 children: "Admin sedang melakukan peninjauan sesi. Tombol pengisian sesi baru sementara dinonaktifkan."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 281,
+                                lineNumber: 297,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 279,
+                        lineNumber: 295,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 277,
+                lineNumber: 293,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5704,7 +5734,7 @@ function MeetingJournal() {
                                 children: "Program Sheet:"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 292,
+                                lineNumber: 308,
                                 columnNumber: 11
                             }, this),
                             tabTypes.map((tab)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5713,13 +5743,13 @@ function MeetingJournal() {
                                     children: tab.label
                                 }, tab.id, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 294,
+                                    lineNumber: 310,
                                     columnNumber: 13
                                 }, this))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 291,
+                        lineNumber: 307,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5736,7 +5766,7 @@ function MeetingJournal() {
                                         className: "w-full pl-9 pr-8 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 312,
+                                        lineNumber: 327,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5744,7 +5774,7 @@ function MeetingJournal() {
                                         children: "🔍"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 319,
+                                        lineNumber: 334,
                                         columnNumber: 13
                                     }, this),
                                     searchStudent && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5753,13 +5783,13 @@ function MeetingJournal() {
                                         children: "✕"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 321,
+                                        lineNumber: 336,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 311,
+                                lineNumber: 326,
                                 columnNumber: 11
                             }, this),
                             isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5774,7 +5804,7 @@ function MeetingJournal() {
                                             children: "👤 Semua Tutor Pengajar"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 338,
+                                            lineNumber: 352,
                                             columnNumber: 17
                                         }, this),
                                         tutorList.map((tutor)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -5782,18 +5812,18 @@ function MeetingJournal() {
                                                 children: tutor.name
                                             }, tutor.id, false, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 340,
+                                                lineNumber: 354,
                                                 columnNumber: 19
                                             }, this))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 333,
+                                    lineNumber: 347,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 332,
+                                lineNumber: 346,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5805,7 +5835,7 @@ function MeetingJournal() {
                                             children: "🎯"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 352,
+                                            lineNumber: 365,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5817,13 +5847,13 @@ function MeetingJournal() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 353,
+                                            lineNumber: 366,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 351,
+                                    lineNumber: 364,
                                     columnNumber: 15
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     className: "text-slate-600",
@@ -5833,24 +5863,24 @@ function MeetingJournal() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 358,
+                                    lineNumber: 371,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 349,
+                                lineNumber: 362,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 309,
+                        lineNumber: 325,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 289,
+                lineNumber: 305,
                 columnNumber: 7
             }, this),
             filteredClassrooms.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5858,12 +5888,22 @@ function MeetingJournal() {
                 children: selectedTutorId ? `Tidak ada sesi mengajar untuk tutor ini di bulan ${selectedMonth}.` : `Tidak ditemukan murid atau kelas yang cocok dengan pencarian "${searchStudent}".`
             }, void 0, false, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 368,
+                lineNumber: 381,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "space-y-6",
                 children: filteredClassrooms.map((cls)=>{
+                    // Sesi yang ada di bulan terpilih
                     const classMeetings = meetings.filter((m)=>m.classroomId === cls.id && m.date?.startsWith(selectedMonth));
+                    // TITIK AWAL SISTEM BARU (BASELINE NOVEMBER 2026):
+                    // Jika yang dibuka adalah November 2026 atau sebelumnya, baseCumulativeCount = 0 (semua mulai dari 1)
+                    let baseCumulativeCount = 0;
+                    if (selectedMonth > '2026-11') {
+                        const pastMeetings = meetings.filter((m)=>m.classroomId === cls.id && m.date && m.date >= '2026-11-01' && // Hanya hitung riwayat yang terjadi mulai November 2026
+                            m.date < `${selectedMonth}-01` && !m.isLocked && m.lesson && m.lesson !== 'Sesi Dikosongkan / Hangus oleh Admin');
+                        const maxPastMeetingNumber = pastMeetings.length > 0 ? Math.max(...pastMeetings.map((m)=>m.meetingNumber)) : 0;
+                        baseCumulativeCount = Math.max(pastMeetings.length, maxPastMeetingNumber);
+                    }
                     const highestMeetingNum = classMeetings.length > 0 ? Math.max(...classMeetings.map((m)=>m.meetingNumber)) : 0;
                     const totalCols = Math.max(cls.totalMeetings || 4, highestMeetingNum, 4);
                     const colIndexes = Array.from({
@@ -5882,7 +5922,7 @@ function MeetingJournal() {
                                             children: "CLASS"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 394,
+                                            lineNumber: 433,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5895,7 +5935,7 @@ function MeetingJournal() {
                                                             children: "Murid:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 399,
+                                                            lineNumber: 438,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -5903,13 +5943,13 @@ function MeetingJournal() {
                                                             children: cls.students.join(', ')
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 402,
+                                                            lineNumber: 441,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 398,
+                                                    lineNumber: 437,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5920,14 +5960,14 @@ function MeetingJournal() {
                                                             children: cls.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 408,
+                                                            lineNumber: 447,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "•"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 411,
+                                                            lineNumber: 450,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5938,14 +5978,14 @@ function MeetingJournal() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 412,
+                                                            lineNumber: 451,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "•"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 415,
+                                                            lineNumber: 454,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5956,7 +5996,7 @@ function MeetingJournal() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 416,
+                                                            lineNumber: 455,
                                                             columnNumber: 25
                                                         }, this),
                                                         cls.ldrZone !== 'none' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -5965,7 +6005,7 @@ function MeetingJournal() {
                                                                     children: "•"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                    lineNumber: 421,
+                                                                    lineNumber: 460,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5977,36 +6017,36 @@ function MeetingJournal() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                    lineNumber: 422,
+                                                                    lineNumber: 461,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 420,
+                                                            lineNumber: 459,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 407,
+                                                    lineNumber: 446,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 397,
+                                            lineNumber: 436,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 393,
+                                    lineNumber: 432,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 392,
+                                lineNumber: 431,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6019,11 +6059,11 @@ function MeetingJournal() {
                                                 className: "border-b border-slate-200",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                        className: "w-40 py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300",
+                                                        className: "w-44 py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300",
                                                         children: "Meet This Month"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 438,
+                                                        lineNumber: 477,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -6031,13 +6071,13 @@ function MeetingJournal() {
                                                             children: num
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 442,
+                                                            lineNumber: 481,
                                                             columnNumber: 27
                                                         }, this))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 437,
+                                                lineNumber: 476,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -6045,24 +6085,46 @@ function MeetingJournal() {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                         className: "py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300",
-                                                        children: "Class meetings"
-                                                    }, void 0, false, {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                children: "Class meetings"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                                lineNumber: 493,
+                                                                columnNumber: 27
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                className: "text-[9px] font-normal text-slate-500 block leading-tight",
+                                                                children: "(Total Pertemuan Riil)"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                                lineNumber: 494,
+                                                                columnNumber: 27
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 453,
+                                                        lineNumber: 492,
                                                         columnNumber: 25
                                                     }, this),
-                                                    colIndexes.map((num)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "py-2.5 px-3 text-center font-bold text-slate-700 border-r border-slate-200",
-                                                            children: num
-                                                        }, num, false, {
+                                                    colIndexes.map((num)=>{
+                                                        const cumulativeMeetingNum = baseCumulativeCount + num;
+                                                        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                            className: "py-2.5 px-3 text-center font-extrabold text-amber-900 bg-amber-50/50 border-r border-slate-200",
+                                                            children: [
+                                                                "#",
+                                                                cumulativeMeetingNum
+                                                            ]
+                                                        }, num, true, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 457,
-                                                            columnNumber: 27
-                                                        }, this))
+                                                            lineNumber: 501,
+                                                            columnNumber: 29
+                                                        }, this);
+                                                    })
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 452,
+                                                lineNumber: 491,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -6073,7 +6135,7 @@ function MeetingJournal() {
                                                         children: "Date"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 468,
+                                                        lineNumber: 513,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>{
@@ -6085,26 +6147,26 @@ function MeetingJournal() {
                                                                 children: mtg.date
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 479,
+                                                                lineNumber: 524,
                                                                 columnNumber: 33
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "text-slate-300",
                                                                 children: "-"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 483,
+                                                                lineNumber: 528,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 474,
+                                                            lineNumber: 519,
                                                             columnNumber: 29
                                                         }, this);
                                                     })
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 467,
+                                                lineNumber: 512,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -6115,7 +6177,7 @@ function MeetingJournal() {
                                                         children: "Tutor"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 492,
+                                                        lineNumber: 537,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>{
@@ -6128,19 +6190,19 @@ function MeetingJournal() {
                                                                 children: "-"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 508,
+                                                                lineNumber: 553,
                                                                 columnNumber: 54
                                                             }, this)
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 500,
+                                                            lineNumber: 545,
                                                             columnNumber: 29
                                                         }, this);
                                                     })
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 491,
+                                                lineNumber: 536,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -6150,35 +6212,62 @@ function MeetingJournal() {
                                                         children: "Lesson & Note"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 516,
+                                                        lineNumber: 561,
                                                         columnNumber: 25
                                                     }, this),
                                                     colIndexes.map((num)=>{
                                                         const mtg = classMeetings.find((m)=>m.meetingNumber === num);
                                                         const mtgLdr = mtg?.ldrZoneSnapshot;
+                                                        const cumulativeMeetingNum = baseCumulativeCount + num;
                                                         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "py-2.5 px-3 border-r border-slate-200 text-slate-700 align-top",
                                                             children: mtg ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "space-y-1.5",
                                                                 children: [
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                                        className: "font-medium text-slate-800 leading-snug",
+                                                                        className: "font-semibold text-slate-800 leading-snug",
                                                                         children: mtg.lesson
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 530,
+                                                                        lineNumber: 576,
                                                                         columnNumber: 35
                                                                     }, this),
-                                                                    mtg.notes && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                                        className: "text-[10px] text-slate-500 italic line-clamp-2",
+                                                                    mtg.notes && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         children: [
-                                                                            "“",
-                                                                            mtg.notes,
-                                                                            "”"
+                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                                className: "text-[10px] text-slate-500 italic line-clamp-2 leading-relaxed",
+                                                                                children: [
+                                                                                    "“",
+                                                                                    mtg.notes,
+                                                                                    "”"
+                                                                                ]
+                                                                            }, void 0, true, {
+                                                                                fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                                                lineNumber: 581,
+                                                                                columnNumber: 39
+                                                                            }, this),
+                                                                            mtg.notes.length > 50 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                type: "button",
+                                                                                onClick: ()=>setViewingNote({
+                                                                                        studentName: cls.students.join(', '),
+                                                                                        meetingNumber: num,
+                                                                                        cumulativeMeetingNumber: cumulativeMeetingNum,
+                                                                                        date: mtg.date,
+                                                                                        tutorName: mtg.tutorName,
+                                                                                        lesson: mtg.lesson,
+                                                                                        notes: mtg.notes || ''
+                                                                                    }),
+                                                                                className: "text-[10px] text-amber-600 hover:text-amber-800 font-bold hover:underline inline-block mt-0.5",
+                                                                                children: "Baca Selengkapnya"
+                                                                            }, void 0, false, {
+                                                                                fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                                                lineNumber: 585,
+                                                                                columnNumber: 41
+                                                                            }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 533,
+                                                                        lineNumber: 580,
                                                                         columnNumber: 37
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6190,17 +6279,17 @@ function MeetingJournal() {
                                                                                 rel: "noopener noreferrer",
                                                                                 className: "inline-flex items-center gap-1 text-[9px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-1.5 py-0.5 rounded transition-colors",
                                                                                 title: "Buka Video di YouTube",
-                                                                                children: "▶️ Video YT ↗"
+                                                                                children: "▶️ Video YT"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 540,
+                                                                                lineNumber: 608,
                                                                                 columnNumber: 39
                                                                             }, this) : mtg.hasVideoClaim && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 className: "inline-flex items-center gap-1 text-[9px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded",
                                                                                 children: "🎬 Video"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 551,
+                                                                                lineNumber: 619,
                                                                                 columnNumber: 41
                                                                             }, this),
                                                                             mtgLdr && mtgLdr !== 'none' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6212,7 +6301,7 @@ function MeetingJournal() {
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 558,
+                                                                                lineNumber: 626,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             mtg.isLocked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6220,13 +6309,13 @@ function MeetingJournal() {
                                                                                 children: "🔒 Terkunci / Hangus"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 564,
+                                                                                lineNumber: 632,
                                                                                 columnNumber: 39
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 538,
+                                                                        lineNumber: 606,
                                                                         columnNumber: 35
                                                                     }, this),
                                                                     isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6238,7 +6327,7 @@ function MeetingJournal() {
                                                                                 children: "✏️ Edit"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 573,
+                                                                                lineNumber: 641,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6246,7 +6335,7 @@ function MeetingJournal() {
                                                                                 children: "•"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 579,
+                                                                                lineNumber: 647,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6255,7 +6344,7 @@ function MeetingJournal() {
                                                                                 children: "🗑️ Kosongkan"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 580,
+                                                                                lineNumber: 648,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6263,7 +6352,7 @@ function MeetingJournal() {
                                                                                 children: "•"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 586,
+                                                                                lineNumber: 654,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6272,19 +6361,19 @@ function MeetingJournal() {
                                                                                 children: mtg.isLocked ? 'Buka' : 'Kunci'
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 587,
+                                                                                lineNumber: 655,
                                                                                 columnNumber: 39
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 572,
+                                                                        lineNumber: 640,
                                                                         columnNumber: 37
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 529,
+                                                                lineNumber: 575,
                                                                 columnNumber: 33
                                                             }, this) : /* KOLOM KOSONG DI BULAN INI */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "space-y-1.5",
@@ -6297,7 +6386,7 @@ function MeetingJournal() {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 600,
+                                                                        lineNumber: 668,
                                                                         columnNumber: 37
                                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                         onClick: ()=>handleOpenFillModal(cls.id, num),
@@ -6308,7 +6397,7 @@ function MeetingJournal() {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 604,
+                                                                        lineNumber: 672,
                                                                         columnNumber: 37
                                                                     }, this),
                                                                     isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6320,60 +6409,60 @@ function MeetingJournal() {
                                                                                 children: "🔒"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                                lineNumber: 618,
+                                                                                lineNumber: 686,
                                                                                 columnNumber: 39
                                                                             }, this),
                                                                             " Kunci Slot"
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                        lineNumber: 613,
+                                                                        lineNumber: 681,
                                                                         columnNumber: 37
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                                lineNumber: 598,
+                                                                lineNumber: 666,
                                                                 columnNumber: 33
                                                             }, this)
                                                         }, num, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 524,
+                                                            lineNumber: 570,
                                                             columnNumber: 29
                                                         }, this);
                                                     })
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 515,
+                                                lineNumber: 560,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                                        lineNumber: 435,
+                                        lineNumber: 474,
                                         columnNumber: 21
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 434,
+                                    lineNumber: 473,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                                lineNumber: 433,
+                                lineNumber: 472,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, cls.id, true, {
                         fileName: "[project]/src/components/MeetingJournal.tsx",
-                        lineNumber: 387,
+                        lineNumber: 426,
                         columnNumber: 15
                     }, this);
                 })
             }, void 0, false, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 374,
+                lineNumber: 387,
                 columnNumber: 9
             }, this),
             activeSlot && selectedClassForModal && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6391,7 +6480,7 @@ function MeetingJournal() {
                                             children: "Input Jurnal Mengajar"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 642,
+                                            lineNumber: 710,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -6399,7 +6488,7 @@ function MeetingJournal() {
                                             children: selectedClassForModal.students.join(', ')
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 645,
+                                            lineNumber: 713,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6413,13 +6502,13 @@ function MeetingJournal() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 648,
+                                            lineNumber: 716,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 641,
+                                    lineNumber: 709,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6428,13 +6517,13 @@ function MeetingJournal() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 652,
+                                    lineNumber: 720,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 640,
+                            lineNumber: 708,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -6448,10 +6537,10 @@ function MeetingJournal() {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                     className: "block text-xs font-semibold text-slate-600 mb-1",
-                                                    children: "Pertemuan Ke"
+                                                    children: "Pertemuan Ke (Bulan Ini)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 663,
+                                                    lineNumber: 731,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6461,13 +6550,13 @@ function MeetingJournal() {
                                                     className: "w-full px-3 py-2 text-xs border rounded-xl bg-slate-100 text-slate-700 font-bold cursor-not-allowed"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 664,
+                                                    lineNumber: 732,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 662,
+                                            lineNumber: 730,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6477,7 +6566,7 @@ function MeetingJournal() {
                                                     children: "Tanggal Mengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 673,
+                                                    lineNumber: 741,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6488,19 +6577,19 @@ function MeetingJournal() {
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 674,
+                                                    lineNumber: 742,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 672,
+                                            lineNumber: 740,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 661,
+                                    lineNumber: 729,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6510,7 +6599,7 @@ function MeetingJournal() {
                                             children: "Nama Tutor"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 685,
+                                            lineNumber: 753,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6520,13 +6609,13 @@ function MeetingJournal() {
                                             className: "w-full px-3 py-2 text-xs border rounded-xl bg-slate-100 text-slate-700 font-semibold cursor-not-allowed"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 686,
+                                            lineNumber: 754,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 684,
+                                    lineNumber: 752,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6540,13 +6629,13 @@ function MeetingJournal() {
                                                     children: "*"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 696,
+                                                    lineNumber: 764,
                                                     columnNumber: 61
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 695,
+                                            lineNumber: 763,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6558,73 +6647,75 @@ function MeetingJournal() {
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 698,
+                                            lineNumber: 766,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 694,
+                                    lineNumber: 762,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                            className: "block text-xs font-bold text-slate-700 flex items-center justify-between",
-                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "flex items-center gap-1.5",
-                                                children: [
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        children: "🎬"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 712,
-                                                        columnNumber: 21
-                                                    }, this),
-                                                    " Link Video Pembelajaran (YouTube) ",
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        className: "text-[10px] font-normal text-slate-400",
-                                                        children: "(Opsional)"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                        lineNumber: 712,
-                                                        columnNumber: 71
-                                                    }, this)
-                                                ]
-                                            }, void 0, true, {
-                                                fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                lineNumber: 711,
-                                                columnNumber: 19
-                                            }, this)
-                                        }, void 0, false, {
+                                            className: "block text-xs font-semibold text-slate-700 flex items-center justify-between",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "flex items-center gap-1.5",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            children: "🎬"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                            lineNumber: 780,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        " Link Video Pembelajaran (YouTube)"
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                    lineNumber: 779,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-[10px] text-slate-400 font-normal",
+                                                    children: "Opsional"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                    lineNumber: 782,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 710,
+                                            lineNumber: 778,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                             type: "url",
-                                            placeholder: "https://youtu.be/... atau kosongkan jika tidak ada",
+                                            placeholder: "https://youtu.be/... (kosongkan jika tidak ada)",
                                             value: inputVideoUrl,
                                             onChange: (e)=>setInputVideoUrl(e.target.value),
                                             className: "w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 715,
+                                            lineNumber: 784,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-[10px] text-slate-400",
-                                            children: "Opsional — kosongkan jika sesi pertemuan ini belum atau tidak disertai rekaman video."
+                                            children: "Dapat dikosongkan. Jika diisi, pastikan tautan YouTube valid dan bisa dibuka."
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 722,
+                                            lineNumber: 791,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 709,
+                                    lineNumber: 777,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6634,7 +6725,7 @@ function MeetingJournal() {
                                             children: "Catatan Pembelajaran / Note Perkembangan Siswa"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 729,
+                                            lineNumber: 798,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -6645,13 +6736,13 @@ function MeetingJournal() {
                                             className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 732,
+                                            lineNumber: 801,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 728,
+                                    lineNumber: 797,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6664,7 +6755,7 @@ function MeetingJournal() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 742,
+                                            lineNumber: 811,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6673,30 +6764,30 @@ function MeetingJournal() {
                                             children: "Simpan ke Jurnal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 749,
+                                            lineNumber: 818,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 741,
+                                    lineNumber: 810,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 660,
+                            lineNumber: 728,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                    lineNumber: 639,
+                    lineNumber: 707,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 638,
+                lineNumber: 706,
                 columnNumber: 9
             }, this),
             editingMeeting && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6714,7 +6805,7 @@ function MeetingJournal() {
                                             children: "Koreksi / Edit Jurnal (Mode Admin)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 767,
+                                            lineNumber: 836,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -6725,13 +6816,13 @@ function MeetingJournal() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 770,
+                                            lineNumber: 839,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 766,
+                                    lineNumber: 835,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6740,13 +6831,13 @@ function MeetingJournal() {
                                     children: "✕"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 774,
+                                    lineNumber: 843,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 765,
+                            lineNumber: 834,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -6763,7 +6854,7 @@ function MeetingJournal() {
                                                     children: "Tanggal Mengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 785,
+                                                    lineNumber: 854,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6774,13 +6865,13 @@ function MeetingJournal() {
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 786,
+                                                    lineNumber: 855,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 784,
+                                            lineNumber: 853,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6790,7 +6881,7 @@ function MeetingJournal() {
                                                     children: "Ganti Tutor Pengajar"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 796,
+                                                    lineNumber: 865,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -6802,24 +6893,24 @@ function MeetingJournal() {
                                                             children: t.name
                                                         }, t.id, false, {
                                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                            lineNumber: 805,
+                                                            lineNumber: 874,
                                                             columnNumber: 25
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 797,
+                                                    lineNumber: 866,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 795,
+                                            lineNumber: 864,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 783,
+                                    lineNumber: 852,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6829,7 +6920,7 @@ function MeetingJournal() {
                                             children: "Zona LDR Pertemuan Ini"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 815,
+                                            lineNumber: 884,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -6842,7 +6933,7 @@ function MeetingJournal() {
                                                     children: "Tidak Ada LDR (None)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 821,
+                                                    lineNumber: 890,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6850,7 +6941,7 @@ function MeetingJournal() {
                                                     children: "LDR > 10 KM (Zona 10)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 822,
+                                                    lineNumber: 891,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6858,7 +6949,7 @@ function MeetingJournal() {
                                                     children: "LDR > 15 KM (Zona 15)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 823,
+                                                    lineNumber: 892,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6866,7 +6957,7 @@ function MeetingJournal() {
                                                     children: "LDR > 20 KM (Zona 20)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 824,
+                                                    lineNumber: 893,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6874,19 +6965,19 @@ function MeetingJournal() {
                                                     children: "Panti Klungkung"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 825,
+                                                    lineNumber: 894,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 816,
+                                            lineNumber: 885,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 814,
+                                    lineNumber: 883,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6900,13 +6991,13 @@ function MeetingJournal() {
                                                     children: "*"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 831,
+                                                    lineNumber: 900,
                                                     columnNumber: 61
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 830,
+                                            lineNumber: 899,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6917,59 +7008,58 @@ function MeetingJournal() {
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 833,
+                                            lineNumber: 902,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 829,
+                                    lineNumber: 898,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                            className: "block text-xs font-bold text-slate-700",
+                                            className: "block text-xs font-semibold text-slate-700 flex items-center justify-between",
                                             children: [
-                                                "🎬 Tautan Video Pembelajaran (YouTube) ",
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    className: "text-[10px] font-normal text-slate-400",
-                                                    children: "(Opsional)"
+                                                    className: "flex items-center gap-1.5",
+                                                    children: "🎬 Tautan Video Pembelajaran (YouTube)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                                    lineNumber: 845,
-                                                    columnNumber: 58
+                                                    lineNumber: 914,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-[10px] text-slate-400 font-normal",
+                                                    children: "Opsional"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                    lineNumber: 917,
+                                                    columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 844,
+                                            lineNumber: 913,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                             type: "url",
-                                            placeholder: "https://youtu.be/... atau kosongkan jika tidak ada",
+                                            placeholder: "https://youtu.be/... (kosongkan jika tidak ada)",
                                             value: editVideoUrl,
                                             onChange: (e)=>setEditVideoUrl(e.target.value),
                                             className: "w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 847,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "text-[10px] text-slate-400",
-                                            children: "Opsional — kosongkan jika tidak ada video untuk sesi ini."
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 854,
+                                            lineNumber: 919,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 843,
+                                    lineNumber: 912,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6979,7 +7069,7 @@ function MeetingJournal() {
                                             children: "Catatan Pembelajaran / Note Siswa"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 860,
+                                            lineNumber: 929,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -6989,13 +7079,13 @@ function MeetingJournal() {
                                             className: "w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 863,
+                                            lineNumber: 932,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 859,
+                                    lineNumber: 928,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7008,7 +7098,7 @@ function MeetingJournal() {
                                             children: "Batal"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 872,
+                                            lineNumber: 941,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -7017,40 +7107,235 @@ function MeetingJournal() {
                                             children: "Simpan Perubahan"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                                            lineNumber: 879,
+                                            lineNumber: 948,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                                    lineNumber: 871,
+                                    lineNumber: 940,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/MeetingJournal.tsx",
-                            lineNumber: 782,
+                            lineNumber: 851,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/MeetingJournal.tsx",
-                    lineNumber: 764,
+                    lineNumber: 833,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/MeetingJournal.tsx",
-                lineNumber: 763,
+                lineNumber: 832,
+                columnNumber: 9
+            }, this),
+            viewingNote && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "flex items-start justify-between border-b pb-3",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "flex items-center gap-2",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300",
+                                                    children: [
+                                                        "Sesi #",
+                                                        viewingNote.meetingNumber,
+                                                        " (Bulan Ini)"
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                    lineNumber: 968,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-[10px] font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md border border-purple-300",
+                                                    children: [
+                                                        "Total Sesi #",
+                                                        viewingNote.cumulativeMeetingNumber
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                    lineNumber: 971,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                                            lineNumber: 967,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                            className: "font-black text-slate-900 text-lg mt-2 leading-snug",
+                                            children: viewingNote.studentName
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                                            lineNumber: 975,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "flex items-center gap-2 text-xs text-slate-500 mt-1",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    children: [
+                                                        "🗓️ ",
+                                                        viewingNote.date
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                    lineNumber: 979,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    children: "•"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                    lineNumber: 980,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    children: [
+                                                        "Tutor Pengajar: ",
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                                            children: viewingNote.tutorName
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                            lineNumber: 981,
+                                                            columnNumber: 41
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                                    lineNumber: 981,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                                            lineNumber: 978,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                    lineNumber: 966,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    type: "button",
+                                    onClick: ()=>setViewingNote(null),
+                                    className: "text-slate-400 hover:text-slate-600 text-lg p-1.5 hover:bg-slate-100 rounded-xl transition-colors",
+                                    children: "✕"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                    lineNumber: 984,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                            lineNumber: 965,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "bg-slate-50 p-3.5 rounded-2xl border border-slate-200",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    className: "text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1",
+                                    children: "Materi Pelajaran (Lesson):"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                    lineNumber: 995,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-xs font-bold text-slate-800",
+                                    children: viewingNote.lesson
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                    lineNumber: 998,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                            lineNumber: 994,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    className: "text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5",
+                                    children: "Catatan Lengkap Perkembangan Siswa:"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                    lineNumber: 1005,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "p-4 bg-amber-50/40 rounded-2xl border border-amber-200 text-xs text-slate-700 leading-relaxed max-h-64 overflow-y-auto whitespace-pre-wrap font-medium",
+                                    children: [
+                                        "“",
+                                        viewingNote.notes,
+                                        "”"
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                                    lineNumber: 1008,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                            lineNumber: 1004,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "pt-2 flex justify-end border-t border-slate-100",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
+                                onClick: ()=>setViewingNote(null),
+                                className: "px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold transition-all shadow-sm",
+                                children: "Tutup Catatan"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/MeetingJournal.tsx",
+                                lineNumber: 1015,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/MeetingJournal.tsx",
+                            lineNumber: 1014,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/components/MeetingJournal.tsx",
+                    lineNumber: 963,
+                    columnNumber: 11
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/src/components/MeetingJournal.tsx",
+                lineNumber: 962,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/MeetingJournal.tsx",
-        lineNumber: 207,
+        lineNumber: 223,
         columnNumber: 5
     }, this);
 }
-_s(MeetingJournal, "+zBKIApvwXy+NjFv/4b3SBsOvUQ=", false, function() {
+_s(MeetingJournal, "EWZIlOXAnUGgf+MTtqJJ+qwm6sk=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"]
     ];
@@ -9891,6 +10176,7 @@ function RateConfigPanel() {
             setTimeout(()=>setSaveMessage(null), 3500);
         }
     };
+    // Daftar program kelas termasuk program Assist
     const classTypeList = [
         'Kids-A',
         'Kids-B',
@@ -9900,7 +10186,8 @@ function RateConfigPanel() {
         'Test Prep-A',
         'Test Prep-B',
         'Social Banjar/Panti',
-        'Free Trial'
+        'Free Trial',
+        'Assist'
     ];
     const ldrZoneList = [
         {
@@ -9934,7 +10221,7 @@ function RateConfigPanel() {
                                 children: "Ketentuan & Tarif Gaji"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 119,
+                                lineNumber: 121,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -9945,7 +10232,7 @@ function RateConfigPanel() {
                                         children: "Tutor Kontrak"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 123,
                                         columnNumber: 61
                                     }, this),
                                     " dan ",
@@ -9953,20 +10240,20 @@ function RateConfigPanel() {
                                         children: "Tutor Magang (3 Bulan)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 123,
                                         columnNumber: 96
                                     }, this),
                                     ", serta bonus kegiatan dan denda operasional."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 120,
+                                lineNumber: 122,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 118,
+                        lineNumber: 120,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9979,7 +10266,7 @@ function RateConfigPanel() {
                                 children: "Reset Default SOP"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 125,
+                                lineNumber: 127,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -9990,26 +10277,26 @@ function RateConfigPanel() {
                                         children: "💾"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 136,
+                                        lineNumber: 138,
                                         columnNumber: 13
                                     }, this),
                                     " Simpan Perubahan"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 132,
+                                lineNumber: 134,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 124,
+                        lineNumber: 126,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                lineNumber: 117,
+                lineNumber: 119,
                 columnNumber: 7
             }, this),
             saveMessage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10019,20 +10306,20 @@ function RateConfigPanel() {
                         children: "✅"
                     }, void 0, false, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 143,
+                        lineNumber: 145,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                         children: saveMessage
                     }, void 0, false, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 144,
+                        lineNumber: 146,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                lineNumber: 142,
+                lineNumber: 144,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10047,14 +10334,14 @@ function RateConfigPanel() {
                                 children: "📜"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 159,
+                                lineNumber: 161,
                                 columnNumber: 11
                             }, this),
                             " Tarif Tutor Kontrak (Reguler)"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 150,
+                        lineNumber: 152,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -10066,14 +10353,14 @@ function RateConfigPanel() {
                                 children: "🌱"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 171,
+                                lineNumber: 173,
                                 columnNumber: 11
                             }, this),
                             " Tarif Tutor Magang (Probation 3 Bln)"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 162,
+                        lineNumber: 164,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -10085,20 +10372,20 @@ function RateConfigPanel() {
                                 children: "⚙️"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 183,
+                                lineNumber: 185,
                                 columnNumber: 11
                             }, this),
                             " Bonus & Potongan SOP"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 174,
+                        lineNumber: 176,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                lineNumber: 149,
+                lineNumber: 151,
                 columnNumber: 7
             }, this),
             activeTab === 'contract' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10115,14 +10402,14 @@ function RateConfigPanel() {
                                         children: "Rp"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 193,
+                                        lineNumber: 195,
                                         columnNumber: 15
                                     }, this),
                                     "Tarif Dasar Sesi Kelas - Tutor Kontrak"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 192,
+                                lineNumber: 194,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10135,7 +10422,7 @@ function RateConfigPanel() {
                                                 children: type
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 199,
+                                                lineNumber: 201,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10146,7 +10433,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 201,
+                                                        lineNumber: 203,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10159,30 +10446,30 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 202,
+                                                        lineNumber: 204,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 200,
+                                                lineNumber: 202,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, `contract-${type}`, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 198,
+                                        lineNumber: 200,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 196,
+                                lineNumber: 198,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 191,
+                        lineNumber: 193,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10196,14 +10483,14 @@ function RateConfigPanel() {
                                         children: "📍"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 220,
+                                        lineNumber: 222,
                                         columnNumber: 15
                                     }, this),
                                     "Bonus Jarak / Transport (LDR) - Tutor Kontrak"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 219,
+                                lineNumber: 221,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10216,7 +10503,7 @@ function RateConfigPanel() {
                                                 children: item.label
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 226,
+                                                lineNumber: 228,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10227,7 +10514,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 228,
+                                                        lineNumber: 230,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10240,36 +10527,36 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 229,
+                                                        lineNumber: 231,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 227,
+                                                lineNumber: 229,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, `contract-${item.id}`, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 225,
+                                        lineNumber: 227,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 223,
+                                lineNumber: 225,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 218,
+                        lineNumber: 220,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                lineNumber: 189,
+                lineNumber: 191,
                 columnNumber: 9
             }, this),
             activeTab === 'intern' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10286,14 +10573,14 @@ function RateConfigPanel() {
                                         children: "Rp"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 252,
+                                        lineNumber: 254,
                                         columnNumber: 15
                                     }, this),
                                     "Tarif Dasar Sesi Kelas - Tutor Magang (Probation 3 Bulan)"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 251,
+                                lineNumber: 253,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10306,7 +10593,7 @@ function RateConfigPanel() {
                                                 children: type
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 258,
+                                                lineNumber: 260,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10317,7 +10604,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 260,
+                                                        lineNumber: 262,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10330,30 +10617,30 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 261,
+                                                        lineNumber: 263,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 259,
+                                                lineNumber: 261,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, `intern-${type}`, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 257,
+                                        lineNumber: 259,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 255,
+                                lineNumber: 257,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 250,
+                        lineNumber: 252,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10367,14 +10654,14 @@ function RateConfigPanel() {
                                         children: "📍"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 279,
+                                        lineNumber: 281,
                                         columnNumber: 15
                                     }, this),
                                     "Bonus Jarak / Transport (LDR) - Tutor Magang"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 278,
+                                lineNumber: 280,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10387,7 +10674,7 @@ function RateConfigPanel() {
                                                 children: item.label
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 285,
+                                                lineNumber: 287,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10398,7 +10685,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 287,
+                                                        lineNumber: 289,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10411,36 +10698,36 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 288,
+                                                        lineNumber: 290,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 286,
+                                                lineNumber: 288,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, `intern-${item.id}`, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 284,
+                                        lineNumber: 286,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 282,
+                                lineNumber: 284,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 277,
+                        lineNumber: 279,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                lineNumber: 248,
+                lineNumber: 250,
                 columnNumber: 9
             }, this),
             activeTab === 'general' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10457,14 +10744,14 @@ function RateConfigPanel() {
                                         children: "⭐"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 311,
+                                        lineNumber: 313,
                                         columnNumber: 15
                                     }, this),
                                     "Bonus Standar Operasional"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 310,
+                                lineNumber: 312,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10480,7 +10767,7 @@ function RateConfigPanel() {
                                                         children: "Video Siswa"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 317,
+                                                        lineNumber: 319,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -10488,13 +10775,13 @@ function RateConfigPanel() {
                                                         children: "Per 1 konten video dokumentasi"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 318,
+                                                        lineNumber: 320,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 316,
+                                                lineNumber: 318,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10505,7 +10792,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 321,
+                                                        lineNumber: 323,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10517,19 +10804,19 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 322,
+                                                        lineNumber: 324,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 320,
+                                                lineNumber: 322,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 315,
+                                        lineNumber: 317,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10542,7 +10829,7 @@ function RateConfigPanel() {
                                                         children: "Laporan Progres (Report)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 335,
+                                                        lineNumber: 337,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -10550,13 +10837,13 @@ function RateConfigPanel() {
                                                         children: "Per 1 rekap murid"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 336,
+                                                        lineNumber: 338,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 334,
+                                                lineNumber: 336,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10567,7 +10854,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 339,
+                                                        lineNumber: 341,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10579,19 +10866,19 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 340,
+                                                        lineNumber: 342,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 338,
+                                                lineNumber: 340,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 333,
+                                        lineNumber: 335,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10604,7 +10891,7 @@ function RateConfigPanel() {
                                                         children: "Closing Member Baru (FNM)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 353,
+                                                        lineNumber: 355,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -10612,13 +10899,13 @@ function RateConfigPanel() {
                                                         children: "Fee New Member per siswa daftar"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 354,
+                                                        lineNumber: 356,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 352,
+                                                lineNumber: 354,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10629,7 +10916,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 357,
+                                                        lineNumber: 359,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10641,31 +10928,31 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 358,
+                                                        lineNumber: 360,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 356,
+                                                lineNumber: 358,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 351,
+                                        lineNumber: 353,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 314,
+                                lineNumber: 316,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 309,
+                        lineNumber: 311,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10679,14 +10966,14 @@ function RateConfigPanel() {
                                         children: "⚠️"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 374,
+                                        lineNumber: 376,
                                         columnNumber: 15
                                     }, this),
                                     "Ketentuan Potongan & Denda"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 373,
+                                lineNumber: 375,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10702,7 +10989,7 @@ function RateConfigPanel() {
                                                         children: "Iuran Suka Duka"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 380,
+                                                        lineNumber: 382,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -10710,13 +10997,13 @@ function RateConfigPanel() {
                                                         children: "Potongan tetap bulanan per tutor"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 381,
+                                                        lineNumber: 383,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 379,
+                                                lineNumber: 381,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10727,7 +11014,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 384,
+                                                        lineNumber: 386,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10739,19 +11026,19 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 385,
+                                                        lineNumber: 387,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 383,
+                                                lineNumber: 385,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 378,
+                                        lineNumber: 380,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10764,7 +11051,7 @@ function RateConfigPanel() {
                                                         children: "Denda Keterlambatan Hadir"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 398,
+                                                        lineNumber: 400,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -10772,13 +11059,13 @@ function RateConfigPanel() {
                                                         children: "Per kejadian telat"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 399,
+                                                        lineNumber: 401,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 397,
+                                                lineNumber: 399,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10789,7 +11076,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 402,
+                                                        lineNumber: 404,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10801,19 +11088,19 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 403,
+                                                        lineNumber: 405,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 401,
+                                                lineNumber: 403,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 396,
+                                        lineNumber: 398,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10826,7 +11113,7 @@ function RateConfigPanel() {
                                                         children: "Pelanggaran OJL & GC"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 416,
+                                                        lineNumber: 418,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -10834,13 +11121,13 @@ function RateConfigPanel() {
                                                         children: "Per kejadian pelanggaran"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 417,
+                                                        lineNumber: 419,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 415,
+                                                lineNumber: 417,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -10851,7 +11138,7 @@ function RateConfigPanel() {
                                                         children: "Rp"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 420,
+                                                        lineNumber: 422,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -10863,43 +11150,43 @@ function RateConfigPanel() {
                                                         required: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                        lineNumber: 421,
+                                                        lineNumber: 423,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                                lineNumber: 419,
+                                                lineNumber: 421,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                        lineNumber: 414,
+                                        lineNumber: 416,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                                lineNumber: 377,
+                                lineNumber: 379,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/RateConfigPanel.tsx",
-                        lineNumber: 372,
+                        lineNumber: 374,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/RateConfigPanel.tsx",
-                lineNumber: 307,
+                lineNumber: 309,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/RateConfigPanel.tsx",
-        lineNumber: 115,
+        lineNumber: 117,
         columnNumber: 5
     }, this);
 }

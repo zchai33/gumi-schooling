@@ -36,7 +36,7 @@ async function verifyPassword(plainInput: string, storedPassword: string): Promi
   return inputHash === storedPassword;
 }
 
-// Validator tautan YouTube (hanya me-return true jika URL valid; string kosong dianggap bukan YouTube tapi tidak memblokir simpan)
+// Validator tautan YouTube (opsional: jika string kosong, bernilai false tapi tidak memblokir simpan)
 export const isValidYouTubeUrl = (url?: string): boolean => {
   if (!url || !url.trim()) return false;
   const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
@@ -144,7 +144,7 @@ interface AppContextType {
   refreshData: () => Promise<void>;
 }
 
-// Konfigurasi Standar SOP Gumi (Memisahkan Kontrak vs Magang)
+// Konfigurasi Standar SOP Gumi (Mendukung Program Assist)
 const defaultRates: RateConfig = {
   contract: {
     baseFees: {
@@ -157,6 +157,7 @@ const defaultRates: RateConfig = {
       'Test Prep-B': 40000,
       'Social Banjar/Panti': 50000,
       'Free Trial': 25000,
+      Assist: 25000,
     },
     ldrBonus: {
       ldr_10: 10000,
@@ -176,6 +177,7 @@ const defaultRates: RateConfig = {
       'Test Prep-B': 30000,
       'Social Banjar/Panti': 35000,
       'Free Trial': 20000,
+      Assist: 20000,
     },
     ldrBonus: {
       ldr_10: 7500,
@@ -343,12 +345,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         setRates({
           contract: {
-            baseFees: contractBase,
-            ldrBonus: contractLdr,
+            baseFees: { ...defaultRates.contract.baseFees, ...contractBase },
+            ldrBonus: { ...defaultRates.contract.ldrBonus, ...contractLdr },
           },
           intern: {
-            baseFees: internBase,
-            ldrBonus: internLdr,
+            baseFees: { ...defaultRates.intern.baseFees, ...internBase },
+            ldrBonus: { ...defaultRates.intern.ldrBonus, ...internLdr },
           },
           standardBonus: ratesData.standard_bonus || defaultRates.standardBonus,
           standardDeductions: ratesData.standard_deductions || defaultRates.standardDeductions,
@@ -370,7 +372,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       }
 
-      const { data: meetingData } = await supabase.from('meetings').select('*');
+      // Mengambil data pertemuan yang langsung diurutkan dari tanggal terbaru (descending)
+      const { data: meetingData } = await supabase
+        .from('meetings')
+        .select('*')
+        .order('date', { ascending: false });
+
       if (meetingData) {
         setMeetings(
           meetingData.map((m: any) => {
@@ -394,7 +401,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       }
 
-      const { data: trialsData } = await supabase.from('free_trials').select('*');
+      const { data: trialsData } = await supabase
+        .from('free_trials')
+        .select('*')
+        .order('date', { ascending: false });
+
       if (trialsData) {
         setFreeTrials(
           trialsData.map((ft: any) => ({
@@ -753,7 +764,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return copy;
       });
     } else {
-      setMeetings((prev) => [...prev, newMeeting]);
+      // Masukkan ke posisi paling awal agar urut terbaru di UI lokal
+      setMeetings((prev) => [newMeeting, ...prev]);
     }
 
     await supabase.from('meetings').upsert({
@@ -906,7 +918,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isSentToParent: false,
       } as any;
 
-      setMeetings((prev) => [...prev, lockedPlaceholder]);
+      setMeetings((prev) => [lockedPlaceholder, ...prev]);
 
       await supabase.from('meetings').insert([
         {
@@ -956,7 +968,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       status: 'completed',
       isSentToParent: false,
     };
-    setFreeTrials((prev) => [...prev, newTrial]);
+    setFreeTrials((prev) => [newTrial, ...prev]);
 
     await supabase.from('free_trials').insert([
       {

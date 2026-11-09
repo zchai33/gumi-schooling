@@ -13,6 +13,7 @@ type DokvidItem = {
   studentTitle: string;
   classDetail: string;
   meetingBadgeText: string;
+  meetingNumberFormatted: string | number;
   lesson: string;
   notes?: string;
   videoUrl?: string;
@@ -40,7 +41,7 @@ export default function DokvidKelasView() {
 
   // 1. Gabungkan sesi Jurnal Reguler + Sesi Free Trial di bulan terpilih
   const monthlyItems = useMemo(() => {
-    // A. Sesi Jurnal Reguler
+    // A. Sesi Jurnal Reguler (Dengan Baseline Mulai November 2026)
     const regularList: DokvidItem[] = meetings
       .filter((m: Meeting) => {
         const matchMonth = m.date && m.date.startsWith(selectedMonth) && !m.isLocked;
@@ -49,6 +50,34 @@ export default function DokvidKelasView() {
       })
       .map((m: Meeting) => {
         const cls = classrooms.find((c: Classroom) => c.id === m.classroomId);
+
+        // Menghitung riwayat sesi kelas ini sebelum bulan sesi berjalan
+        const meetingMonth = m.date ? m.date.substring(0, 7) : selectedMonth;
+        let baseCumulativeCount = 0;
+
+        // Logika kumulatif HANYA berjalan jika bulan sesi di atas November 2026 (yaitu mulai 2026-12 ke atas)
+        if (meetingMonth > '2026-11') {
+          const pastMeetings = meetings.filter(
+            (pm: Meeting) =>
+              pm.classroomId === m.classroomId &&
+              pm.date &&
+              pm.date >= '2026-11-01' && // Hanya hitung sesi mulai dari November 2026
+              pm.date < `${meetingMonth}-01` &&
+              !pm.isLocked &&
+              pm.lesson &&
+              pm.lesson !== 'Sesi Dikosongkan / Hangus oleh Admin'
+          );
+
+          const maxPastMeetingNumber =
+            pastMeetings.length > 0
+              ? Math.max(...pastMeetings.map((pm: Meeting) => pm.meetingNumber))
+              : 0;
+
+          baseCumulativeCount = Math.max(pastMeetings.length, maxPastMeetingNumber);
+        }
+
+        const cumulativeMeetingNumber = baseCumulativeCount + m.meetingNumber;
+
         return {
           id: m.id,
           sourceType: 'regular',
@@ -57,7 +86,8 @@ export default function DokvidKelasView() {
           tutorName: m.tutorName,
           studentTitle: cls ? cls.students.join(', ') : 'Nama Siswa',
           classDetail: `Kelas: ${cls ? cls.name : '-'} (${cls ? cls.type : '-'})`,
-          meetingBadgeText: `Pertemuan #${m.meetingNumber}`,
+          meetingBadgeText: `PERTEMUAN #${cumulativeMeetingNumber}`,
+          meetingNumberFormatted: cumulativeMeetingNumber,
           lesson: m.lesson,
           notes: m.notes,
           videoUrl: m.videoUrl,
@@ -81,6 +111,7 @@ export default function DokvidKelasView() {
         studentTitle: ft.studentName,
         classDetail: 'Sesi Uji Coba Calon Siswa Baru (Free Trial)',
         meetingBadgeText: '🎯 Free Trial',
+        meetingNumberFormatted: 'Free Trial',
         lesson: ft.lesson,
         notes: ft.notes,
         videoUrl: ft.videoUrl,
@@ -125,7 +156,7 @@ ${videoSection}Note : ${noteSection}`;
     return `👋 Hello! Here's the class for today
 
 Class : ${item.studentTitle} (${item.classDetail.replace('Kelas: ', '')})
-Meeting : ${item.meetingBadgeText.replace('Pertemuan #', '')}
+Meeting : ${item.meetingNumberFormatted}
 Date : ${item.date}
 Tutor : ${item.tutorName}
 Lesson : ${item.lesson}

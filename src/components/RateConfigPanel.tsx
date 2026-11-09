@@ -92,6 +92,7 @@ export default function RateConfigPanel() {
     }
   };
 
+  // Daftar program kelas termasuk program Assist
   const classTypeList: ClassType[] = [
     'Kids-A',
     'Kids-B',
@@ -102,6 +103,7 @@ export default function RateConfigPanel() {
     'Test Prep-B',
     'Social Banjar/Panti',
     'Free Trial',
+    'Assist',
   ];
 
   const ldrZoneList: { id: keyof RateConfig['contract']['ldrBonus']; label: string }[] = [

@@ -108,6 +108,7 @@ export default function ClassroomManager() {
     { value: 'Test Prep-B', label: 'Test Prep-B' },
     { value: 'Social Banjar/Panti', label: 'Social Banjar/Panti' },
     { value: 'Free Trial', label: 'Free Trial' },
+    { value: 'Assist', label: 'Fee Assist' },
   ];
 
   // Filter Kelas Berdasarkan Search & Tipe
@@ -132,7 +133,7 @@ export default function ClassroomManager() {
         {currentUser?.role === 'admin' && (
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold shadow-sm shadow-blue-200 transition-all flex items-center gap-2 self-start md:self-auto"
+            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-200 text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-2 self-start md:self-auto"
           >
             <span>+</span> Tambah Kelas Baru
           </button>
@@ -147,7 +148,7 @@ export default function ClassroomManager() {
             placeholder="Cari nama kelas atau murid..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
           <span className="absolute left-3 top-2.5 text-xs text-slate-400">🔍</span>
         </div>
@@ -195,7 +196,7 @@ export default function ClassroomManager() {
               <div>
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
                       {cls.type}
                     </span>
                     <h3 className="font-bold text-slate-800 text-base mt-1.5 leading-snug">{cls.name}</h3>
@@ -204,7 +205,7 @@ export default function ClassroomManager() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleOpenEdit(cls)}
-                        className="text-slate-400 hover:text-blue-600 p-1.5 hover:bg-blue-50 rounded-lg transition-colors text-sm"
+                        className="text-slate-400 hover:text-amber-600 p-1.5 hover:bg-amber-50 rounded-lg transition-colors text-sm"
                         title="Edit Kelas"
                       >
                         ✏️
@@ -280,7 +281,7 @@ export default function ClassroomManager() {
                   placeholder="Misal: Kids A - Morning Group"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   required
                 />
               </div>
@@ -291,7 +292,7 @@ export default function ClassroomManager() {
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value as ClassType)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   >
                     {classTypeOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -306,7 +307,7 @@ export default function ClassroomManager() {
                   <select
                     value={totalMeetings}
                     onChange={(e) => setTotalMeetings(Number(e.target.value))}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   >
                     <option value={4}>4 Pertemuan</option>
                     <option value={6}>6 Pertemuan</option>
@@ -326,7 +327,7 @@ export default function ClassroomManager() {
                   placeholder="Selina, Wayan Sinta, Budi (1 s/d 10 anak)"
                   value={studentsInput}
                   onChange={(e) => setStudentsInput(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   required
                 />
                 <span className="text-[10px] text-slate-400 mt-1 block">
@@ -339,7 +340,7 @@ export default function ClassroomManager() {
                 <select
                   value={ldrZone}
                   onChange={(e) => setLdrZone(e.target.value as LDRZone)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                 >
                   <option value="none">Tidak Ada Jarak Ekstra (None)</option>
                   <option value="ldr_10">LDR &gt; 10 KM (+Rp 10.000/sesi)</option>
@@ -359,7 +360,7 @@ export default function ClassroomManager() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Simpan Kelas
                 </button>
@@ -390,7 +391,7 @@ export default function ClassroomManager() {
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   required
                 />
               </div>
@@ -401,7 +402,7 @@ export default function ClassroomManager() {
                   <select
                     value={editType}
                     onChange={(e) => setEditType(e.target.value as ClassType)}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   >
                     {classTypeOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -416,7 +417,7 @@ export default function ClassroomManager() {
                   <select
                     value={editTotalMeetings}
                     onChange={(e) => setEditTotalMeetings(Number(e.target.value))}
-                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   >
                     <option value={4}>4 Pertemuan</option>
                     <option value={6}>6 Pertemuan</option>
@@ -435,7 +436,7 @@ export default function ClassroomManager() {
                   type="text"
                   value={editStudentsInput}
                   onChange={(e) => setEditStudentsInput(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
                   required
                 />
               </div>
@@ -445,7 +446,7 @@ export default function ClassroomManager() {
                 <select
                   value={editLdrZone}
                   onChange={(e) => setEditLdrZone(e.target.value as LDRZone)}
-                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  className="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                 >
                   <option value="none">Tidak Ada Jarak Ekstra (None)</option>
                   <option value="ldr_10">LDR &gt; 10 KM (+Rp 10.000/sesi)</option>
@@ -465,7 +466,7 @@ export default function ClassroomManager() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Perbarui Kelas
                 </button>

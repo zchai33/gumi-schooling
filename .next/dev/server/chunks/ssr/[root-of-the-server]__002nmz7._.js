@@ -84,7 +84,7 @@ const isValidYouTubeUrl = (url)=>{
     const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i;
     return pattern.test(url.trim());
 };
-// Konfigurasi Standar SOP Gumi (Memisahkan Kontrak vs Magang)
+// Konfigurasi Standar SOP Gumi (Mendukung Program Assist)
 const defaultRates = {
     contract: {
         baseFees: {
@@ -96,7 +96,8 @@ const defaultRates = {
             'Test Prep-A': 55000,
             'Test Prep-B': 40000,
             'Social Banjar/Panti': 50000,
-            'Free Trial': 25000
+            'Free Trial': 25000,
+            Assist: 25000
         },
         ldrBonus: {
             ldr_10: 10000,
@@ -115,7 +116,8 @@ const defaultRates = {
             'Test Prep-A': 40000,
             'Test Prep-B': 30000,
             'Social Banjar/Panti': 35000,
-            'Free Trial': 20000
+            'Free Trial': 20000,
+            Assist: 20000
         },
         ldrBonus: {
             ldr_10: 7500,
@@ -253,12 +255,24 @@ const AppProvider = ({ children })=>{
                 const internLdr = ratesData.intern?.ldrBonus || defaultRates.intern.ldrBonus;
                 setRates({
                     contract: {
-                        baseFees: contractBase,
-                        ldrBonus: contractLdr
+                        baseFees: {
+                            ...defaultRates.contract.baseFees,
+                            ...contractBase
+                        },
+                        ldrBonus: {
+                            ...defaultRates.contract.ldrBonus,
+                            ...contractLdr
+                        }
                     },
                     intern: {
-                        baseFees: internBase,
-                        ldrBonus: internLdr
+                        baseFees: {
+                            ...defaultRates.intern.baseFees,
+                            ...internBase
+                        },
+                        ldrBonus: {
+                            ...defaultRates.intern.ldrBonus,
+                            ...internLdr
+                        }
                     },
                     standardBonus: ratesData.standard_bonus || defaultRates.standardBonus,
                     standardDeductions: ratesData.standard_deductions || defaultRates.standardDeductions
@@ -276,7 +290,10 @@ const AppProvider = ({ children })=>{
                         status: c.status
                     })));
             }
-            const { data: meetingData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('meetings').select('*');
+            // Mengambil data pertemuan yang langsung diurutkan dari tanggal terbaru (descending)
+            const { data: meetingData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('meetings').select('*').order('date', {
+                ascending: false
+            });
             if (meetingData) {
                 setMeetings(meetingData.map((m)=>{
                     const hasValidLink = isValidYouTubeUrl(m.video_url);
@@ -297,7 +314,9 @@ const AppProvider = ({ children })=>{
                     };
                 }));
             }
-            const { data: trialsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').select('*');
+            const { data: trialsData } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').select('*').order('date', {
+                ascending: false
+            });
             if (trialsData) {
                 setFreeTrials(trialsData.map((ft)=>({
                         id: ft.id,
@@ -631,9 +650,10 @@ const AppProvider = ({ children })=>{
                 return copy;
             });
         } else {
+            // Masukkan ke posisi paling awal agar urut terbaru di UI lokal
             setMeetings((prev)=>[
-                    ...prev,
-                    newMeeting
+                    newMeeting,
+                    ...prev
                 ]);
         }
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('meetings').upsert({
@@ -742,8 +762,8 @@ const AppProvider = ({ children })=>{
                 isSentToParent: false
             };
             setMeetings((prev)=>[
-                    ...prev,
-                    lockedPlaceholder
+                    lockedPlaceholder,
+                    ...prev
                 ]);
             await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('meetings').insert([
                 {
@@ -782,8 +802,8 @@ const AppProvider = ({ children })=>{
             isSentToParent: false
         };
         setFreeTrials((prev)=>[
-                ...prev,
-                newTrial
+                newTrial,
+                ...prev
             ]);
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('free_trials').insert([
             {
@@ -983,7 +1003,7 @@ const AppProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/src/context/AppContext.tsx",
-        lineNumber: 1131,
+        lineNumber: 1143,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

@@ -28,7 +28,7 @@ export default function MeetingJournal() {
   // Periksa apakah bulan yang sedang dibuka ini berstatus terkunci
   const isPeriodLocked = isMonthLocked(selectedMonth);
 
-  // 1. Tab Kategori Program
+  // 1. Tab Kategori Program (Termasuk Fee Assist)
   const tabTypes: { id: string; label: string }[] = [
     { id: 'all', label: 'Semua Program' },
     { id: 'Kids-A', label: 'Kids-A' },
@@ -39,6 +39,7 @@ export default function MeetingJournal() {
     { id: 'Test Prep-A', label: 'Test Prep-A (1.5 Jam)' },
     { id: 'Test Prep-B', label: 'Test Prep-B (1 Jam)' },
     { id: 'Social Banjar/Panti', label: 'Social/Panti' },
+    { id: 'Assist', label: 'Fee Assist' },
   ];
   const [activeTabType, setActiveTabType] = useState<string>('all');
 
@@ -63,6 +64,17 @@ export default function MeetingJournal() {
   const [editTutorId, setEditTutorId] = useState<string>('');
   const [editVideoUrl, setEditVideoUrl] = useState<string>('');
   const [editLdrZone, setEditLdrZone] = useState<string>('none');
+
+  // 6. State Modal Baca Selengkapnya untuk Catatan/Note Siswa
+  const [viewingNote, setViewingNote] = useState<{
+    studentName: string;
+    meetingNumber: number;
+    cumulativeMeetingNumber: number;
+    date: string;
+    tutorName: string;
+    lesson: string;
+    notes: string;
+  } | null>(null);
 
   // Daftar tutor untuk pilihan filter dropdown
   const tutorList = useMemo(() => {
@@ -139,9 +151,8 @@ export default function MeetingJournal() {
     }
 
     const cleanUrl = inputVideoUrl.trim();
-    // Hanya validasi URL jika kolom memang diisi (karena sifatnya opsional)
     if (cleanUrl !== '' && !isValidYouTubeUrl(cleanUrl)) {
-      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...) atau kosongkan jika tidak ada video.');
+      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...) atau kosongkan jika tidak ada.');
       return;
     }
 
@@ -175,9 +186,14 @@ export default function MeetingJournal() {
     e.preventDefault();
     if (!editingMeeting) return;
 
+    if (!editLesson.trim()) {
+      alert('Harap masukkan materi pelajaran (lesson)!');
+      return;
+    }
+
     const cleanUrl = editVideoUrl.trim();
     if (cleanUrl !== '' && !isValidYouTubeUrl(cleanUrl)) {
-      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar atau kosongkan.');
+      alert('Tautan video tidak valid! Harap masukkan URL YouTube yang benar (contoh: https://youtu.be/... atau https://youtube.com/watch?v=...) atau kosongkan jika tidak ada.');
       return;
     }
 
@@ -307,7 +323,6 @@ export default function MeetingJournal() {
 
         {/* Baris Pencarian: Input Nama Murid + Filter Dropdown Tutor (Admin) + Badge Counter */}
         <div className="flex flex-col md:flex-row items-center gap-3 pt-1">
-          {/* Input Cari Murid */}
           <div className="relative flex-1 w-full">
             <input
               type="text"
@@ -327,7 +342,6 @@ export default function MeetingJournal() {
             )}
           </div>
 
-          {/* Filter Dropdown Tutor (Hanya Ditampilkan untuk Admin) */}
           {isAdmin && (
             <div className="w-full md:w-64 shrink-0">
               <select
@@ -345,7 +359,6 @@ export default function MeetingJournal() {
             </div>
           )}
 
-          {/* Badge Indikator Hasil Pencarian */}
           <div className="flex items-center gap-2 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shrink-0 self-stretch md:self-auto justify-center">
             {auditTutorSessionStats ? (
               <span className="text-amber-700 flex items-center gap-1.5">
@@ -373,9 +386,35 @@ export default function MeetingJournal() {
       ) : (
         <div className="space-y-6">
           {filteredClassrooms.map((cls: Classroom) => {
+            // Sesi yang ada di bulan terpilih
             const classMeetings: Meeting[] = meetings.filter(
               (m: Meeting) => m.classroomId === cls.id && m.date?.startsWith(selectedMonth)
             );
+
+            // TITIK AWAL SISTEM BARU (BASELINE NOVEMBER 2026):
+            // Jika yang dibuka adalah November 2026 atau sebelumnya, baseCumulativeCount = 0 (semua mulai dari 1)
+            let baseCumulativeCount = 0;
+
+            if (selectedMonth > '2026-11') {
+              const pastMeetings = meetings.filter(
+                (m: Meeting) =>
+                  m.classroomId === cls.id &&
+                  m.date &&
+                  m.date >= '2026-11-01' && // Hanya hitung riwayat yang terjadi mulai November 2026
+                  m.date < `${selectedMonth}-01` &&
+                  !m.isLocked &&
+                  m.lesson &&
+                  m.lesson !== 'Sesi Dikosongkan / Hangus oleh Admin'
+              );
+
+              const maxPastMeetingNumber =
+                pastMeetings.length > 0
+                  ? Math.max(...pastMeetings.map((m: Meeting) => m.meetingNumber))
+                  : 0;
+
+              baseCumulativeCount = Math.max(pastMeetings.length, maxPastMeetingNumber);
+            }
+
             const highestMeetingNum =
               classMeetings.length > 0
                 ? Math.max(...classMeetings.map((m: Meeting) => m.meetingNumber))
@@ -433,9 +472,9 @@ export default function MeetingJournal() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs text-left border-collapse min-w-[750px]">
                     <tbody>
-                      {/* Baris 1: Meet This Month */}
+                      {/* Baris 1: Meet This Month (Pertemuan di Bulan Berjalan) */}
                       <tr className="border-b border-slate-200">
-                        <td className="w-40 py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
+                        <td className="w-44 py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
                           Meet This Month
                         </td>
                         {colIndexes.map((num: number) => (
@@ -448,19 +487,25 @@ export default function MeetingJournal() {
                         ))}
                       </tr>
 
-                      {/* Baris 2: Class meetings */}
+                      {/* Baris 2: Class meetings (Kumulatif Bersambung dari Bulan Lalu) */}
                       <tr className="border-b border-slate-200">
                         <td className="py-2.5 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
-                          Class meetings
+                          <div>Class meetings</div>
+                          <span className="text-[9px] font-normal text-slate-500 block leading-tight">
+                            (Total Pertemuan Riil)
+                          </span>
                         </td>
-                        {colIndexes.map((num: number) => (
-                          <td
-                            key={num}
-                            className="py-2.5 px-3 text-center font-bold text-slate-700 border-r border-slate-200"
-                          >
-                            {num}
-                          </td>
-                        ))}
+                        {colIndexes.map((num: number) => {
+                          const cumulativeMeetingNum = baseCumulativeCount + num;
+                          return (
+                            <td
+                              key={num}
+                              className="py-2.5 px-3 text-center font-extrabold text-amber-900 bg-amber-50/50 border-r border-slate-200"
+                            >
+                              #{cumulativeMeetingNum}
+                            </td>
+                          );
+                        })}
                       </tr>
 
                       {/* Baris 3: Date */}
@@ -511,7 +556,7 @@ export default function MeetingJournal() {
                         })}
                       </tr>
 
-                      {/* Baris 5: Lesson, Status, Edit & Reset */}
+                      {/* Baris 5: Lesson, Status, Notes (Modal Detail), Edit & Reset */}
                       <tr>
                         <td className="py-3 px-4 font-bold bg-amber-100 text-slate-800 border-r border-slate-300">
                           Lesson &amp; Note
@@ -519,6 +564,7 @@ export default function MeetingJournal() {
                         {colIndexes.map((num: number) => {
                           const mtg = classMeetings.find((m: Meeting) => m.meetingNumber === num);
                           const mtgLdr = mtg?.ldrZoneSnapshot;
+                          const cumulativeMeetingNum = baseCumulativeCount + num;
 
                           return (
                             <td
@@ -527,12 +573,34 @@ export default function MeetingJournal() {
                             >
                               {mtg ? (
                                 <div className="space-y-1.5">
-                                  <p className="font-medium text-slate-800 leading-snug">{mtg.lesson}</p>
+                                  <p className="font-semibold text-slate-800 leading-snug">{mtg.lesson}</p>
 
+                                  {/* PREVIEW CATATAN + TOMBOL BACA SELENGKAPNYA */}
                                   {mtg.notes && (
-                                    <p className="text-[10px] text-slate-500 italic line-clamp-2">
-                                      &ldquo;{mtg.notes}&rdquo;
-                                    </p>
+                                    <div>
+                                      <p className="text-[10px] text-slate-500 italic line-clamp-2 leading-relaxed">
+                                        &ldquo;{mtg.notes}&rdquo;
+                                      </p>
+                                      {mtg.notes.length > 50 && (
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            setViewingNote({
+                                              studentName: cls.students.join(', '),
+                                              meetingNumber: num,
+                                              cumulativeMeetingNumber: cumulativeMeetingNum,
+                                              date: mtg.date,
+                                              tutorName: mtg.tutorName,
+                                              lesson: mtg.lesson,
+                                              notes: mtg.notes || '',
+                                            })
+                                          }
+                                          className="text-[10px] text-amber-600 hover:text-amber-800 font-bold hover:underline inline-block mt-0.5"
+                                        >
+                                          Baca Selengkapnya
+                                        </button>
+                                      )}
+                                    </div>
                                   )}
 
                                   <div className="flex items-center gap-1 flex-wrap pt-0.5">
@@ -544,7 +612,7 @@ export default function MeetingJournal() {
                                         className="inline-flex items-center gap-1 text-[9px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-1.5 py-0.5 rounded transition-colors"
                                         title="Buka Video di YouTube"
                                       >
-                                        ▶️ Video YT ↗
+                                        ▶️ Video YT
                                       </a>
                                     ) : (
                                       mtg.hasVideoClaim && (
@@ -660,7 +728,7 @@ export default function MeetingJournal() {
             <form onSubmit={handleSubmitMeeting} className="space-y-3.5">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Pertemuan Ke</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Pertemuan Ke (Bulan Ini)</label>
                   <input
                     type="text"
                     disabled
@@ -705,22 +773,23 @@ export default function MeetingJournal() {
                 />
               </div>
 
-              {/* KOLOM INPUT LINK YOUTUBE (OPSIONAL) */}
+              {/* KOLOM INPUT LINK YOUTUBE (TEMA NETRAL & OPSIONAL) */}
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
-                <label className="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                <label className="block text-xs font-semibold text-slate-700 flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
-                    <span>🎬</span> Link Video Pembelajaran (YouTube) <span className="text-[10px] font-normal text-slate-400">(Opsional)</span>
+                    <span>🎬</span> Link Video Pembelajaran (YouTube)
                   </span>
+                  <span className="text-[10px] text-slate-400 font-normal">Opsional</span>
                 </label>
                 <input
                   type="url"
-                  placeholder="https://youtu.be/... atau kosongkan jika tidak ada"
+                  placeholder="https://youtu.be/... (kosongkan jika tidak ada)"
                   value={inputVideoUrl}
                   onChange={(e) => setInputVideoUrl(e.target.value)}
                   className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                 />
                 <p className="text-[10px] text-slate-400">
-                  Opsional — kosongkan jika sesi pertemuan ini belum atau tidak disertai rekaman video.
+                  Dapat dikosongkan. Jika diisi, pastikan tautan YouTube valid dan bisa dibuka.
                 </p>
               </div>
 
@@ -839,21 +908,21 @@ export default function MeetingJournal() {
                 />
               </div>
 
-              {/* EDIT LINK YOUTUBE (OPSIONAL) */}
+              {/* EDIT LINK YOUTUBE (TEMA NETRAL & OPSIONAL) */}
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
-                <label className="block text-xs font-bold text-slate-700">
-                  🎬 Tautan Video Pembelajaran (YouTube) <span className="text-[10px] font-normal text-slate-400">(Opsional)</span>
+                <label className="block text-xs font-semibold text-slate-700 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    🎬 Tautan Video Pembelajaran (YouTube)
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-normal">Opsional</span>
                 </label>
                 <input
                   type="url"
-                  placeholder="https://youtu.be/... atau kosongkan jika tidak ada"
+                  placeholder="https://youtu.be/... (kosongkan jika tidak ada)"
                   value={editVideoUrl}
                   onChange={(e) => setEditVideoUrl(e.target.value)}
                   className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                 />
-                <p className="text-[10px] text-slate-400">
-                  Opsional — kosongkan jika tidak ada video untuk sesi ini.
-                </p>
               </div>
 
               <div>
@@ -884,6 +953,73 @@ export default function MeetingJournal() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: DETAIL LENGKAP CATATAN PEMBELAJARAN (BACA SELENGKAPNYA) */}
+      {viewingNote && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            {/* Header Modal */}
+            <div className="flex items-start justify-between border-b pb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300">
+                    Sesi #{viewingNote.meetingNumber} (Bulan Ini)
+                  </span>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md border border-purple-300">
+                    Total Sesi #{viewingNote.cumulativeMeetingNumber}
+                  </span>
+                </div>
+                <h3 className="font-black text-slate-900 text-lg mt-2 leading-snug">
+                  {viewingNote.studentName}
+                </h3>
+                <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                  <span>🗓️ {viewingNote.date}</span>
+                  <span>•</span>
+                  <span>Tutor Pengajar: <strong>{viewingNote.tutorName}</strong></span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setViewingNote(null)}
+                className="text-slate-400 hover:text-slate-600 text-lg p-1.5 hover:bg-slate-100 rounded-xl transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Info Materi */}
+            <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                Materi Pelajaran (Lesson):
+              </span>
+              <p className="text-xs font-bold text-slate-800">
+                {viewingNote.lesson}
+              </p>
+            </div>
+
+            {/* Isi Catatan Lengkap */}
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+                Catatan Lengkap Perkembangan Siswa:
+              </span>
+              <div className="p-4 bg-amber-50/40 rounded-2xl border border-amber-200 text-xs text-slate-700 leading-relaxed max-h-64 overflow-y-auto whitespace-pre-wrap font-medium">
+                &ldquo;{viewingNote.notes}&rdquo;
+              </div>
+            </div>
+
+            {/* Tombol Tutup */}
+            <div className="pt-2 flex justify-end border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setViewingNote(null)}
+                className="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold transition-all shadow-sm"
+              >
+                Tutup Catatan
+              </button>
+            </div>
           </div>
         </div>
       )}
